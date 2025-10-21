@@ -2,4 +2,23 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+    <!-- 베이직 -->
+    <color name="basic1">#F3F7F7</color>
+    <color name="basic2">#C9CFCF</color>
+    <color name="basic3">#959B9B</color>
+    <color name="basic4">#484A4A</color>
+    <color name="basic5">#2F3030</color>
+
+    <!-- 프라이머리 -->
+    <color name="mainColor1">#00CBA8</color>
+    <color name="mainColor2">#68DFCA</color>
+
+    <!-- 메인컬러 그린 -->
+    <color name="mainColor_green1">#29B42F</color>
+    <color name="mainColor_green2">#5EC486</color>
+
+    <!-- 메인컬러 블루 -->
+    <color name="mainColor_blue1">#006BCC</color>
+    <color name="mainColor_blue2">#00ABCC</color>
 </resources>
