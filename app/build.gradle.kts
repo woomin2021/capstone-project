@@ -43,6 +43,23 @@ dependencies {
     implementation("com.squareup.okhttp3:okhttp:4.10.0")
     implementation("com.squareup.okhttp3:logging-interceptor:4.10.0")
 
+    // 캘린더 커스텀
+    implementation("com.jakewharton.threetenabp:threetenabp:1.1.1")
+    implementation("com.google.android.gms:play-services-maps:19.2.0")
+
+
+    //구글 맵
+    implementation("com.google.android.gms:play-services-location:21.3.0")
+    implementation("com.google.android.gms:play-services-maps:19.2.0")
+
+    //gilde 디펜던시
+    implementation ("com.github.bumptech.glide:glide:4.11.0")
+    annotationProcessor ("com.github.bumptech.glide:compiler:4.11.0")
+
+    //새로고침
+    implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
+
+
     implementation(libs.appcompat)
     implementation(libs.material)
     implementation(libs.activity)
