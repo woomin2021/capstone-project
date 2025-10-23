@@ -42,8 +42,9 @@
                 android:text="집 등록하기"
                 android:textColor="#000"
                 android:textSize="12sp"
-                android:backgroundTint="#F5F5F5"
+                android:backgroundTint="@color/basic1"
                 android:fontFamily="@font/pretendardvariable"
+
                 />
         </LinearLayout>
 

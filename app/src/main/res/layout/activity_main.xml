@@ -24,4 +24,22 @@
         android:layout_height="50dp"
         android:text="집 예약하기 페이지"
 />
+
+    <Button
+        app:layout_constraintTop_toBottomOf="@id/buttontest1"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:id="@+id/buttontest2"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:text="집 예약하기 상세 페이지"
+        />
+
+    <Button
+        app:layout_constraintTop_toBottomOf="@id/buttontest2"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:id="@+id/buttontest3"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:text="집 예약하기 페이지"
+        />
 </androidx.constraintlayout.widget.ConstraintLayout>

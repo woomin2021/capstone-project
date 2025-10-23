@@ -11,7 +11,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 public class MainActivity extends AppCompatActivity {
-    Button btntest1;
+    Button btntest1, btntest2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,7 +27,14 @@ public class MainActivity extends AppCompatActivity {
         btntest1 = findViewById(R.id.buttontest1);
 
         btntest1.setOnClickListener(view -> {
-            Intent intent = new Intent(getApplicationContext(), HouseReserveActivity.class);
+            Intent intent = new Intent(getApplicationContext(), RentHouseActivity.class);
+            startActivity(intent);
+        });
+
+        btntest2 = findViewById(R.id.buttontest2);
+
+        btntest2.setOnClickListener(view -> {
+            Intent intent = new Intent(getApplicationContext(), RentHouseDetailActivity.class);
             startActivity(intent);
         });
 

@@ -24,7 +24,9 @@
         android:layout_marginTop="4dp"
         android:text="인천 주택"
         android:textStyle="bold"
-        android:textSize="14sp" />
+        android:textSize="14sp"
+        android:fontFamily="@font/pretendardvariable"
+        />
 
     <TextView
         android:id="@+id/textHotLocation"
@@ -32,7 +34,10 @@
         android:layout_height="wrap_content"
         android:text="인천 연수구 송도동"
         android:textColor="#777777"
-        android:textSize="12sp" />
+        android:textSize="12sp"
+        android:fontFamily="@font/pretendardvariable"
+        />
+
 
     <TextView
         android:id="@+id/textDate"
@@ -40,7 +45,9 @@
         android:layout_height="wrap_content"
         android:text="2025-06-05 ~ 2025-07-31"
         android:textSize="12sp"
-        android:textColor="#777"/>
+        android:textColor="#777"
+        android:fontFamily="@font/pretendardvariable"
+        />
 
     <TextView
         android:id="@+id/textHotPrice"
@@ -49,5 +56,8 @@
         android:layout_marginTop="2dp"
         android:text="30,000원"
         android:textStyle="bold"
-        android:textSize="13sp" />
+        android:textColor="@color/basic5"
+        android:textSize="13sp"
+        android:fontFamily="@font/pretendardvariable"
+        />
 </LinearLayout>
