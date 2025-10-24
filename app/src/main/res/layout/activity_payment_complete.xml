@@ -2,7 +2,9 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:padding="16dp"
+    >
 
     <!-- 상단 툴바 -->
     <com.google.android.material.appbar.MaterialToolbar
@@ -21,7 +23,7 @@
     <LinearLayout
         android:id="@+id/progressRow"
         android:layout_width="0dp"
-        android:layout_height="4dp"
+        android:layout_height="6dp"
         android:layout_marginTop="8dp"
         android:orientation="horizontal"
         android:paddingStart="20dp"
@@ -56,7 +58,9 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
         android:text="예약 완료!"
-        android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
+        android:textSize="20dp"
+        android:fontFamily="@font/pretendardvariable"
+        android:textStyle="bold"
         android:paddingStart="24dp"
         android:paddingEnd="24dp"
         android:gravity="center"
@@ -64,21 +68,22 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <!-- 숙소 이미지 -->
-    <com.google.android.material.imageview.ShapeableImageView
-        android:id="@+id/imageThumb"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginStart="24dp"
-        android:layout_marginEnd="24dp"
+    <ImageView
+        app:layout_constraintTop_toBottomOf="@id/titleComplete"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:id="@+id/imageHotel"
+        android:layout_width="match_parent"
+        android:layout_height="240dp"
         android:layout_marginTop="16dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginStart="24dp"
         android:scaleType="centerCrop"
-        android:src="@drawable/sample2"
-    android:background="@drawable/rounded_image_bg"
-    app:layout_constraintTop_toBottomOf="@id/titleComplete"
-    app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintEnd_toEndOf="parent"
-    app:layout_constraintDimensionRatio="1.6:1" />
+        android:background="@drawable/rounded_image_bg"
+        android:src="@drawable/sample1"
+        android:clipToOutline="true"
+        android:outlineProvider="background"
+        />
 
     <!-- 숙소 정보 -->
     <TextView
@@ -92,7 +97,7 @@
         android:textColor="#000000"
         android:paddingStart="24dp"
         android:paddingEnd="24dp"
-        app:layout_constraintTop_toBottomOf="@id/imageThumb"
+        app:layout_constraintTop_toBottomOf="@id/imageHotel"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
@@ -102,6 +107,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
         android:text="2025-06-05 ~ 2025-07-31"
+        android:textSize="14sp"
         android:textColor="#555555"
         android:paddingStart="24dp"
         android:paddingEnd="24dp"
@@ -116,7 +122,7 @@
         android:layout_marginTop="4dp"
         android:text="제주특별자치도 제주시 한라대학로 25 (노형동)"
         android:textColor="#888888"
-        android:textSize="12sp"
+        android:textSize="14sp"
         android:paddingStart="24dp"
         android:paddingEnd="24dp"
         app:layout_constraintTop_toBottomOf="@id/textDateRange"
@@ -137,14 +143,15 @@
         app:layout_constraintEnd_toEndOf="parent" />
 
     <!-- 완료 버튼 -->
-    <com.google.android.material.button.MaterialButton
+    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btnDone"
-        style="@style/Widget.MaterialComponents.Button"
         android:layout_width="0dp"
-        android:layout_height="56dp"
+        android:layout_height="72dp"
         android:layout_margin="20dp"
         android:text="완료"
         app:cornerRadius="16dp"
+        android:background="@drawable/btn_mainbtn"
+        android:textColor="@color/basic1"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
