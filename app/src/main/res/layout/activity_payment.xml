@@ -15,6 +15,7 @@
         app:navigationIcon="@drawable/ic_back"
         app:title="집 빌리기"
         app:titleCentered="true"
+        app:titleTextAppearance="@style/ToolbarTitleTextStyle"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
