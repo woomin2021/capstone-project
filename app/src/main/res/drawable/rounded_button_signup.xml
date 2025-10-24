@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <solid android:color="#F3F7F7"/>          <!-- 이메일 칸과 같은 색 -->
+    <corners android:radius="28dp"/>          <!-- 로그인 버튼과 동일한 둥근 정도 -->
+    <padding
+        android:left="8dp"
+        android:right="8dp"
+        android:top="8dp"
+        android:bottom="8dp"/>
+</shape>
