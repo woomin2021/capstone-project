@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".register_details"
+    android:orientation="vertical">
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="집에 대해\n자세히 알려주세요"
+        android:textStyle="bold"
+        android:textSize="20sp"
+        android:fontFamily="@font/pretendardvariable"
+
+        android:gravity="center"
+        android:layout_marginTop="40dp"/>
+
+    <!-- 묶음 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <!-- 주소 -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="주소"
+                android:textSize="14sp"
+                android:fontFamily="@font/pretendardvariable"
+                android:layout_marginTop="24dp"/>
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/registerhouse_et"
+                android:padding="16dp"
+                android:textSize="14sp"
+                android:fontFamily="@font/pretendardvariable"
+                android:hint="주소를 입력하세요"
+                />
+
+        </LinearLayout>
+        <!-- 상세 주소 -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="상세 주소"
+                android:textSize="14sp"
+                android:fontFamily="@font/pretendardvariable"
+                android:layout_marginTop="16dp"/>
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/registerhouse_et"
+                android:padding="16dp"
+                android:textSize="14sp"
+                android:fontFamily="@font/pretendardvariable"
+                android:hint="주소를 입력하세요"/>
+
+        </LinearLayout>
+        <!-- 설명 -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="설명"
+                android:textSize="14sp"
+                android:fontFamily="@font/pretendardvariable"
+                android:layout_marginTop="16dp"/>
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/registerhouse_et"
+                android:padding="16dp"
+                android:textSize="14sp"
+                android:fontFamily="@font/pretendardvariable"
+                android:hint="집에 대한 설명을 입력하세요\n예) 넓은 거실, TV, 전자레인지"
+
+
+                android:inputType="textMultiLine|textCapSentences"
+                android:minLines="4"
+                android:maxLines="10"
+                android:scrollbars="vertical"
+                />
+
+        </LinearLayout>
+        <!-- 한줄 설명 -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="한줄 설명"
+                android:textSize="14sp"
+                android:fontFamily="@font/pretendardvariable"
+                android:layout_marginTop="16dp"/>
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/registerhouse_et"
+                android:padding="16dp"
+                android:textSize="14sp"
+                android:fontFamily="@font/pretendardvariable"
+                android:hint="특징을 한줄로 적어주세요"/>
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+
+</LinearLayout>
