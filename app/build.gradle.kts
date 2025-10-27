@@ -45,7 +45,7 @@ dependencies {
 
     // 캘린더 커스텀
     implementation("com.jakewharton.threetenabp:threetenabp:1.1.1")
-    implementation("com.google.android.gms:play-services-maps:19.2.0")
+    implementation("com.kizitonwose.calendar:view:2.5.4")
 
 
     //구글 맵
