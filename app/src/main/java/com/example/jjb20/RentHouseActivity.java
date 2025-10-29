@@ -13,7 +13,7 @@ import com.example.jjb20.entity.HotelItem;
 import java.util.ArrayList;
 import java.util.List;
 
-public class HouseReserveActivity extends AppCompatActivity {
+public class RentHouseActivity extends AppCompatActivity {
 
     private RecyclerView recyclerRecommended;
     private RecyclerView recyclerHot;
@@ -21,7 +21,7 @@ public class HouseReserveActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_house_reserve);
+        setContentView(R.layout.activity_rent_house);
 
         recyclerRecommended = findViewById(R.id.recyclerRecommended);
         recyclerHot = findViewById(R.id.recyclerHot);

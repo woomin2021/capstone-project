@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:padding="16dp"
+    >
+
+    <!-- 상단 툴바 -->
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/toolbar"
+        style="@style/Widget.MaterialComponents.Toolbar"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:navigationIcon="@drawable/ic_back"
+        app:title="집 빌리기"
+        app:titleCentered="true"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:titleTextAppearance="@style/ToolbarTitleTextStyle"
+        />
+
+    <!-- 진행 표시 (2/3 단계 완료) -->
+    <LinearLayout
+        android:id="@+id/progressRow"
+        android:layout_width="0dp"
+        android:layout_height="6dp"
+        android:layout_marginTop="8dp"
+        android:orientation="horizontal"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp"
+        app:layout_constraintTop_toBottomOf="@id/toolbar"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="4dp"
+            android:layout_weight="1"
+            android:background="#14D8B4" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="4dp"
+            android:layout_weight="1"
+            android:background="#14D8B4" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="4dp"
+            android:layout_weight="1"
+            android:background="@color/basic2" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="4dp"
+            android:layout_weight="1"
+            android:background="@color/basic2" />
+    </LinearLayout>
+    <!-- 섹션 타이틀 -->
+
+    <!-- 날짜 -->
+    <TextView
+        android:id="@+id/sectionTitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:fontFamily="@font/pretendardvariable"
+        android:paddingStart="24dp"
+        android:paddingEnd="24dp"
+        android:text="예약 정보 확인"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:gravity="center"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/progressRow" />
+
+    <TextView
+        android:id="@+id/labelDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="날짜"
+        android:textStyle="bold"
+        android:textSize="14sp"
+        android:fontFamily="@font/pretendardvariable"
+        android:layout_marginTop="16dp"
+        android:paddingStart="24dp"
+        android:paddingEnd="24dp"
+        app:layout_constraintTop_toBottomOf="@id/sectionTitle"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/textDate"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"
+        android:paddingVertical="14dp"
+        android:paddingHorizontal="16dp"
+        android:text="12월 15일 ~ 12월 18일"
+        android:textColor="#959B9B"
+        android:fontFamily="@font/pretendardvariable"
+        android:background="@drawable/edittext_border"
+        app:layout_constraintTop_toBottomOf="@id/labelDate"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- 게스트 -->
+    <TextView
+        android:id="@+id/labelGuest"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="게스트"
+        android:textStyle="bold"
+        android:fontFamily="@font/pretendardvariable"
+        android:layout_marginTop="16dp"
+        android:paddingStart="24dp"
+        android:paddingEnd="24dp"
+        app:layout_constraintTop_toBottomOf="@id/textDate"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <!-- 전체 요금 -->
+    <TextView
+        android:id="@+id/textGuest"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="24dp"
+        android:background="@drawable/edittext_border"
+        android:paddingHorizontal="16dp"
+        android:paddingVertical="14dp"
+        android:text="성인 1명"
+        android:textColor="#959B9B"
+        android:fontFamily="@font/pretendardvariable"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/labelGuest" />
+
+    <TextView
+        android:id="@+id/priceLabel"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="전체 요금"
+        android:textColor="#666666"
+        android:paddingStart="24dp"
+        android:paddingEnd="24dp"
+        android:fontFamily="@font/pretendardvariable"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        app:layout_constraintTop_toBottomOf="@id/textGuest"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <TextView
+        android:id="@+id/priceValue"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="90,000원 · 3박"
+        android:textSize="20sp"
+        android:paddingStart="24dp"
+        android:paddingEnd="24dp"
+        android:textStyle="bold"
+        android:fontFamily="@font/pretendardvariable"
+        app:layout_constraintTop_toBottomOf="@id/priceLabel"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- 환불 정책 -->
+    <TextView
+        android:id="@+id/refundPolicy"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="환불 정책"
+        android:textColor="#666666"
+        android:paddingStart="24dp"
+        android:paddingEnd="24dp"
+        app:layout_constraintTop_toBottomOf="@id/priceValue"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <TextView
+        android:id="@+id/refundContent"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"
+        android:padding="16dp"
+        android:textSize="13sp"
+        android:fontFamily="@font/pretendardvariable"
+        android:textColor="#959B9B"
+        android:background="@drawable/edittext_border"
+        android:text="체크인 7일 전까지 전액 환불됩니다.\n체크인 3일 전까지 50% 환불 가능하며, 이후에는 환불이 불가합니다.\n천재지변 등 불가항력 사유로 인한 취소는 별도 규정에 따릅니다."
+        app:layout_constraintTop_toBottomOf="@id/refundPolicy"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- 하단 버튼 -->
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btnNext"
+        android:layout_width="0dp"
+        android:layout_height="72dp"
+        android:layout_margin="20dp"
+        android:text="결제 페이지로 이동"
+        app:cornerRadius="16dp"
+        android:background="@drawable/btn_mainbtn"
+        android:textColor="@color/basic1"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+</androidx.constraintlayout.widget.ConstraintLayout>

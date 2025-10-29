@@ -22,8 +22,10 @@
         android:layout_height="wrap_content"
         android:text="마운틴뷰"
         android:textStyle="bold"
-        android:textSize="14sp"
-        android:layout_marginTop="6dp"/>
+        android:textSize="16sp"
+        android:layout_marginTop="6dp"
+        android:fontFamily="@font/pretendardvariable"
+        />
 
     <TextView
         android:id="@+id/textDate"
@@ -31,7 +33,19 @@
         android:layout_height="wrap_content"
         android:text="2025-06-05 ~ 2025-07-31"
         android:textSize="12sp"
-        android:textColor="#777"/>
+        android:textColor="#777"
+        android:fontFamily="@font/pretendardvariable"
+        />
+
+    <TextView
+        android:id="@+id/textAddress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="제주특별자치도 제주시 한라대학로 25-2(노형동)"
+        android:textSize="12sp"
+        android:textColor="#777"
+        android:fontFamily="@font/pretendardvariable"
+        />
 
     <TextView
         android:id="@+id/textPrice"
@@ -39,6 +53,8 @@
         android:layout_height="wrap_content"
         android:text="30,000원 · 1박"
         android:textStyle="bold"
-        android:textSize="13sp"
-        android:layout_marginTop="2dp"/>
+        android:textSize="20sp"
+        android:layout_marginTop="2dp"
+        android:fontFamily="@font/pretendardvariable"
+        />
 </LinearLayout>
