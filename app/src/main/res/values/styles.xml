@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="logo">
+        <item name="android:textSize">32sp</item>
+        <item name="android:letterSpacing">-0.02</item>
+        <item name="android:textColor">#00CBA8</item>
+    </style>
+
+    <style name="ToolbarTitleTextStyle" parent="TextAppearance.Widget.AppCompat.Toolbar.Title">
+        <item name="android:textSize">20sp</item>
+        <item name="android:fontFamily">@font/pretendardvariable</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/basic5</item>
+    </style>
+
+
+
+</resources>
