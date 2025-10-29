@@ -1,5 +1,5 @@
 plugins {
-    alias(libs.plugins.android.application)
+    id("com.android.application")
 }
 
 android {
@@ -43,9 +43,12 @@ dependencies {
     implementation("com.squareup.okhttp3:okhttp:4.10.0")
     implementation("com.squareup.okhttp3:logging-interceptor:4.10.0")
 
+    // Material Calendar View 라이브러리
+    implementation ("com.applandeo:material-calendar-view:1.9.2")
+
     implementation(libs.appcompat)
     implementation(libs.material)
-    implementation(libs.activity)
+    implementation("androidx.activity:activity:1.9.3")
     implementation(libs.constraintlayout)
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)

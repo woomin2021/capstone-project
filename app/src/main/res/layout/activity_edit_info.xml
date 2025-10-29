@@ -22,7 +22,7 @@
             app:navigationIcon="@drawable/arrow_left"
             app:title="집 정보 수정하기"
             app:titleCentered="true"
-            app:titleTextColor="#212121" />
+            app:titleTextColor="#212121"/>
 
     </com.google.android.material.appbar.AppBarLayout>
 
