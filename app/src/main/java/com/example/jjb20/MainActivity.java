@@ -29,16 +29,16 @@ public class MainActivity extends AppCompatActivity {
 
         btnRent = findViewById(R.id.btnRent); //집 빌리기
         btnRegister = findViewById(R.id.btnRegister); // 집 등록하기
-
-        btnRent.setOnClickListener(v -> {
-            Intent intent = new Intent(getApplicationContext(), HouseReserveActivity.class);
-            startActivity(intent);
-        });
-
-        btnRegister.setOnClickListener(v -> {
-            Intent intent = new Intent(getApplicationContext(), HouseReserveActivity.class);
-            startActivity(intent);
-        });
+//
+//        btnRent.setOnClickListener(v -> {
+//            Intent intent = new Intent(getApplicationContext(), HouseReserveActivity.class);
+//            startActivity(intent);
+//        });
+//
+//        btnRegister.setOnClickListener(v -> {
+//            Intent intent = new Intent(getApplicationContext(), HouseReserveActivity.class);
+//            startActivity(intent);
+//        });
 
 
     }
