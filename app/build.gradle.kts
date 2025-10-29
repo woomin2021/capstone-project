@@ -43,9 +43,12 @@ dependencies {
     implementation("com.squareup.okhttp3:okhttp:4.10.0")
     implementation("com.squareup.okhttp3:logging-interceptor:4.10.0")
 
+    // Material Calendar View 라이브러리
+    implementation ("com.applandeo:material-calendar-view:1.9.2")
+
     // 캘린더 커스텀
     implementation("com.jakewharton.threetenabp:threetenabp:1.1.1")
-    implementation("com.google.android.gms:play-services-maps:19.2.0")
+    implementation("com.kizitonwose.calendar:view:2.5.4")
 
 
     //구글 맵
@@ -62,7 +65,7 @@ dependencies {
 
     implementation(libs.appcompat)
     implementation(libs.material)
-    implementation(libs.activity)
+    implementation("androidx.activity:activity:1.9.3")
     implementation(libs.constraintlayout)
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)

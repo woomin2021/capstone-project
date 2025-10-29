@@ -1,45 +1,156 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    android:orientation="vertical"
+    tools:context=".MainActivity"
+    android:padding="16dp">
+
+    <!-- 상단바 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <TextView
+            android:text="집잡빌"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="#000000"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/cafe24ssurroundotf" />
+        <ImageView
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/ic_user"
+            android:layout_marginEnd="8dp"/>
+    </LinearLayout>
+
+    <!-- 로고 -->
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/main_image"
+        android:layout_gravity="center"/>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hello World!"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:text="집 잠시\n빌려드립니다"
+        android:textAppearance="@style/logo"
+        android:fontFamily="@font/cafe24ssurround_v2"
+        android:includeFontPadding="false"
+        android:lineHeight="38sp"
+        android:layout_marginBottom="39dp"
 
-    <Button
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:id="@+id/buttontest1"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:text="집 예약하기 페이지"
-/>
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="40dp"/>
 
-    <Button
-        app:layout_constraintTop_toBottomOf="@id/buttontest1"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:id="@+id/buttontest2"
+    <!-- 집 빌리기 -->
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/btnRent"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:text="집 예약하기 상세 페이지"
-        />
+        android:layout_height="101dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:foreground="?attr/selectableItemBackground"
+        app:cardCornerRadius="20dp"
+        app:cardElevation="0dp"
+        app:cardBackgroundColor="#00CBA8">
 
-    <Button
-        app:layout_constraintTop_toBottomOf="@id/buttontest2"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:id="@+id/buttontest3"
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:paddingHorizontal="18dp">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tvRentCaption"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="취향껏 찾아봐요"
+                    android:textSize="12sp"
+                    android:textColor="@color/white"
+                    android:alpha="0.8"
+                    android:fontFamily="@font/pretendardvariable"/>
+
+                <TextView
+                    android:id="@+id/tvRentTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="집 빌리기"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/white"
+                    android:fontFamily="@font/pretendardvariable"/>
+            </LinearLayout>
+
+            <ImageView
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:src="@drawable/ic_rent"/>
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
+
+    <!-- 집 등록하기 -->
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/btnRegister"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:text="집 예약하기 페이지"
-        />
-</androidx.constraintlayout.widget.ConstraintLayout>
+        android:layout_height="101dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:foreground="?attr/selectableItemBackground"
+        app:cardCornerRadius="20dp"
+        app:cardElevation="0dp"
+        app:strokeWidth="1dp"
+        app:cardBackgroundColor="#F3F7F7"
+        android:layout_marginTop="16dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:paddingHorizontal="18dp">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="N분이면 끝나요"
+                    android:textSize="12sp"
+                    android:alpha="0.8"
+                    android:fontFamily="@font/pretendardvariable"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="집 등록하기"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:fontFamily="@font/pretendardvariable"/>
+            </LinearLayout>
+
+            <ImageView
+                android:layout_width="26dp"
+                android:layout_height="26dp"
+                android:src="@drawable/ic_register"/>
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
+
+</LinearLayout>

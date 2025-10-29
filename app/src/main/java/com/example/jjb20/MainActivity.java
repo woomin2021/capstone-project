@@ -10,8 +10,11 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.google.android.material.card.MaterialCardView;
+
 public class MainActivity extends AppCompatActivity {
-    Button btntest1, btntest2;
+    private MaterialCardView btnRent;
+    private MaterialCardView btnRegister;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,22 +27,20 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
 
-        btntest1 = findViewById(R.id.buttontest1);
+        btnRent = findViewById(R.id.btnRent); //집 빌리기
+        btnRegister = findViewById(R.id.btnRegister); // 집 등록하기
 
-        btntest1.setOnClickListener(view -> {
-            Intent intent = new Intent(getApplicationContext(), RentHouseActivity.class);
+        btnRent.setOnClickListener(v -> {
+            Intent intent = new Intent(getApplicationContext(), HouseReserveActivity.class);
             startActivity(intent);
         });
 
-        btntest2 = findViewById(R.id.buttontest2);
-
-        btntest2.setOnClickListener(view -> {
-            Intent intent = new Intent(getApplicationContext(), RentHouseDetailActivity.class);
+        btnRegister.setOnClickListener(v -> {
+            Intent intent = new Intent(getApplicationContext(), HouseReserveActivity.class);
             startActivity(intent);
         });
 
 
     }
-
 
 }
