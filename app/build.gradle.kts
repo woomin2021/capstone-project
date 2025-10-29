@@ -1,5 +1,5 @@
 plugins {
-    id("com.android.application")
+    alias(libs.plugins.android.application)
 }
 
 android {
@@ -45,6 +45,23 @@ dependencies {
 
     // Material Calendar View 라이브러리
     implementation ("com.applandeo:material-calendar-view:1.9.2")
+
+    // 캘린더 커스텀
+    implementation("com.jakewharton.threetenabp:threetenabp:1.1.1")
+    implementation("com.kizitonwose.calendar:view:2.5.4")
+
+
+    //구글 맵
+    implementation("com.google.android.gms:play-services-location:21.3.0")
+    implementation("com.google.android.gms:play-services-maps:19.2.0")
+
+    //gilde 디펜던시
+    implementation ("com.github.bumptech.glide:glide:4.11.0")
+    annotationProcessor ("com.github.bumptech.glide:compiler:4.11.0")
+
+    //새로고침
+    implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
+
 
     implementation(libs.appcompat)
     implementation(libs.material)

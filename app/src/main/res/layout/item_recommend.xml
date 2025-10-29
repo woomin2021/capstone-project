@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="280dp"
+    android:layout_height="wrap_content"
+    android:layout_marginEnd="12dp">
+
+    <ImageView
+        android:id="@+id/imageHotel"
+        android:layout_width="280dp"
+        android:layout_height="240dp"
+        android:scaleType="centerCrop"
+        android:background="@drawable/rounded_image_bg"
+        android:src="@drawable/sample1"
+        android:clipToOutline="true"
+        android:outlineProvider="background"
+        />
+
+    <TextView
+        android:id="@+id/textTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="마운틴뷰"
+        android:textStyle="bold"
+        android:textSize="14sp"
+        android:layout_marginTop="6dp"/>
+
+    <TextView
+        android:id="@+id/textDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="2025-06-05 ~ 2025-07-31"
+        android:textSize="12sp"
+        android:textColor="#777"/>
+
+    <TextView
+        android:id="@+id/textPrice"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="30,000원 · 1박"
+        android:textStyle="bold"
+        android:textSize="13sp"
+        android:layout_marginTop="2dp"/>
+</LinearLayout>

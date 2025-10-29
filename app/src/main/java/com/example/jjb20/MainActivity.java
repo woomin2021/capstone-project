@@ -1,6 +1,8 @@
 package com.example.jjb20;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.widget.Button;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -8,7 +10,11 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.google.android.material.card.MaterialCardView;
+
 public class MainActivity extends AppCompatActivity {
+    private MaterialCardView btnRent;
+    private MaterialCardView btnRegister;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,5 +26,21 @@ public class MainActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+        btnRent = findViewById(R.id.btnRent); //집 빌리기
+        btnRegister = findViewById(R.id.btnRegister); // 집 등록하기
+
+        btnRent.setOnClickListener(v -> {
+            Intent intent = new Intent(getApplicationContext(), HouseReserveActivity.class);
+            startActivity(intent);
+        });
+
+        btnRegister.setOnClickListener(v -> {
+            Intent intent = new Intent(getApplicationContext(), HouseReserveActivity.class);
+            startActivity(intent);
+        });
+
+
     }
+
 }
