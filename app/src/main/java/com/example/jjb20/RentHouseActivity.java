@@ -1,13 +1,16 @@
 package com.example.jjb20;
 
 import android.os.Bundle;
+import android.widget.Button;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.jjb20.chat.ChatRoomFragment;
 import com.example.jjb20.entity.HotelItem;
 
 import java.util.ArrayList;
@@ -17,6 +20,7 @@ public class RentHouseActivity extends AppCompatActivity {
 
     private RecyclerView recyclerRecommended;
     private RecyclerView recyclerHot;
+    private Button chattingButton;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -25,6 +29,22 @@ public class RentHouseActivity extends AppCompatActivity {
 
         recyclerRecommended = findViewById(R.id.recyclerRecommended);
         recyclerHot = findViewById(R.id.recyclerHot);
+
+        //채팅 구현
+        chattingButton = findViewById(R.id.chattingButton);
+
+        chattingButton.setOnClickListener(v -> {
+            ChatRoomFragment fragment = new ChatRoomFragment();
+
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            //R.id.main을 fragment로 교체하겠다.
+            transaction.replace(R.id.main, fragment);
+            //뒤로가기 버튼을 눌렀을 때 이전 fragment로 돌아가기
+            transaction.addToBackStack(null);
+            //실행
+            transaction.commit();
+        });
+
 
         // 추천: 가로 스크롤
         LinearLayoutManager horizontalManager =

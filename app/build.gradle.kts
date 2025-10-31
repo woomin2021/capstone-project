@@ -1,5 +1,6 @@
 plugins {
     alias(libs.plugins.android.application)
+    id("com.google.gms.google-services") version "4.4.4"
 }
 
 android {
@@ -29,6 +30,9 @@ android {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
+    buildFeatures {
+        viewBinding = true
+    }
 }
 
 dependencies {
@@ -57,10 +61,17 @@ dependencies {
 
     //gilde 디펜던시
     implementation ("com.github.bumptech.glide:glide:4.11.0")
+    implementation(libs.legacy.support.v4)
+    implementation(libs.recyclerview)
     annotationProcessor ("com.github.bumptech.glide:compiler:4.11.0")
 
     //새로고침
     implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
+
+    //firebase
+    implementation(platform("com.google.firebase:firebase-bom:34.4.0"))
+    implementation("com.google.firebase:firebase-analytics")
+    implementation("com.google.firebase:firebase-database")
 
 
     implementation(libs.appcompat)

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/frameLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/basic2"
+    tools:context=".Fragment.ChatRoomFragment">
+
+    <EditText
+        android:id="@+id/chatroom_et"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginBottom="32dp"
+        android:padding="8dp"
+        android:background="@drawable/bg_content_et"
+        android:hint="채팅방 이름"
+        android:inputType="textPersonName"
+        android:textAlignment="center"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.6"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/enter_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="입장하기"
+        app:layout_constraintEnd_toEndOf="@+id/chatroom_et"
+        app:layout_constraintStart_toStartOf="@+id/chatroom_et"
+        app:layout_constraintTop_toBottomOf="@+id/chatroom_et" />
+</androidx.constraintlayout.widget.ConstraintLayout>
+<!--    EditText - id : chatroom_et, hint : 채팅방 이름-->
+
+<!--    Button - id : enter_btn, text : 입장하기-->
