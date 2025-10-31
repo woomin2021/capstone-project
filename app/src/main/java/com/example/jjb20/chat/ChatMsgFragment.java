@@ -53,13 +53,13 @@ public class ChatMsgFragment extends Fragment implements View.OnClickListener {
     FirebaseDatabase databases = FirebaseDatabase.getInstance();
     DatabaseReference myRef;
 
+    //현재 유저 아이디
     private String currentUserId = "UserA";
 
 
     public ChatMsgFragment() {
     }
 
-    // TODO: Customize parameter initialization
     @SuppressWarnings("unused")
     public static ChatMsgFragment newInstance(int columnCount) {
         ChatMsgFragment fragment = new ChatMsgFragment();
@@ -69,8 +69,6 @@ public class ChatMsgFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-
     }
 
     @Override
@@ -146,15 +144,12 @@ public class ChatMsgFragment extends Fragment implements View.OnClickListener {
 
                 ChatMsgVO msgVO = new ChatMsgVO("userA", currentTime, content_et.getText().toString().trim());
                 
-                myRef
-                        .push().setValue(msgVO);
+                myRef.push().setValue(msgVO);
                 
                 content_et.setText("");
-
             }
             else
                 Toast.makeText(getActivity(), "메시지를 입력하세요", Toast.LENGTH_SHORT).show();
-
         }
     }
 }

@@ -37,6 +37,7 @@ public class RentHouseActivity extends AppCompatActivity {
             ChatRoomFragment fragment = new ChatRoomFragment();
 
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            transaction.setCustomAnimations(R.anim.slide_up, 0);
             //R.id.main을 fragment로 교체하겠다.
             transaction.replace(R.id.main, fragment);
             //뒤로가기 버튼을 눌렀을 때 이전 fragment로 돌아가기
