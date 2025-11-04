@@ -1,5 +1,6 @@
 package com.example.jjb20;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
@@ -31,12 +32,12 @@ public class MainActivity extends AppCompatActivity {
         btnRegister = findViewById(R.id.btnRegister); // 집 등록하기
 
         btnRent.setOnClickListener(v -> {
-            Intent intent = new Intent(getApplicationContext(), HouseReserveActivity.class);
+            Intent intent = new Intent(getApplicationContext(), RentHouseActivity.class);
             startActivity(intent);
         });
 
         btnRegister.setOnClickListener(v -> {
-            Intent intent = new Intent(getApplicationContext(), HouseReserveActivity.class);
+            Intent intent = new Intent(getApplicationContext(), RentHouseDetailActivity.class);
             startActivity(intent);
         });
 

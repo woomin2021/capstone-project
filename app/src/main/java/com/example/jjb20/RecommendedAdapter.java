@@ -1,5 +1,7 @@
 package com.example.jjb20;
 
+import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,9 +30,9 @@ public class RecommendedAdapter extends RecyclerView.Adapter<RecommendedAdapter.
         ViewHolder(@NonNull View itemView) {
             super(itemView);
             imageHotel = itemView.findViewById(R.id.imageHotel);
-            textTitle = itemView.findViewById(R.id.textTitle);
-            textDate = itemView.findViewById(R.id.textDate);
-            textPrice = itemView.findViewById(R.id.textPrice);
+            textTitle  = itemView.findViewById(R.id.textTitle);
+            textDate   = itemView.findViewById(R.id.textDate);
+            textPrice  = itemView.findViewById(R.id.textPrice);
         }
     }
 
@@ -45,10 +47,19 @@ public class RecommendedAdapter extends RecyclerView.Adapter<RecommendedAdapter.
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         HotelItem item = items.get(position);
+
         holder.textTitle.setText(item.getTitle());
         holder.textDate.setText(item.getDate());
         holder.textPrice.setText(item.getPrice());
         holder.imageHotel.setImageResource(item.getImageRes());
+
+        // 상세 페이지로 이동
+        holder.itemView.setOnClickListener(v -> {
+            Context ctx = holder.itemView.getContext();
+            Intent intent = new Intent(ctx, RentHouseDetailActivity.class);
+            intent.putExtra(RentHouseDetailActivity.EXTRA_HOUSE, item);
+            ctx.startActivity(intent);
+        });
     }
 
     @Override
