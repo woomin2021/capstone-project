@@ -21,4 +21,10 @@
     <!-- 메인컬러 블루 -->
     <color name="mainColor_blue1">#006BCC</color>
     <color name="mainColor_blue2">#00ABCC</color>
+
+    <color name="teal_00cba8">#00CBA8</color>
+    <color name="signup_stroke">#E5E8E8</color>
+    <color name="signup_bg_f3f7f7">#F3F7F7</color>
+    <color name="signup_text_333">#333333</color>
+
 </resources>

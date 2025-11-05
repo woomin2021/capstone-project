@@ -25,7 +25,8 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".HouseReserveActivity"/>
+        <activity android:name=".RentHouseActivity"/>
+        <activity android:name=".RentHouseDetailActivity"/>
     </application>
 
 </manifest>

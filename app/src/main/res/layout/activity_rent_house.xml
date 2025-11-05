@@ -4,11 +4,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#FFFFFF"
-    android:fillViewport="true">
+    android:fillViewport="true"
+    android:padding="16dp"
+    >
 
     <LinearLayout
         android:orientation="vertical"
-        android:padding="16dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -42,8 +43,9 @@
                 android:text="집 등록하기"
                 android:textColor="#000"
                 android:textSize="12sp"
-                android:backgroundTint="#F5F5F5"
+                android:backgroundTint="@color/basic1"
                 android:fontFamily="@font/pretendardvariable"
+
                 />
         </LinearLayout>
 

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+
+    <!-- 배경색 (연회색, 필요 시 변경 가능) -->
+    <solid android:color="#F4F7F6" />
+
+
+
+    <!-- 둥근 모서리 -->
+    <corners android:radius="12dp" />
+
+</shape>
