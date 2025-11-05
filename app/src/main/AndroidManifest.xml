@@ -27,6 +27,13 @@
 
         <activity android:name=".RentHouseActivity"/>
         <activity android:name=".RentHouseDetailActivity"/>
+        <activity android:name=".RegisterBasicsActivity"/>
+        <activity android:name=".RegisterAmenitiesActivity"/>
+        <activity android:name=".RegisterTitleActivity"/>
+        <activity android:name=".RegisterDetailsActivity"/>
+        <activity android:name=".RegisterFinalActivity"/>
+
+
     </application>
 
 </manifest>

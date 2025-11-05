@@ -1,5 +1,6 @@
 package com.example.jjb20;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
@@ -15,6 +16,8 @@ import com.google.android.material.card.MaterialCardView;
 public class MainActivity extends AppCompatActivity {
     private MaterialCardView btnRent;
     private MaterialCardView btnRegister;
+
+    Button btntest1, btntest2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,9 +39,10 @@ public class MainActivity extends AppCompatActivity {
         });
 
         btnRegister.setOnClickListener(v -> {
-            Intent intent = new Intent(getApplicationContext(), HouseReserveActivity.class);
+            Intent intent = new Intent(getApplicationContext(), RegisterBasicsActivity.class);
             startActivity(intent);
         });
+
 
 
     }

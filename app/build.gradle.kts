@@ -1,5 +1,6 @@
 plugins {
     alias(libs.plugins.android.application)
+    id("org.jetbrains.kotlin.android")
 }
 
 android {
@@ -8,7 +9,7 @@ android {
 
     defaultConfig {
         applicationId = "com.example.jjb20"
-        minSdk = 24
+        minSdk = 26
         targetSdk = 36
         versionCode = 1
         versionName = "1.0"
@@ -43,8 +44,6 @@ dependencies {
     implementation("com.squareup.okhttp3:okhttp:4.10.0")
     implementation("com.squareup.okhttp3:logging-interceptor:4.10.0")
 
-    // Material Calendar View 라이브러리
-    implementation ("com.applandeo:material-calendar-view:1.9.2")
 
     // 캘린더 커스텀
     implementation("com.jakewharton.threetenabp:threetenabp:1.1.1")
@@ -61,6 +60,9 @@ dependencies {
 
     //새로고침
     implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
+
+    //Kotlin 표준 라이브러리
+    implementation("org.jetbrains.kotlin:kotlin-stdlib:1.9.22")
 
 
     implementation(libs.appcompat)

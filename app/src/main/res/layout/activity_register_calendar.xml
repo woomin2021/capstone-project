@@ -22,7 +22,8 @@
             app:navigationIcon="@drawable/arrow_left"
             app:title="집 등록하기"
             app:titleTextColor="#212121"
-            app:titleCentered="true" /> </com.google.android.material.appbar.AppBarLayout>
+            app:titleCentered="true" />
+    </com.google.android.material.appbar.AppBarLayout>
 
     <ProgressBar
         android:id="@+id/progressBar"
@@ -45,7 +46,7 @@
         android:textColor="#FFFFFF"
         android:textSize="16sp"
         android:textStyle="bold"
-        app:backgroundTint="#1DE9B6"
+        app:backgroundTint="#BDBDBD"
         app:cornerRadius="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -102,20 +103,66 @@
                 android:textSize="20sp"
                 android:textStyle="bold" />
 
-            <com.applandeo.materialcalendarview.CalendarView
+            <!-- 월 네비게이션 -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:layout_marginBottom="40dp">
+
+                <ImageView
+                    android:id="@+id/btnPrev"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/chevron_left"/>
+
+                <TextView
+                    android:id="@+id/tvMonth"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:paddingHorizontal="24dp"
+                    android:fontFamily="@font/pretendardvariable"
+                    tools:text="2025.10"/>
+
+                <ImageView
+                    android:id="@+id/btnNext"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/chevron_right2"/>
+
+            </LinearLayout>
+
+            <!-- 요일 헤더 -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="8dp"
+                android:weightSum="7">
+                <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:gravity="center" android:text="일"
+                    android:fontFamily="@font/pretendardvariable" android:textStyle="bold"/>
+                <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:gravity="center" android:text="월"
+                    android:fontFamily="@font/pretendardvariable" android:textStyle="bold"/>
+                <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:gravity="center" android:text="화"
+                    android:fontFamily="@font/pretendardvariable" android:textStyle="bold"/>
+                <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:gravity="center" android:text="수"
+                    android:fontFamily="@font/pretendardvariable" android:textStyle="bold"/>
+                <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:gravity="center" android:text="목"
+                    android:fontFamily="@font/pretendardvariable" android:textStyle="bold"/>
+                <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:gravity="center" android:text="금"
+                    android:fontFamily="@font/pretendardvariable" android:textStyle="bold"/>
+                <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:gravity="center" android:text="토"
+                    android:fontFamily="@font/pretendardvariable" android:textStyle="bold"/>
+            </LinearLayout>
+
+            <!-- 캘린더 -->
+            <com.kizitonwose.calendar.view.CalendarView
                 android:id="@+id/calendarView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:calendarMode="range"
-                app:selectionColor="#1DE9B6"
-                app:selectionLabelColor="@android:color/white"
-                app:todayLabelColor="#1ABC9C"
-                app:headerColor="@android:color/white"
-                app:headerLabelColor="#212121"
-                app:previousButtonSrc="@drawable/ic_chevron_left"
-                app:forwardButtonSrc="@drawable/ic_chevron_right"
-                app:daysLabelsColor="#757575"
-                app:anotherMonthsDaysLabelsColor="#BDBDBD" />
+                android:layout_marginTop="8dp"/>
+
 
         </LinearLayout>
     </ScrollView>

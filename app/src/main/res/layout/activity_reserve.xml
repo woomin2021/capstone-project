@@ -12,7 +12,7 @@
         style="@style/Widget.MaterialComponents.Toolbar"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:navigationIcon="@drawable/ic_back"
+        app:navigationIcon="@drawable/arrow_left"
         app:title="집 빌리기"
         app:titleCentered="true"
         app:layout_constraintTop_toTopOf="parent"
