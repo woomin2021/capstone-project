@@ -15,6 +15,14 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.JJB20">
+
+        <activity android:name=".RentHouseActivity" />
+        <activity android:name=".RentHouseDetailActivity" />
+
+        <activity android:name=".ReserveConfirmActivity"/>
+        <activity android:name=".PaymentActivity"/>
+
+        <activity android:name=".PaymentCompleteActivity"/>
         <activity
             android:name=".MainActivity"
             android:exported="true">
@@ -25,8 +33,6 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".RentHouseActivity"/>
-        <activity android:name=".RentHouseDetailActivity"/>
         <activity android:name=".RegisterBasicsActivity"/>
         <activity android:name=".RegisterAmenitiesActivity"/>
         <activity android:name=".RegisterTitleActivity"/>
@@ -34,6 +40,9 @@
         <activity android:name=".RegisterFinalActivity"/>
 
 
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyB0gphitktaQL9MhzcbxPUOtAgo8EG-qao" />
     </application>
 
 </manifest>
