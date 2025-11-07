@@ -50,6 +50,10 @@ dependencies {
     implementation("com.jakewharton.threetenabp:threetenabp:1.1.1")
     implementation("com.kizitonwose.calendar:view:2.5.4")
 
+    // Firebase
+    implementation(platform("com.google.firebase:firebase-bom:33.4.0"))
+    implementation("com.google.firebase:firebase-auth")
+
 
     //구글 맵
     implementation("com.google.android.gms:play-services-location:21.3.0")

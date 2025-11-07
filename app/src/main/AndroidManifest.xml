@@ -27,6 +27,7 @@
 
         <activity android:name=".RentHouseActivity"/>
         <activity android:name=".RentHouseDetailActivity"/>
+        <activity android:name=".LoginActivity" />
     </application>
 
 </manifest>
