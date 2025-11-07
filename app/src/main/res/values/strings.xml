@@ -1,4 +1,5 @@
 <resources>
+    <!-- 공통 -->
     <string name="app_name">JJB2.0</string>
     <string name="back">뒤로가기</string>
     <string name="next">다음</string>
@@ -20,6 +21,8 @@
     <string name="signup_btn">회원가입</string>
 
 
+
+    <!-- Material Calendar 용 String array-->
     <string-array name="custom_weekdays">
         <item>일</item>
         <item>월</item>
@@ -44,5 +47,7 @@
         <item>11월</item>
         <item>12월</item>
     </string-array>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>
