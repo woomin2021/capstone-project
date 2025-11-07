@@ -31,21 +31,16 @@ public class MainActivity extends AppCompatActivity {
         btnRegister = findViewById(R.id.btnRegister); // 집 등록하기
 
         Button btn1 = findViewById(R.id.test1);
-        btn1.setOnClickListener(v -> {
+
+        btnRent.setOnClickListener(v -> {
             Intent intent = new Intent(getApplicationContext(), RentHouseActivity.class);
             startActivity(intent);
-
         });
-//
-//        btnRent.setOnClickListener(v -> {
-//            Intent intent = new Intent(getApplicationContext(), HouseReserveActivity.class);
-//            startActivity(intent);
-//        });
-//
-//        btnRegister.setOnClickListener(v -> {
-//            Intent intent = new Intent(getApplicationContext(), HouseReserveActivity.class);
-//            startActivity(intent);
-//        });
+
+        btnRegister.setOnClickListener(v -> {
+            Intent intent = new Intent(getApplicationContext(), RentHouseDetailActivity.class);
+            startActivity(intent);
+        });
 
 
     }
