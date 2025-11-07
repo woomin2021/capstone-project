@@ -102,20 +102,20 @@
                 android:textSize="20sp"
                 android:textStyle="bold" />
 
-            <com.applandeo.materialcalendarview.CalendarView
-                android:id="@+id/calendarView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:calendarMode="range"
-                app:selectionColor="#1DE9B6"
-                app:selectionLabelColor="@android:color/white"
-                app:todayLabelColor="#1ABC9C"
-                app:headerColor="@android:color/white"
-                app:headerLabelColor="#212121"
-                app:previousButtonSrc="@drawable/ic_chevron_left"
-                app:forwardButtonSrc="@drawable/ic_chevron_right"
-                app:daysLabelsColor="#757575"
-                app:anotherMonthsDaysLabelsColor="#BDBDBD" />
+<!--            <com.applandeo.materialcalendarview.CalendarView-->
+<!--                android:id="@+id/calendarView"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                app:calendarMode="range"-->
+<!--                app:selectionColor="#1DE9B6"-->
+<!--                app:selectionLabelColor="@android:color/white"-->
+<!--                app:todayLabelColor="#1ABC9C"-->
+<!--                app:headerColor="@android:color/white"-->
+<!--                app:headerLabelColor="#212121"-->
+<!--                app:previousButtonSrc="@drawable/ic_chevron_left"-->
+<!--                app:forwardButtonSrc="@drawable/ic_chevron_right"-->
+<!--                app:daysLabelsColor="#757575"-->
+<!--                app:anotherMonthsDaysLabelsColor="#BDBDBD" />-->
 
         </LinearLayout>
     </ScrollView>
