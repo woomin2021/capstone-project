@@ -1,5 +1,4 @@
 <resources>
-    <!-- 공통 -->
     <string name="app_name">JJB2.0</string>
     <string name="back">뒤로가기</string>
     <string name="next">다음</string>
