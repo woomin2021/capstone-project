@@ -26,6 +26,7 @@ android {
             )
         }
     }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
@@ -47,8 +48,8 @@ dependencies {
     implementation("com.squareup.okhttp3:okhttp:4.10.0")
     implementation("com.squareup.okhttp3:logging-interceptor:4.10.0")
 
-    // Material Calendar View 라이브러리
-    implementation ("com.applandeo:material-calendar-view:1.9.2")
+    // Applandeo CalendarView
+    implementation("com.applandeo:material-calendar-view:1.9.2")
 
     // 캘린더 커스텀
     implementation("com.jakewharton.threetenabp:threetenabp:1.1.1")
@@ -73,12 +74,23 @@ dependencies {
     implementation("com.google.firebase:firebase-analytics")
     implementation("com.google.firebase:firebase-database")
 
-
+    // AndroidX
     implementation(libs.appcompat)
     implementation(libs.material)
     implementation("androidx.activity:activity:1.9.3")
     implementation(libs.constraintlayout)
+
+    // Google Maps & Location
+    implementation("com.google.android.gms:play-services-maps:18.1.0")
+    implementation("com.google.android.gms:play-services-location:21.3.0")
+
+    // Test
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
+
+    // Material (중복이지만 문제는 없음 – 유지)
+    implementation("com.google.android.material:material:1.12.0")
+
+
 }

@@ -22,7 +22,8 @@
             app:navigationIcon="@drawable/arrow_left"
             app:title="집 등록하기"
             app:titleTextColor="#212121"
-            app:titleCentered="true" /> </com.google.android.material.appbar.AppBarLayout>
+            app:titleCentered="true" />
+    </com.google.android.material.appbar.AppBarLayout>
 
     <ProgressBar
         android:id="@+id/progressBar"
@@ -62,6 +63,7 @@
         app:layout_constraintBottom_toTopOf="@id/next_button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
+
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/selected_date_text"
             android:layout_width="match_parent"

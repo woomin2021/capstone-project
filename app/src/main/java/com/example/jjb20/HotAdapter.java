@@ -1,5 +1,7 @@
 package com.example.jjb20;
 
+import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,23 +38,32 @@ public class HotAdapter extends RecyclerView.Adapter<HotAdapter.ViewHolder> {
 
     @NonNull
     @Override
-    public HotAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_hot, parent, false);
         return new ViewHolder(v);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull HotAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         HotelItem item = items.get(position);
+
         holder.textTitle.setText(item.getTitle());
         holder.textLocation.setText(item.getLocation());
         holder.textPrice.setText(item.getPrice());
         holder.imageHot.setImageResource(item.getImageRes());
+
+        // 카드 클릭 → 상세 화면으로 이동 (HotelItem은 Serializable 이어야 함)
+        holder.itemView.setOnClickListener(v -> {
+            Context ctx = holder.itemView.getContext();
+            Intent intent = new Intent(ctx, RentHouseDetailActivity.class);
+            intent.putExtra("house", item);
+            ctx.startActivity(intent);
+        });
     }
 
     @Override
     public int getItemCount() {
-        return items.size();
+        return items == null ? 0 : items.size();
     }
 }
