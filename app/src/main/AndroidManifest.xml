@@ -2,6 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+<!--    인터넷 사용권한-->
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
@@ -30,8 +31,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity android:name=".RentHouseActivity"/>
+        <activity android:name=".RentHouseDetailActivity"/>
+        <activity android:name=".LoginActivity" />
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyB0gphitktaQL9MhzcbxPUOtAgo8EG-qao" />
     </application>
+
 </manifest>
