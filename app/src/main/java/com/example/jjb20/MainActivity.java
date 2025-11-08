@@ -45,6 +45,7 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
+        //혜진님꺼 안합쳐서 여기 안바뀜 아직
         btnRegister.setOnClickListener(v -> {
             Intent intent = new Intent(getApplicationContext(), RentHouseDetailActivity.class);
             startActivity(intent);
