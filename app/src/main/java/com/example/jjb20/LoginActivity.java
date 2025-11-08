@@ -1,8 +1,10 @@
 package com.example.jjb20;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -110,12 +112,23 @@ public class LoginActivity extends AppCompatActivity {
                 btnLogin.setEnabled(true);
                 if (response.isSuccessful() && response.body() != null) {
                     UserResponseDto me = response.body();
-                    // TODO: 필요하면 SharedPreferences 등에 사용자 정보/토큰 저장
                     Toast.makeText(LoginActivity.this, "환영합니다, " + (me.name != null ? me.name : me.email), Toast.LENGTH_SHORT).show();
 
-                    // 이후 메인 화면으로 이동 등
-                    // startActivity(new Intent(LoginActivity.this, MainActivity.class));
-                    // finish();
+                    //정보 저장용
+                    //TODO 토큰 갱신
+                    PrefManager.put("idToken", idToken);
+                    PrefManager.put("uid", me.firebaseUid);
+                    PrefManager.put("email", me.email);
+//                    if (me.name != null) PrefManager.put("name", me.name);
+
+                    Log.d("PrefCheck", "idToken: " + PrefManager.get("idToken", "없음"));
+                    Log.d("PrefCheck", "uid: " + PrefManager.get("uid", "없음"));
+                    Log.d("PrefCheck", "email: " + PrefManager.get("email", "없음"));
+//                    Log.d("PrefCheck", "name: " + PrefManager.get("name", "없음"));
+
+                    // TODO : 이후 메인 화면으로 이동 등, sharedPreference등에 사용자 정보/ 토큰 저장
+                     startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                     finish();
                 } else {
                     Toast.makeText(LoginActivity.this, "서버 로그인 실패(" + response.code() + ")", Toast.LENGTH_SHORT).show();
                 }

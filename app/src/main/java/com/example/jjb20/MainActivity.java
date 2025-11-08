@@ -19,6 +19,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //전역 SharedPreference 초기화
+        PrefManager.init(this);
+        
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
@@ -30,7 +33,12 @@ public class MainActivity extends AppCompatActivity {
         btnRent = findViewById(R.id.btnRent); //집 빌리기
         btnRegister = findViewById(R.id.btnRegister); // 집 등록하기
 
-        Button btn1 = findViewById(R.id.test1);
+        //로그인 버튼 테스트용
+        Button btnLoginTest = findViewById(R.id.testLoginbtn);
+        btnLoginTest.setOnClickListener(v -> {
+            Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+            startActivity(intent);
+        });
 
         btnRent.setOnClickListener(v -> {
             Intent intent = new Intent(getApplicationContext(), RentHouseActivity.class);
