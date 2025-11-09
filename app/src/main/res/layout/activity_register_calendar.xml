@@ -90,78 +90,65 @@
             android:paddingStart="24dp"
             android:paddingEnd="24dp">
 
-            <TextView
-                android:id="@+id/subtitle_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                android:lineSpacingExtra="4dp"
-                android:layout_gravity="center"
-                android:text="집을 빌려줄 수 있는\n기간을 알려주세요"
-                android:textAlignment="center"
-                android:textColor="#1ABC9C"
-                android:textSize="20sp"
-                android:textStyle="bold" />
 
-            <!-- 월 네비게이션 -->
-            <LinearLayout
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center"
-                android:layout_marginBottom="40dp">
+                android:layout_marginBottom="16dp">
 
-                <ImageView
+                <ImageButton
                     android:id="@+id/btnPrev"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/chevron_left"/>
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_alignParentStart="true"
+                    android:layout_centerVertical="true"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:src="@drawable/ic_chevron_left"
+                    app:tint="#212121" />
 
                 <TextView
                     android:id="@+id/tvMonth"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="16sp"
+                    android:layout_centerInParent="true"
+                    android:textColor="#212121"
+                    android:textSize="18sp"
                     android:textStyle="bold"
-                    android:paddingHorizontal="24dp"
-                    android:fontFamily="@font/pretendardvariable"
-                    tools:text="2025.10"/>
+                    tools:text="2025. 10" />
 
-                <ImageView
+                <ImageButton
                     android:id="@+id/btnNext"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/chevron_right2"/>
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:src="@drawable/ic_chevron_right"
+                    app:tint="#212121" />
+            </RelativeLayout>
 
-            </LinearLayout>
-
-            <!-- 요일 헤더 -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginVertical="8dp"
-                android:weightSum="7">
-                <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:gravity="center" android:text="일"
-                    android:fontFamily="@font/pretendardvariable" android:textStyle="bold"/>
-                <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:gravity="center" android:text="월"
-                    android:fontFamily="@font/pretendardvariable" android:textStyle="bold"/>
-                <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:gravity="center" android:text="화"
-                    android:fontFamily="@font/pretendardvariable" android:textStyle="bold"/>
-                <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:gravity="center" android:text="수"
-                    android:fontFamily="@font/pretendardvariable" android:textStyle="bold"/>
-                <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:gravity="center" android:text="목"
-                    android:fontFamily="@font/pretendardvariable" android:textStyle="bold"/>
-                <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:gravity="center" android:text="금"
-                    android:fontFamily="@font/pretendardvariable" android:textStyle="bold"/>
-                <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:gravity="center" android:text="토"
-                    android:fontFamily="@font/pretendardvariable" android:textStyle="bold"/>
+                android:orientation="horizontal"
+                android:layout_marginBottom="8dp">
+
+                <TextView style="@style/DayOfWeekHeader" android:text="일" />
+                <TextView style="@style/DayOfWeekHeader" android:text="월" />
+                <TextView style="@style/DayOfWeekHeader" android:text="화" />
+                <TextView style="@style/DayOfWeekHeader" android:text="수" />
+                <TextView style="@style/DayOfWeekHeader" android:text="목" />
+                <TextView style="@style/DayOfWeekHeader" android:text="금" />
+                <TextView style="@style/DayOfWeekHeader" android:text="토" />
             </LinearLayout>
 
-            <!-- 캘린더 -->
             <com.kizitonwose.calendar.view.CalendarView
                 android:id="@+id/calendarView"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"/>
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:layout_marginTop="8dp"
+                app:cv_dayViewResource="@layout/calendar_day_layout"/>
 
 
         </LinearLayout>
