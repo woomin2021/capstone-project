@@ -18,6 +18,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.example.jjb20.PrefManager;
 import com.example.jjb20.R;
 import com.example.jjb20.chat.placeholder.PlaceholderContent;
 import com.google.firebase.database.ChildEventListener;
@@ -54,7 +55,7 @@ public class ChatMsgFragment extends Fragment implements View.OnClickListener {
     DatabaseReference myRef;
 
     //현재 유저 아이디
-    private String currentUserId = "UserA";
+    private String currentUserId;
 
 
     public ChatMsgFragment() {
@@ -84,28 +85,27 @@ public class ChatMsgFragment extends Fragment implements View.OnClickListener {
 
         //CahtRoom Fragment에서 받는 채팅방 이름
         chatroom = getArguments().getString("chatroom");
+        currentUserId = PrefManager.get("uid", "guest");
         mAdapter = new ChatAdapter(msgList, currentUserId);
+
 
         rv.setLayoutManager(new LinearLayoutManager(getActivity()));
         rv.setAdapter(mAdapter);
 
-        //Firebase Databse 초기
-        myRef = databases.getReference(chatroom);
+        //Firebase Databse 초기화
+        myRef = databases.getReference("chatrooms").child(chatroom).child("messages");
 
         //Firebase Database Listener 붙이기
         myRef.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                Log.d(TAG, "onChild added");
-                Log.d(TAG, "onclild" + snapshot.getValue(ChatMsgVO.class).toString());
 
                 ChatMsgVO chatMsgVO = snapshot.getValue(ChatMsgVO.class);
-                msgList.add(chatMsgVO);
-
-                //채팅 메시지 배열에 담고 RecyclerView 다시 그리기
-                mAdapter = new ChatAdapter(msgList, currentUserId);
-                rv.setAdapter(mAdapter);
-                rv.scrollToPosition(msgList.size()-1);
+                if (chatMsgVO != null) {
+                    msgList.add(chatMsgVO);
+                    mAdapter.notifyItemInserted(msgList.size() - 1);
+                    rv.scrollToPosition(msgList.size() - 1);
+                }
                 Log.d(TAG, msgList.size() + "");
             }
 
@@ -142,7 +142,7 @@ public class ChatMsgFragment extends Fragment implements View.OnClickListener {
                 SimpleDateFormat df = new SimpleDateFormat("yyyy--MM--dd HH:mm:ss");
                 String currentTime = df.format(new Date());
 
-                ChatMsgVO msgVO = new ChatMsgVO("userA", currentTime, content_et.getText().toString().trim());
+                ChatMsgVO msgVO = new ChatMsgVO(currentUserId, currentTime, content_et.getText().toString().trim());
                 
                 myRef.push().setValue(msgVO);
                 
