@@ -34,6 +34,9 @@
 
         <activity android:name=".RentHouseActivity"/>
         <activity android:name=".RentHouseDetailActivity"/>
+        <activity android:name=".SignupPhoneActivity" />
+        <activity android:name=".verifyCodeActivity" />
+        <activity android:name=".SignupInfoActivity" />
         <activity android:name=".LoginActivity" />
         <meta-data
             android:name="com.google.android.geo.API_KEY"
