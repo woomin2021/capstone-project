@@ -1,6 +1,6 @@
 plugins {
     alias(libs.plugins.android.application)
-    id("org.jetbrains.kotlin.android")
+    id("com.google.gms.google-services") version "4.4.4"
 }
 
 android {
@@ -32,28 +32,57 @@ android {
 
         isCoreLibraryDesugaringEnabled = true
     }
+    buildFeatures {
+        viewBinding = true
+    }
 }
 
 dependencies {
-    // Retrofit
+
+    // 레트로핏
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    // 스칼라 변환기
     implementation("com.squareup.retrofit2:converter-scalars:2.6.4")
+    // gson 변환기
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+    // OkHttp
     implementation("com.squareup.okhttp3:okhttp:4.10.0")
     implementation("com.squareup.okhttp3:logging-interceptor:4.10.0")
 
+    // Applandeo CalendarView
+    implementation("com.applandeo:material-calendar-view:1.9.2")
+
+    // 캘린더 커스텀
+    implementation("com.jakewharton.threetenabp:threetenabp:1.1.1")
+    implementation("com.kizitonwose.calendar:view:2.5.4")
+
+    // Firebase
+    implementation(platform("com.google.firebase:firebase-bom:33.4.0"))
+    implementation("com.google.firebase:firebase-auth")
+
+
+    //구글 맵
+    implementation("com.google.android.gms:play-services-location:21.3.0")
+    implementation("com.google.android.gms:play-services-maps:19.2.0")
+
+    //gilde 디펜던시
+    implementation ("com.github.bumptech.glide:glide:4.11.0")
+    implementation(libs.legacy.support.v4)
+    implementation(libs.recyclerview)
+    annotationProcessor ("com.github.bumptech.glide:compiler:4.11.0")
     // Glide
     implementation("com.github.bumptech.glide:glide:4.11.0")
     annotationProcessor("com.github.bumptech.glide:compiler:4.11.0")
 
-    // SwipeRefresh
+    //새로고침
     implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
 
+    //firebase
+    implementation(platform("com.google.firebase:firebase-bom:34.4.0"))
+    implementation("com.google.firebase:firebase-analytics")
+    implementation("com.google.firebase:firebase-database")
+
     // AndroidX
-    //Kotlin 표준 라이브러리
-    implementation("org.jetbrains.kotlin:kotlin-stdlib:1.9.22")
-
-
     implementation(libs.appcompat)
     implementation(libs.material)
     implementation("androidx.activity:activity:1.9.3")
@@ -70,6 +99,8 @@ dependencies {
 
     // Material (중복이지만 문제는 없음 – 유지)
     implementation("com.google.android.material:material:1.12.0")
+
+
 
     // Kizitonwose/Calendar-View
     implementation("com.kizitonwose.calendar:view:2.5.4")

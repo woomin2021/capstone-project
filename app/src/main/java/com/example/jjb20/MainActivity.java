@@ -1,6 +1,5 @@
 package com.example.jjb20;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
@@ -22,6 +21,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //전역 SharedPreference 초기화
+        PrefManager.init(this);
+        
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
@@ -33,11 +35,19 @@ public class MainActivity extends AppCompatActivity {
         btnRent = findViewById(R.id.btnRent); //집 빌리기
         btnRegister = findViewById(R.id.btnRegister); // 집 등록하기
 
+        //로그인 버튼 테스트용
+        Button btnLoginTest = findViewById(R.id.testLoginbtn);
+        btnLoginTest.setOnClickListener(v -> {
+            Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+            startActivity(intent);
+        });
+
         btnRent.setOnClickListener(v -> {
             Intent intent = new Intent(getApplicationContext(), RentHouseActivity.class);
             startActivity(intent);
         });
 
+        //혜진님꺼 안합쳐서 여기 안바뀜 아직
         btnRegister.setOnClickListener(v -> {
             Intent intent = new Intent(getApplicationContext(), RegisterTitleActivity.class);
             startActivity(intent);

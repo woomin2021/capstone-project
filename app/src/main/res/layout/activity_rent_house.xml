@@ -1,12 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#FFFFFF"
     android:fillViewport="true"
     android:padding="16dp"
+    android:id="@+id/main"
     >
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
     <LinearLayout
         android:orientation="vertical"
@@ -115,4 +120,14 @@
             android:nestedScrollingEnabled="false"
             android:layout_marginTop="8dp"/>
     </LinearLayout>
-</androidx.core.widget.NestedScrollView>
+    </ScrollView>
+
+    <Button
+        android:id="@+id/chattingButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:text="채팅"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
