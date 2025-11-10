@@ -1,7 +1,6 @@
 package com.example.jjb20;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -56,11 +55,11 @@ public class LoginActivity extends AppCompatActivity {
 
         btnLogin.setOnClickListener(v -> doLogin());
 
-        /*
+
         btnSignup.setOnClickListener(v -> {
             // 회원가입 화면이 있다면 이동, 없다면 Firebase createUserWithEmailAndPassword 로직을 붙여도 됩니다.
-            startActivity(new Intent(this, SignupActivity.class)); // 없으면 주석처리
-        }); */
+            startActivity(new Intent(this, SignupFormActivity.class)); // 없으면 주석처리
+        });
     }
 
     private void doLogin() {

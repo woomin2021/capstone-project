@@ -23,8 +23,9 @@
         <activity android:name=".PaymentActivity"/>
 
         <activity android:name=".PaymentCompleteActivity"/>
+
         <activity
-            android:name=".MainActivity"
+            android:name=".LoginActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -32,12 +33,11 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".RentHouseActivity"/>
-        <activity android:name=".RentHouseDetailActivity"/>
+
         <activity android:name=".SignupPhoneActivity" />
-        <activity android:name=".verifyCodeActivity" />
-        <activity android:name=".SignupInfoActivity" />
-        <activity android:name=".LoginActivity" />
+        <activity android:name=".VerifyCodeActivity" />
+        <activity android:name=".SignupFormActivity" />
+        <activity android:name=".MainActivity" />
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyB0gphitktaQL9MhzcbxPUOtAgo8EG-qao" />

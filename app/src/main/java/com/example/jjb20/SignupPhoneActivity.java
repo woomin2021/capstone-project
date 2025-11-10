@@ -74,7 +74,7 @@ public class SignupPhoneActivity extends AppCompatActivity {
                 String rawPhone = etPhone.getText().toString().trim();
 
                 // 2단계 화면으로 이동 (phone + verificationId 전달)
-                Intent i = new Intent(SignupPhoneActivity.this, verifyCodeActivity.class);
+                Intent i = new Intent(SignupPhoneActivity.this, VerifyCodeActivity.class);
                 i.putExtra("phone", rawPhone);
                 i.putExtra("verificationId", verificationId);
                 startActivity(i);

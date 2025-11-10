@@ -26,7 +26,7 @@ import retrofit2.Retrofit;
  *  - Firebase 이메일/비번 계정 생성
  *  - ID 토큰을 받아서 서버 /api/auth/register 로 전송 → DB에 Users 레코드 생성
  */
-public class SignupInfoActivity extends AppCompatActivity {
+public class SignupFormActivity extends AppCompatActivity {
 
     private ImageButton btnBack;
     private TextInputEditText etFirstName, etLastName, etBirth, etEmail, etPassword;
@@ -132,7 +132,7 @@ public class SignupInfoActivity extends AppCompatActivity {
                                         btnNext.setEnabled(true);
                                         if (response.isSuccessful() && response.body() != null) {
                                             UserResponseDto user = response.body();
-                                            Toast.makeText(SignupInfoActivity.this,
+                                            Toast.makeText(SignupFormActivity.this,
                                                     "가입 완료! " + user.name + "님 환영합니다.",
                                                     Toast.LENGTH_LONG).show();
 
@@ -140,10 +140,10 @@ public class SignupInfoActivity extends AppCompatActivity {
                                             // startActivity(new Intent(SignupInfoActivity.this, MainActivity.class));
                                             finish();
                                         } else if (response.code() == 409) {
-                                            Toast.makeText(SignupInfoActivity.this,
+                                            Toast.makeText(SignupFormActivity.this,
                                                     "이미 가입된 사용자입니다.", Toast.LENGTH_SHORT).show();
                                         } else {
-                                            Toast.makeText(SignupInfoActivity.this,
+                                            Toast.makeText(SignupFormActivity.this,
                                                     "서버 에러(" + response.code() + ")", Toast.LENGTH_SHORT).show();
                                         }
                                     }
@@ -152,7 +152,7 @@ public class SignupInfoActivity extends AppCompatActivity {
                                     public void onFailure(@NonNull Call<UserResponseDto> call,
                                                           @NonNull Throwable t) {
                                         btnNext.setEnabled(true);
-                                        Toast.makeText(SignupInfoActivity.this,
+                                        Toast.makeText(SignupFormActivity.this,
                                                 "서버 통신 실패: " + t.getMessage(),
                                                 Toast.LENGTH_SHORT).show();
                                     }
