@@ -18,11 +18,11 @@
 <!--        android:text="test1"-->
 <!--        />-->
 
-    <Button
-        android:id="@+id/testLoginbtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="로그인 테스트"/>
+<!--    <Button-->
+<!--        android:id="@+id/testLoginbtn"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:text="로그인 테스트"/>-->
 
     <!-- 상단바 -->
     <LinearLayout
