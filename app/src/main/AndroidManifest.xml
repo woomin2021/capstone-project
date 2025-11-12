@@ -25,7 +25,7 @@
         <activity android:name=".PaymentCompleteActivity"/>
 
         <activity
-            android:name=".MainActivity"
+            android:name=".LoginActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -44,7 +44,7 @@
         <activity android:name=".SignupPhoneActivity" />
         <activity android:name=".VerifyCodeActivity" />
         <activity android:name=".SignupFormActivity" />
-        <activity android:name=".LoginActivity" />
+        <activity android:name=".MainActivity" />
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyB0gphitktaQL9MhzcbxPUOtAgo8EG-qao" />
