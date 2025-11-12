@@ -34,6 +34,8 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+        PrefManager.init(this);
+
         etEmail    = findViewById(R.id.etUserID);
         etPassword = findViewById(R.id.etPassword);
         btnLogin   = findViewById(R.id.btnLogin);
@@ -125,9 +127,9 @@ public class LoginActivity extends AppCompatActivity {
                     Log.d("PrefCheck", "email: " + PrefManager.get("email", "없음"));
 //                    Log.d("PrefCheck", "name: " + PrefManager.get("name", "없음"));
 
-                    // TODO : 이후 메인 화면으로 이동 등, sharedPreference등에 사용자 정보/ 토큰 저장
+
                      startActivity(new Intent(LoginActivity.this, MainActivity.class));
-                     finish();
+//                     finish();
                 } else {
                     Toast.makeText(LoginActivity.this, "서버 로그인 실패(" + response.code() + ")", Toast.LENGTH_SHORT).show();
                 }
