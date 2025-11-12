@@ -26,6 +26,7 @@ android {
             )
         }
     }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
@@ -70,9 +71,6 @@ dependencies {
     implementation(libs.legacy.support.v4)
     implementation(libs.recyclerview)
     annotationProcessor ("com.github.bumptech.glide:compiler:4.11.0")
-    // Glide
-    implementation("com.github.bumptech.glide:glide:4.11.0")
-    annotationProcessor("com.github.bumptech.glide:compiler:4.11.0")
 
     //새로고침
     implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")

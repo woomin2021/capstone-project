@@ -24,7 +24,6 @@ public class RegisterAmenitiesActivity extends AppCompatActivity {
     // 체크박스 목록 관리 리스트
     private List<MaterialCheckBox> checkBoxes;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -80,6 +79,4 @@ public class RegisterAmenitiesActivity extends AppCompatActivity {
             }
         });
     }
-
-
 }

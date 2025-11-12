@@ -71,13 +71,12 @@ public class RegisterTitleActivity extends AppCompatActivity {
             if (nextButton.isEnabled()) {
                 String houseTitle = titleEditText.getText().toString().trim();
 
-                // 다음 등록 단계로 이동 (예: NextRegisterActivity)
-                Intent intent = new Intent(RegisterTitleActivity.this, RegisterBasicsActivity.class);
-                // intent.putExtra("HOUSE_TITLE", houseTitle);
-                startActivity(intent);
+                // SharedPreferences에 제목 저장
+                PrefManager.put("house_title", houseTitle);
 
-                // (임시) 테스트용으로 토스트 메시지 표시
-                // Toast.makeText(this, "입력된 제목: " + houseTitle, Toast.LENGTH_SHORT).show();
+                // 다음 등록 단계로 이동
+                Intent intent = new Intent(RegisterTitleActivity.this, RegisterBasicsActivity.class);
+                startActivity(intent);
             }
         });
 

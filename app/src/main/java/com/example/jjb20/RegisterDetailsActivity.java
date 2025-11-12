@@ -95,12 +95,26 @@ public class RegisterDetailsActivity extends AppCompatActivity {
         // '다음' 버튼 클릭 리스너
         nextButton.setOnClickListener(v -> {
             if (nextButton.isEnabled()) {
-                // TODO: 다음 액티비티로 데이터 전달 및 이동
+                // 입력 데이터 가져오기
+                String address = (addressEditText != null) ? addressEditText.getText().toString().trim() : "";
+                String addressDetail = (addressDetailEditText != null) ? addressDetailEditText.getText().toString().trim() : "";
+                String description = (descriptionEditText != null) ? descriptionEditText.getText().toString().trim() : "";
+                
+                // 주소와 상세 주소를 합쳐서 저장
+                String fullAddress = address;
+                if (!addressDetail.isEmpty()) {
+                    fullAddress += " " + addressDetail;
+                }
+                
+                // SharedPreferences에 저장
+                PrefManager.put("house_address", fullAddress);
+                PrefManager.put("house_description", description);
+                // city와 country는 일단 기본값으로 설정 (나중에 주소에서 파싱하거나 별도 입력 가능)
+                PrefManager.put("house_city", "서울");
+                PrefManager.put("house_country", "한국");
+                
+                // 다음 액티비티로 이동
                 Intent intent = new Intent(RegisterDetailsActivity.this, RegisterCalendarActivity.class);
-                // intent.putExtra("ADDRESS", addressEditText.getText().toString().trim());
-                // intent.putExtra("ADDRESS_DETAIL", addressDetailEditText.getText().toString().trim());
-                // intent.putExtra("DESCRIPTION", descriptionEditText.getText().toString().trim());
-                // intent.putExtra("SUMMARY", summaryEditText.getText().toString().trim());
                 startActivity(intent);
             }
         });
