@@ -120,15 +120,20 @@ public class LoginActivity extends AppCompatActivity {
                     PrefManager.put("idToken", idToken);
                     PrefManager.put("uid", me.firebaseUid);
                     PrefManager.put("email", me.email);
-//                    if (me.name != null) PrefManager.put("name", me.name);
+
+                    // 로그인 사용자 이름 저장 (RentHouseActivity 등에서 사용 하니까 건들지 마세요 진짜로 접어 버립니다 아니요 던질거에요 )
+                    if (me.name != null && !me.name.trim().isEmpty()) {
+                        PrefManager.put("userName", me.name);
+                    } else {
+                        PrefManager.put("userName", "회원");
+                    }
 
                     Log.d("PrefCheck", "idToken: " + PrefManager.get("idToken", "없음"));
                     Log.d("PrefCheck", "uid: " + PrefManager.get("uid", "없음"));
                     Log.d("PrefCheck", "email: " + PrefManager.get("email", "없음"));
-//                    Log.d("PrefCheck", "name: " + PrefManager.get("name", "없음"));
+                    Log.d("PrefCheck", "userName: " + PrefManager.get("userName", "없음"));
 
-
-                     startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                    startActivity(new Intent(LoginActivity.this, MainActivity.class));
 //                     finish();
                 } else {
                     Toast.makeText(LoginActivity.this, "서버 로그인 실패(" + response.code() + ")", Toast.LENGTH_SHORT).show();

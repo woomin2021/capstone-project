@@ -1,4 +1,4 @@
-// 파일: app/src/main/java/com/example/jjb20/PaymentCompleteActivity.java
+
 package com.example.jjb20;
 
 import android.os.Bundle;
