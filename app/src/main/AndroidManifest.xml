@@ -45,6 +45,10 @@
         <activity android:name=".VerifyCodeActivity" />
         <activity android:name=".SignupFormActivity" />
         <activity android:name=".MainActivity" />
+        <activity android:name=".ProfileActivity" />
+        <activity android:name=".ProfileHouseListActivity" />
+        <activity android:name=".ProfileReservationListActivity" />
+        <activity android:name=".HostReviewActivity" />
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyB0gphitktaQL9MhzcbxPUOtAgo8EG-qao" />
