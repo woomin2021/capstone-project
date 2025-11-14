@@ -13,9 +13,10 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.jjb20.adapter.HotAdapter;
+import com.example.jjb20.adapter.RecommendedAdapter;
 import com.example.jjb20.chat.ChatRoomFragment;
 import com.example.jjb20.dto.HouseDto;
-import com.example.jjb20.entity.HotelItem;
 
 import java.text.NumberFormat;
 import java.util.ArrayList;

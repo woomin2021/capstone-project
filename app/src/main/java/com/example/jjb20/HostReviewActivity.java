@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.jjb20.adapter.ReviewAdapter;
 import com.example.jjb20.dto.HouseReviewDTO;
 
 import java.util.ArrayList;

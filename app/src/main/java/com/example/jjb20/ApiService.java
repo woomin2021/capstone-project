@@ -18,6 +18,7 @@ import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
+import retrofit2.http.Query;
 
 public interface ApiService {
 
@@ -58,6 +59,11 @@ public interface ApiService {
     // 하우스 목록
     @GET("api/houses")
     Call<List<HouseDto>> getHouses(@Header("Authorization") String bearerToken);
+
+    //내집불러오기
+    @GET("/api/houses/my/{userId}")
+    Call<List<HouseDto>> getMyHouses(@Path("userId") int userId);
+
 
     @GET("api/houses/{id}/detail")
     Call<HouseDetailResponseDto> getHouseDetail(

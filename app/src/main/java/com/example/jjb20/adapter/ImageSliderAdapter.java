@@ -1,4 +1,4 @@
-package com.example.jjb20;
+package com.example.jjb20.adapter;
 
 import android.view.LayoutInflater;
 import android.view.View;

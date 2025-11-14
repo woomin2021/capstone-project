@@ -14,6 +14,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.viewpager2.widget.ViewPager2;
 
+import com.example.jjb20.adapter.ImageSliderAdapter;
 import com.example.jjb20.dto.HouseDto;
 import com.example.jjb20.dto.HouseDetailResponseDto;
 import com.google.android.material.appbar.MaterialToolbar;

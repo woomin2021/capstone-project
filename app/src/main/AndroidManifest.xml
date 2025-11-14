@@ -5,7 +5,7 @@
 <!--    인터넷 사용권한-->
     <uses-permission android:name="android.permission.INTERNET" />
 
-    <application
+    <applicationㅅ
         android:usesCleartextTraffic="true"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -52,6 +52,6 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyB0gphitktaQL9MhzcbxPUOtAgo8EG-qao" />
-    </application>
+    </applicationㅅ>
 
 </manifest>
