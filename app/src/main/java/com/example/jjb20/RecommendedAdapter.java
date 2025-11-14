@@ -11,34 +11,39 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.jjb20.entity.HotelItem;
+import com.bumptech.glide.Glide;
+import com.example.jjb20.dto.HouseDto;
 
 import java.util.List;
 
 public class RecommendedAdapter extends RecyclerView.Adapter<RecommendedAdapter.ViewHolder> {
 
-    private final List<HotelItem> items;
+    private final List<HouseDto> items;
 
-    public RecommendedAdapter(List<HotelItem> items) {
+    public RecommendedAdapter(List<HouseDto> items) {
         this.items = items;
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
         ImageView imageHotel;
-        TextView textTitle, textDate, textPrice;
+        TextView textTitle, textDate, textAddress, textPrice;
 
         ViewHolder(@NonNull View itemView) {
             super(itemView);
-            imageHotel = itemView.findViewById(R.id.imageHotel);
-            textTitle  = itemView.findViewById(R.id.textTitle);
-            textDate   = itemView.findViewById(R.id.textDate);
-            textPrice  = itemView.findViewById(R.id.textPrice);
+            imageHotel  = itemView.findViewById(R.id.imageHotel);
+            textTitle   = itemView.findViewById(R.id.textTitle);
+            textDate    = itemView.findViewById(R.id.textDate);
+            textAddress = itemView.findViewById(R.id.textAddress);
+            textPrice   = itemView.findViewById(R.id.textPrice);
         }
     }
 
     @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public ViewHolder onCreateViewHolder(
+            @NonNull ViewGroup parent,
+            int viewType
+    ) {
         View v = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_recommend, parent, false);
         return new ViewHolder(v);
@@ -46,14 +51,39 @@ public class RecommendedAdapter extends RecyclerView.Adapter<RecommendedAdapter.
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        HotelItem item = items.get(position);
+        HouseDto item = items.get(position);
 
-        holder.textTitle.setText(item.getTitle());
-        holder.textDate.setText(item.getDate());
-        holder.textPrice.setText(item.getPrice());
-        holder.imageHotel.setImageResource(item.getImageRes());
+        // 제목
+        holder.textTitle.setText(item.title != null ? item.title : "");
 
-        // 상세 페이지로 이동
+        // 날짜
+        if (item.startDay != null && item.endDay != null) {
+            holder.textDate.setText(item.startDay + " ~ " + item.endDay);
+        } else {
+            holder.textDate.setText("");
+        }
+
+        // 주소
+        String addr = "";
+        if (item.city != null) addr += item.city + " ";
+        if (item.addressLine1 != null) addr += item.addressLine1;
+        holder.textAddress.setText(addr.trim());
+
+        // 가격
+        if (item.pricePerNight != null) {
+            holder.textPrice.setText(String.format("%,d원 · 1박", item.pricePerNight));
+        } else {
+            holder.textPrice.setText("");
+        }
+
+        // 사진 (coverPhotoUrl 사용 안하면 사진이 안나옴 겁나 오래 걸림 )
+        if (item.coverPhotoUrl != null) {
+            Glide.with(holder.itemView.getContext())
+                    .load(item.coverPhotoUrl)
+                    .into(holder.imageHotel);
+        }
+
+        // 카드 클릭  >>>>>>>>>>> 상세 화면으로 가겠지?
         holder.itemView.setOnClickListener(v -> {
             Context ctx = holder.itemView.getContext();
             Intent intent = new Intent(ctx, RentHouseDetailActivity.class);
@@ -64,6 +94,6 @@ public class RecommendedAdapter extends RecyclerView.Adapter<RecommendedAdapter.
 
     @Override
     public int getItemCount() {
-        return items.size();
+        return items == null ? 0 : items.size();
     }
 }

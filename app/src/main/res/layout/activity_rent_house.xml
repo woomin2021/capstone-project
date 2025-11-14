@@ -82,11 +82,10 @@
                 android:src="@drawable/ic_search"/>
         </LinearLayout>
 
-        <!-- 추천 섹션 -->
         <TextView
+            android:id="@+id/textGreeting"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="홍길동님, 여긴 어떠세요?"
             android:textColor="#00A88E"
             android:textSize="16sp"
             android:textStyle="bold"
