@@ -5,7 +5,7 @@
 <!--    인터넷 사용권한-->
     <uses-permission android:name="android.permission.INTERNET" />
 
-    <application
+    <applicationㅅ
         android:usesCleartextTraffic="true"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -15,18 +15,43 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.JJB20">
+
+        <activity android:name=".RentHouseActivity" />
+        <activity android:name=".RentHouseDetailActivity" />
+
+        <activity android:name=".ReserveConfirmActivity"/>
+        <activity android:name=".PaymentActivity"/>
+
+        <activity android:name=".PaymentCompleteActivity"/>
+
         <activity
-            android:name=".MainActivity"
+            android:name=".LoginActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
-        <activity android:name=".RentHouseActivity"/>
-        <activity android:name=".RentHouseDetailActivity"/>
-    </application>
+
+        <activity android:name=".RegisterBasicsActivity"/>
+        <activity android:name=".RegisterAmenitiesActivity"/>
+        <activity android:name=".RegisterTitleActivity"/>
+        <activity android:name=".RegisterDetailsActivity"/>
+        <activity android:name=".RegisterCalendarActivity"/>
+        <activity android:name=".RegisterFinalActivity"/>
+
+        <activity android:name=".SignupPhoneActivity" />
+        <activity android:name=".VerifyCodeActivity" />
+        <activity android:name=".SignupFormActivity" />
+        <activity android:name=".MainActivity" />
+        <activity android:name=".ProfileActivity" />
+        <activity android:name=".ProfileHouseListActivity" />
+        <activity android:name=".ProfileReservationListActivity" />
+        <activity android:name=".HostReviewActivity" />
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyB0gphitktaQL9MhzcbxPUOtAgo8EG-qao" />
+    </applicationㅅ>
 
 </manifest>
