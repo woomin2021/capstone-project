@@ -40,14 +40,14 @@ public class ProfileHouseListActivity extends AppCompatActivity {
         rvHouseList.setLayoutManager(new LinearLayoutManager(this));
 
 
-//        adapter = new HouseListAdapter(this, houseList, item -> {
-//
-//            //클릭된 집 정보 전달
+        adapter = new HouseListAdapter(this, houseList, item -> {
+
+            //클릭된 집 정보 전달
 //            Intent intent = new Intent(ProfileHouseListActivity.this, HouseReviewActivity.class);
 //            intent.putExtra("house", item);
 //            startActivity(intent);
-//
-//        });
+
+        });
         rvHouseList.setAdapter(adapter);
 
         loadMyHouses();

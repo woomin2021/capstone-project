@@ -43,8 +43,7 @@ public class ProfileReservationListActivity extends AppCompatActivity {
         adapter = new ReservationListAdapter(this, reservationList, item -> {
             // 클릭 → 리뷰 작성 화면 이동
             Intent intent = new Intent(ProfileReservationListActivity.this, HouseReviewActivity.class);
-            intent.putExtra("reservationId", item.id);
-            intent.putExtra("houseId", item.houseId);
+            intent.putExtra("reservation", item); // DTO 통째로 넘긴다
             startActivity(intent);
         });
 
