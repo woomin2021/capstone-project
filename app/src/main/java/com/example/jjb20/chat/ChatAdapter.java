@@ -53,7 +53,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
             holder.binding.myCl.setVisibility(View.GONE);
             holder.binding.otherCl.setVisibility(View.VISIBLE);
 
-            holder.binding.useridTv.setText(msg.getUserid());
+            holder.binding.useridTv.setText(msg.getUsername());
             holder.binding.contentTv.setText(msg.getContent());
             holder.binding.dateTv.setText(msg.getCrt_dt());
         }

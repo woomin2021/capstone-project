@@ -122,13 +122,7 @@ public class LoginActivity extends AppCompatActivity {
                     PrefManager.put("uid", me.firebaseUid);
                     PrefManager.put("email", me.email);
                     PrefManager.put("userId",me.id);
-
-                    // 로그인 사용자 이름 저장 (RentHouseActivity 등에서 사용 하니까 건들지 마세요 진짜로 접어 버립니다 아니요 던질거에요 )
-                    if (me.name != null && !me.name.trim().isEmpty()) {
-                        PrefManager.put("userName", me.name);
-                    } else {
-                        PrefManager.put("userName", "회원");
-                    }
+                    PrefManager.put("userName", me.name);
 
                     Log.d("PrefCheck", "idToken: " + PrefManager.get("idToken", "없음"));
                     Log.d("PrefCheck", "uid: " + PrefManager.get("uid", "없음"));

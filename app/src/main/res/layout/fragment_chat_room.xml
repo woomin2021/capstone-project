@@ -69,7 +69,7 @@
                 android:textSize="14sp"
                 android:fontFamily="@font/pretendardvariable"
                 android:paddingHorizontal="20dp"
-                android:backgroundTint="@color/primary"
+                android:backgroundTint="@color/mainColor1"
                 android:minHeight="0dp"
                 android:minWidth="0dp"
                 android:layout_marginStart="8dp"
