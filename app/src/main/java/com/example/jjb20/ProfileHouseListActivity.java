@@ -1,5 +1,6 @@
 package com.example.jjb20;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
@@ -38,8 +39,15 @@ public class ProfileHouseListActivity extends AppCompatActivity {
         rvHouseList = findViewById(R.id.houseListRecyclerView);
         rvHouseList.setLayoutManager(new LinearLayoutManager(this));
 
-        // ★ adapter를 먼저 초기화하고 난 뒤에 setAdapter!
-        adapter = new HouseListAdapter(this, houseList, item -> {});
+
+//        adapter = new HouseListAdapter(this, houseList, item -> {
+//
+//            //클릭된 집 정보 전달
+//            Intent intent = new Intent(ProfileHouseListActivity.this, HouseReviewActivity.class);
+//            intent.putExtra("house", item);
+//            startActivity(intent);
+//
+//        });
         rvHouseList.setAdapter(adapter);
 
         loadMyHouses();

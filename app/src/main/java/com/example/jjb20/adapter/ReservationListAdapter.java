@@ -45,7 +45,7 @@ public class ReservationListAdapter extends RecyclerView.Adapter<ReservationList
 
         holder.txtReservationId.setText("예약번호 #" + item.id);
         holder.txtDateRange.setText(item.checkinDate + " ~ " + item.checkoutDate);
-        holder.txtGuestCount.setText("인원: " + item.guestsCount + "명");
+        holder.txtGuestCount.setText("인원: " + item.guestCount + "명");
         holder.txtTotalPrice.setText("₩ " + item.totalPrice);
 
         holder.itemView.setOnClickListener(v -> {

@@ -21,8 +21,8 @@ public class ReservationDTO implements Serializable {
     @SerializedName("checkout_date")
     public String checkoutDate;
 
-    @SerializedName("guests_count")
-    public int guestsCount;
+    @SerializedName("guest_count")
+    public int guestCount;
 
     @SerializedName("status")
     public String status;   // 예: pending, confirmed, canceled

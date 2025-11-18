@@ -7,10 +7,13 @@ import com.example.jjb20.dto.HouseDto;
 import com.example.jjb20.dto.HousesCreateRequestDto;
 import com.example.jjb20.dto.HousesResponseDto;
 import com.example.jjb20.dto.RegisterRequestDto;
+import com.example.jjb20.dto.ReservationDTO;
+import com.example.jjb20.dto.ReviewRequestDto;
 import com.example.jjb20.dto.UserResponseDto;
 import com.example.jjb20.entity.User;
 
 import java.util.List;
+import java.util.Objects;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -60,13 +63,21 @@ public interface ApiService {
     @GET("api/houses")
     Call<List<HouseDto>> getHouses(@Header("Authorization") String bearerToken);
 
-    //내집불러오기
+    //내 집 불러 오기
     @GET("/api/houses/my/{userId}")
     Call<List<HouseDto>> getMyHouses(@Path("userId") int userId);
+
+    //내 예약 불러 오기
+    @GET("/api/reservations/my")
+    Call<List<ReservationDTO>> getReservations(@Query("userId") long userId);
 
 
     @GET("api/houses/{id}/detail")
     Call<HouseDetailResponseDto> getHouseDetail(
             @Path("id") long id
     );
+
+    //리뷰 업로드
+    @POST("api/reviews/houses")
+    Call<Object> createHouseReview(@Body ReviewRequestDto dto);
 }
