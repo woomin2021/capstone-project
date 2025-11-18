@@ -1,7 +1,6 @@
 package com.example.jjb20.dto;
 
 import com.google.gson.annotations.SerializedName;
-
 import java.io.Serializable;
 
 public class ReservationDTO implements Serializable {
@@ -9,30 +8,30 @@ public class ReservationDTO implements Serializable {
     @SerializedName("id")
     public long id;
 
-    @SerializedName("house_id")
+    @SerializedName("houseId")
     public long houseId;
 
-    @SerializedName("guest_user_id")
+    @SerializedName("guestUserId")
     public long guestUserId;
 
-    @SerializedName("checkin_date")
+    @SerializedName("checkinDate")
     public String checkinDate;
 
-    @SerializedName("checkout_date")
+    @SerializedName("checkoutDate")
     public String checkoutDate;
 
-    @SerializedName("guest_count")
+    @SerializedName("guestCount")
     public int guestCount;
 
     @SerializedName("status")
-    public String status;   // 예: pending, confirmed, canceled
+    public String status;
 
-    @SerializedName("total_price")
+    @SerializedName("totalPrice")
     public int totalPrice;
 
-    @SerializedName("created_at")
+    @SerializedName("createdAt")
     public String createdAt;
 
-    @SerializedName("updated_at")
+    @SerializedName("updatedAt")
     public String updatedAt;
 }
