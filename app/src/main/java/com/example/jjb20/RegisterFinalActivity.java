@@ -1,12 +1,15 @@
 package com.example.jjb20;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.PickVisualMediaRequest;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -19,8 +22,13 @@ import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -44,24 +52,74 @@ public class RegisterFinalActivity extends AppCompatActivity {
     // API 서비스
     private ApiService apiService;
 
+    private Uri selectedImageUri;   // 갤러리에서 선택한 1장의 사진
+    private StorageReference storageReference;
+
     // 갤러리에서 이미지를 선택하기 위한 최신 방식 (ActivityResultLauncher)
-    // "registerForActivityResult"는 onCreate 또는 클래스 멤버 변수 초기화 시에 호출되어야 합니다.
-    private ActivityResultLauncher<PickVisualMediaRequest> pickMedia =
-            registerForActivityResult(new ActivityResultContracts.PickVisualMedia(), uri -> {
-                if (uri != null) {
-                    // 사용자가 이미지를 선택한 경우
-                    // TODO: 1. 선택된 이미지를 (Glide/Coil 등으로) ImageView에 로드
-                    // TODO: 2. HorizontalScrollView 내부의 LinearLayout에 동적으로 ImageView 추가
-                    // TODO: 3. photoCounterText 업데이트 (예: "1/5")
-                } else {
-                    // 사용자가 선택을 취소한 경우
-                }
-            });
+    private ActivityResultLauncher<PickVisualMediaRequest> pickMedia;
+
+    private void uploadImageToFirebase() {
+        if (selectedImageUri == null) {
+            Toast.makeText(this, "업로드할 이미지가 없습니다.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        ProgressDialog progressDialog = new ProgressDialog(this);
+        progressDialog.setTitle("Uploading File...");
+        progressDialog.show();
+
+        // 파일명 생성
+        String userId = PrefManager.get("uid", "unknown");
+        String houseTitle = PrefManager.get("house_title", "no_title");
+
+        if (userId.isEmpty()) userId = "임시_ID";
+        if (houseTitle.isEmpty()) houseTitle = "임시_집_이름";
+
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss", Locale.KOREA);
+        String fileName = userId + "_" + houseTitle + "_" + sdf.format(new Date());
+
+        storageReference = FirebaseStorage.getInstance()
+                .getReference("images/" + fileName);
+
+        storageReference.putFile(selectedImageUri)
+                .continueWithTask(task -> {
+                    if (!task.isSuccessful()) {
+                        throw task.getException();
+                    }
+                    // 업로드 성공 → 다운로드 URL 받기
+                    return storageReference.getDownloadUrl();
+                })
+                .addOnSuccessListener(downloadUri -> {
+                    // PrefManager 또는 서버에 이미지 URL 저장
+                    String imageUrl = downloadUri.toString();
+                    PrefManager.put("house_image_url", imageUrl);
+
+                    Toast.makeText(RegisterFinalActivity.this,
+                            "성공적으로 업로드 되었습니다.",
+                            Toast.LENGTH_SHORT).show();
+
+                    if (progressDialog.isShowing()) {
+                        progressDialog.dismiss();
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(RegisterFinalActivity.this,
+                            "업로드 실패했습니다: " + e.getMessage(),
+                            Toast.LENGTH_SHORT).show();
+
+                    if (progressDialog.isShowing()) {
+                        progressDialog.dismiss();
+                    }
+                });
+    }
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        // 0. PrefManager 초기화
+        PrefManager.init(getApplicationContext());
+        
         // 1. XML 레이아웃 파일 설정
         setContentView(R.layout.activity_register_final);
 
@@ -72,7 +130,32 @@ public class RegisterFinalActivity extends AppCompatActivity {
         // 3. 뷰 초기화
         initViews();
 
-        // 4. 이벤트 리스너 설정
+        // 4. ActivityResultLauncher 초기화 (뷰 초기화 후에 호출)
+        pickMedia = registerForActivityResult(new ActivityResultContracts.PickVisualMedia(), uri -> {
+            if (uri != null) {
+                selectedImageUri = uri;   // 선택된 이미지 저장
+
+                // ImageView에 띄우기
+                if (photoCounterText != null) {
+                    photoCounterText.setText("1/5");
+                }
+
+                // 이미지 업로드
+                uploadImageToFirebase();
+            } else {
+                Toast.makeText(this, "이미지가 선택되지 않았습니다.", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        // 5. onBackPressedDispatcher()에 콜백 등록
+        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                handleBackPressed();
+            }
+        });
+
+        // 6. 이벤트 리스너 설정
         setupListeners();
     }
 
@@ -104,14 +187,6 @@ public class RegisterFinalActivity extends AppCompatActivity {
     }
 
     /**
-     * 뒤로가기 버튼 처리 (등록 취소)
-     */
-    @Override
-    public void onBackPressed() {
-        handleBackPressed();
-    }
-
-    /**
      * 뒤로가기 또는 취소 버튼 클릭 시 처리
      * 집이 생성된 상태에서 취소하면 houseId를 정리
      */
@@ -135,9 +210,13 @@ public class RegisterFinalActivity extends AppCompatActivity {
         // if (currentPhotoCount < 5) { ... }
 
         // 갤러리를 열어 이미지만 선택하도록 함
-        pickMedia.launch(new PickVisualMediaRequest.Builder()
-                .setMediaType(ActivityResultContracts.PickVisualMedia.ImageOnly.INSTANCE)
-                .build());
+        if (pickMedia != null) {
+            pickMedia.launch(new PickVisualMediaRequest.Builder()
+                    .setMediaType(ActivityResultContracts.PickVisualMedia.ImageOnly.INSTANCE)
+                    .build());
+        } else {
+            Toast.makeText(this, "갤러리를 열 수 없습니다.", Toast.LENGTH_SHORT).show();
+        }
 
         // 만약 여러 장의 사진을 한 번에 선택하게 하려면
         // (참고) pickMultipleMedia.launch(...)
@@ -162,6 +241,8 @@ public class RegisterFinalActivity extends AppCompatActivity {
             return;
         }
 
+        PrefManager.put("house_price", pricePerNight);
+
         // 2. SharedPreferences에서 모든 데이터 가져오기
         String title = PrefManager.get("house_title");
         String description = PrefManager.get("house_description");
@@ -169,6 +250,21 @@ public class RegisterFinalActivity extends AppCompatActivity {
         String city = PrefManager.get("house_city", "서울");
         String country = PrefManager.get("house_country", "한국");
         List<String> amenityCodes = PrefManager.getStringList("house_amenity_codes");
+        int bedroomCount = PrefManager.getInt("house_bedroom_count", 0);
+        int bedCount = PrefManager.getInt("house_bed_count", 0);
+        int bathroomCount = PrefManager.getInt("house_bathroom_count", 0);
+        String availableStartDate = PrefManager.get("house_available_start");
+        String availableEndDate = PrefManager.get("house_available_end");
+
+        // 디버깅용 로그 추가
+        Log.d(TAG, "Registration data - title: " + title);
+        Log.d(TAG, "Registration data - description: " + description);
+        Log.d(TAG, "Registration data - address: " + address);
+        Log.d(TAG, "Registration data - city: " + city + ", country: " + country);
+        Log.d(TAG, "Registration data - bedroomCount: " + bedroomCount + ", bedCount: " + bedCount + ", bathroomCount: " + bathroomCount);
+        Log.d(TAG, "Registration data - availableStartDate: " + availableStartDate + ", availableEndDate: " + availableEndDate);
+        Log.d(TAG, "Registration data - pricePerNight: " + pricePerNight);
+        Log.d(TAG, "Registration data - amenityCodes: " + amenityCodes);
 
         // 3. 필수 데이터 검증
         if (title == null || title.isEmpty()) {
@@ -181,6 +277,21 @@ public class RegisterFinalActivity extends AppCompatActivity {
         }
         if (address == null || address.isEmpty()) {
             Toast.makeText(this, "주소를 입력해주세요.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (availableStartDate == null || availableStartDate.isEmpty() || 
+            availableEndDate == null || availableEndDate.isEmpty()) {
+            Toast.makeText(this, "예약 가능 기간을 선택해주세요.", Toast.LENGTH_SHORT).show();
+            Log.e(TAG, "Available dates are missing - start: " + availableStartDate + ", end: " + availableEndDate);
+            return;
+        }
+
+        // 날짜 형식 검증 (yyyy-MM-dd 형식이어야 함)
+        if (!availableStartDate.matches("\\d{4}-\\d{2}-\\d{2}") || 
+            !availableEndDate.matches("\\d{4}-\\d{2}-\\d{2}")) {
+            Toast.makeText(this, "날짜 형식이 올바르지 않습니다.", Toast.LENGTH_SHORT).show();
+            Log.e(TAG, "Invalid date format - start: " + availableStartDate + ", end: " + availableEndDate);
             return;
         }
 
@@ -197,15 +308,30 @@ public class RegisterFinalActivity extends AppCompatActivity {
 
         String bearerToken = "Bearer " + idToken;
 
-        // 6. 집 생성 API 호출
+        // 6. 이미지 URL 가져오기 (없을 수도 있음)
+        String imageUrl = PrefManager.get("house_image_url");
+        if (imageUrl == null) {
+            imageUrl = ""; // 빈 문자열로 처리
+        }
+
+        // 7. 집 생성 API 호출
         HousesCreateRequestDto houseRequest = new HousesCreateRequestDto(
                 title,
                 description,
                 address,
                 city,
                 country,
-                pricePerNight
+                pricePerNight,
+                bedroomCount,
+                bedCount,
+                bathroomCount,
+                availableStartDate,
+                availableEndDate,
+                imageUrl != null ? imageUrl : ""
         );
+
+        Log.d(TAG, "Sending house creation request - address: " + address);
+        Log.d(TAG, "Request DTO - addressLine1: " + houseRequest.getAddressLine1());
 
         Call<HousesResponseDto> houseCall = apiService.createHouse(bearerToken, houseRequest);
         houseCall.enqueue(new Callback<HousesResponseDto>() {
@@ -230,12 +356,33 @@ public class RegisterFinalActivity extends AppCompatActivity {
                     String errorMessage = "집 등록 실패: " + response.code();
                     if (response.errorBody() != null) {
                         try {
-                            errorMessage = response.errorBody().string();
+                            String errorBody = response.errorBody().string();
+                            Log.e(TAG, "Error response body: " + errorBody);
+                            
+                            // JSON에서 message 필드 추출 시도
+                            if (errorBody.contains("\"message\"")) {
+                                try {
+                                    // 간단한 JSON 파싱 (message 필드 추출)
+                                    int messageStart = errorBody.indexOf("\"message\"");
+                                    if (messageStart != -1) {
+                                        int valueStart = errorBody.indexOf("\"", messageStart + 10) + 1;
+                                        int valueEnd = errorBody.indexOf("\"", valueStart);
+                                        if (valueEnd > valueStart) {
+                                            errorMessage = errorBody.substring(valueStart, valueEnd);
+                                        }
+                                    }
+                                } catch (Exception e) {
+                                    // 파싱 실패 시 전체 에러 바디 사용
+                                    errorMessage = errorBody.length() > 200 ? errorBody.substring(0, 200) + "..." : errorBody;
+                                }
+                            } else {
+                                errorMessage = errorBody.length() > 200 ? errorBody.substring(0, 200) + "..." : errorBody;
+                            }
                         } catch (Exception e) {
                             Log.e(TAG, "Error reading error body", e);
                         }
                     }
-                    Toast.makeText(RegisterFinalActivity.this, errorMessage, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(RegisterFinalActivity.this, errorMessage, Toast.LENGTH_LONG).show();
                     Log.e(TAG, "House creation failed: " + response.code() + " - " + errorMessage);
                 }
             }

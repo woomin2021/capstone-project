@@ -8,15 +8,29 @@ public class HousesCreateRequestDto {
     private String city;
     private String country;
     private int pricePerNight;
+    private int bedroomCount;
+    private int bedCount;
+    private int bathroomCount;
+    private String availableStartDate;
+    private String availableEndDate;
+    private String imageUrl;
 
-    public HousesCreateRequestDto(String title, String description, String addressLine1, 
-                                  String city, String country, int pricePerNight) {
+    public HousesCreateRequestDto(String title, String description, String addressLine1,
+                                  String city, String country, int pricePerNight,
+                                  int bedroomCount, int bedCount, int bathroomCount,
+                                  String availableStartDate, String availableEndDate, String imageUrl) {
         this.title = title;
         this.description = description;
         this.addressLine1 = addressLine1;
         this.city = city;
         this.country = country;
         this.pricePerNight = pricePerNight;
+        this.bedroomCount = bedroomCount;
+        this.bedCount = bedCount;
+        this.bathroomCount = bathroomCount;
+        this.availableStartDate = availableStartDate;
+        this.availableEndDate = availableEndDate;
+        this.imageUrl = imageUrl;
     }
 
     public long getHouseId() {
@@ -73,6 +87,54 @@ public class HousesCreateRequestDto {
 
     public void setPricePerNight(int pricePerNight) {
         this.pricePerNight = pricePerNight;
+    }
+
+    public int getBedroomCount() {
+        return bedroomCount;
+    }
+
+    public void setBedroomCount(int bedroomCount) {
+        this.bedroomCount = bedroomCount;
+    }
+
+    public int getBedCount() {
+        return bedCount;
+    }
+
+    public void setBedCount(int bedCount) {
+        this.bedCount = bedCount;
+    }
+
+    public int getBathroomCount() {
+        return bathroomCount;
+    }
+
+    public void setBathroomCount(int bathroomCount) {
+        this.bathroomCount = bathroomCount;
+    }
+
+    public String getAvailableStartDate() {
+        return availableStartDate;
+    }
+
+    public void setAvailableStartDate(String availableStartDate) {
+        this.availableStartDate = availableStartDate;
+    }
+
+    public String getAvailableEndDate() {
+        return availableEndDate;
+    }
+
+    public void setAvailableEndDate(String availableEndDate) {
+        this.availableEndDate = availableEndDate;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 }
 

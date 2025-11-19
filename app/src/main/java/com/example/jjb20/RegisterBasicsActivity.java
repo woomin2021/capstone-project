@@ -74,7 +74,11 @@ public class RegisterBasicsActivity extends AppCompatActivity {
         // '다음' 버튼
         nextButton.setOnClickListener(v -> {
             if (nextButton.isEnabled()) {
-                // TODO: 다음 액티비티로 데이터 전달 및 이동
+                PrefManager.put("house_bedroom_count", intBedroom);
+                PrefManager.put("house_bed_count", intBed);
+                PrefManager.put("house_bathroom_count", intBathroom);
+
+                // 다음 액티비티로 데이터 전달 및 이동
                 Intent intent = new Intent(RegisterBasicsActivity.this, RegisterAmenitiesActivity.class);
                 // intent.putExtra("BEDROOM_COUNT", intBedroom);
                 // intent.putExtra("BED_COUNT", intBed);

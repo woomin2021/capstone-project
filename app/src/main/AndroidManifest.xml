@@ -40,6 +40,7 @@
         <activity android:name=".RegisterDetailsActivity"/>
         <activity android:name=".RegisterCalendarActivity"/>
         <activity android:name=".RegisterFinalActivity"/>
+        <activity android:name=".SearchAddressActivity"/>
 
         <activity android:name=".SignupPhoneActivity" />
         <activity android:name=".VerifyCodeActivity" />

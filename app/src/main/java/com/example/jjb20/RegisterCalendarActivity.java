@@ -103,16 +103,11 @@ public class RegisterCalendarActivity extends AppCompatActivity {
 
         nextButton.setOnClickListener(v -> {
             if (nextButton.isEnabled()) {
-                // TODO: 선택된 편의시설 목록을 다음 액티비티로 전달
-                // ArrayList<String> selectedAmenities = new ArrayList<>();
-                // for (MaterialCheckBox checkBox : checkBoxes) {
-                //     if (checkBox.isChecked()) {
-                //         selectedAmenities.add(checkBox.getText().toString());
-                //     }
-                // }
-
+                if (startDate != null && endDate != null) {
+                    PrefManager.put("house_available_start", startDate.toString());
+                    PrefManager.put("house_available_end", endDate.toString());
+                }
                 Intent intent = new Intent(RegisterCalendarActivity.this, RegisterFinalActivity.class);
-                // intent.putStringArrayListExtra("AMENITIES", selectedAmenities);
                 startActivity(intent);
             }
         });

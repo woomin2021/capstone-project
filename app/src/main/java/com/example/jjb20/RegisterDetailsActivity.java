@@ -6,13 +6,18 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.View;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
+
+import com.example.jjb20.SearchAddressActivity;
 
 public class RegisterDetailsActivity extends AppCompatActivity {
 
@@ -29,6 +34,8 @@ public class RegisterDetailsActivity extends AppCompatActivity {
     private TextInputEditText descriptionEditText;
     private TextInputLayout summaryInputLayout;
     private TextInputEditText summaryEditText;
+
+    private ActivityResultLauncher<Intent> addressSearchLauncher;
 
     // 모든 EditText의 변경을 감지할 공용 TextWatcher
     private final TextWatcher textWatcher = new TextWatcher() {
@@ -52,10 +59,28 @@ public class RegisterDetailsActivity extends AppCompatActivity {
         // 1. XML 레이아웃 파일 설정
         setContentView(R.layout.activity_register_details);
 
-        // 2. 뷰 초기화 (ID가 추가되었다고 가정)
+        // 2. ActivityResultLauncher 초기화
+        // AddressSearchActivity가 반환한 주소값을 받아서 addressEditText에 설정
+        addressSearchLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                        String address = result.getData().getStringExtra("address");
+                        if (address != null && addressEditText != null) {
+                            addressEditText.setText(address);
+                            // 주소를 받으면 상세 주소 입력 필드로 포커스 이동
+                            if (addressDetailEditText != null) {
+                                addressDetailEditText.requestFocus();
+                            }
+                        }
+                    }
+                }
+        );
+
+        // 3. 뷰 초기화
         initViews();
 
-        // 3. 이벤트 리스너 설정
+        // 4. 이벤트 리스너 설정
         setupListeners();
     }
 
@@ -65,27 +90,19 @@ public class RegisterDetailsActivity extends AppCompatActivity {
 
         // 주소
         addressInputLayout = findViewById(R.id.address_input_layout);
-        if (addressInputLayout != null) {
-            addressEditText = (TextInputEditText) addressInputLayout.getEditText();
-        }
+        addressEditText = findViewById(R.id.address_edit_text);
 
         // 상세 주소
         addressDetailInputLayout = findViewById(R.id.address_detail_input_layout);
-        if (addressDetailInputLayout != null) {
-            addressDetailEditText = (TextInputEditText) addressDetailInputLayout.getEditText();
-        }
+        addressDetailEditText = findViewById(R.id.address_detail_edit_text);
 
         // 설명
         descriptionInputLayout = findViewById(R.id.description_input_layout);
-        if (descriptionInputLayout != null) {
-            descriptionEditText = (TextInputEditText) descriptionInputLayout.getEditText();
-        }
+        descriptionEditText = findViewById(R.id.description_edit_text);
 
         // 한줄 설명
         summaryInputLayout = findViewById(R.id.summary_input_layout);
-        if (summaryInputLayout != null) {
-            summaryEditText = (TextInputEditText) summaryInputLayout.getEditText();
-        }
+        summaryEditText = findViewById(R.id.summary_edit_text);
     }
 
     private void setupListeners() {
@@ -119,10 +136,20 @@ public class RegisterDetailsActivity extends AppCompatActivity {
             }
         });
 
-        // 4개의 EditText에 공용 TextWatcher 연결 (null 체크)
+        // 주소 EditText 클릭 리스너 (주소 검색 실행)
         if (addressEditText != null) {
+            addressEditText.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(RegisterDetailsActivity.this, SearchAddressActivity.class);
+                    addressSearchLauncher.launch(intent);
+                }
+            });
+            // TextWatcher는 계속 유지 (주소가 설정될 때 버튼 상태 체크)
             addressEditText.addTextChangedListener(textWatcher);
         }
+
+        // 3개의 EditText에 공용 TextWatcher 연결 (null 체크)
         if (addressDetailEditText != null) {
             addressDetailEditText.addTextChangedListener(textWatcher);
         }
@@ -133,6 +160,18 @@ public class RegisterDetailsActivity extends AppCompatActivity {
             summaryEditText.addTextChangedListener(textWatcher);
         }
     }
+    private final ActivityResultLauncher<Intent> getSearchResult=registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                // Search Activity 로부터의 결과값이 이곳으로 전달됨(by setResult)
+                if(result.getResultCode()==RESULT_OK){
+                    if(result.getData()!=null){
+                        String data=result.getData().getStringExtra("address");
+                        addressEditText.setText(data);
+                    }
+                }
+            }
+    );
 
     /**
      * 모든 필수 입력 필드가 채워졌는지 확인하고 '다음' 버튼 상태를 업데이트
@@ -142,7 +181,7 @@ public class RegisterDetailsActivity extends AppCompatActivity {
         String address = (addressEditText != null) ? addressEditText.getText().toString().trim() : "";
         String detail = (addressDetailEditText != null) ? addressDetailEditText.getText().toString().trim() : "";
         String description = (descriptionEditText != null) ? descriptionEditText.getText().toString().trim() : "";
-        String summary = (summaryEditText != null) ? summaryEditText.getText().toString().trim() : "";
+        String summary = (summaryEditText != null) ? summaryEditText.getText().  toString().trim() : "";
 
         // 모든 필드가 비어있지 않은지 확인
         boolean allFieldsFilled = !address.isEmpty() &&
