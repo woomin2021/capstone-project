@@ -48,6 +48,7 @@ import kotlin.jvm.functions.Function1;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import java.time.temporal.ChronoUnit;
 
 public class RentHouseDetailActivity extends AppCompatActivity implements OnMapReadyCallback {
 
@@ -220,10 +221,24 @@ public class RentHouseDetailActivity extends AppCompatActivity implements OnMapR
                 if (seg1 != null) seg1.setBackgroundColor(GRAY);
                 if (seg2 != null) seg2.setBackgroundColor(GREEN);
 
-                String priceText = (house != null && house.pricePerNight != null)
-                        ? house.pricePerNight + "원 · 1박"
-                        : "90,000원 · 1박";
+                // 1) 1박 가격 (기본값 90,000원)
+                int pricePerNight = (house != null && house.pricePerNight != null)
+                        ? house.pricePerNight
+                        : 90000;
 
+                // 2) 박 수 계산 (체크인~체크아웃 날짜 차이)
+                long nights = 1L;   // 혹시 모를 예외 대비 기본 1박
+                if (startDate != null && endDate != null) {
+                    nights = ChronoUnit.DAYS.between(startDate, endDate);
+                }
+
+                // 3) 전체 금액 = 1박 가격 × 박 수
+                long totalPrice = pricePerNight * nights;
+
+                // "180000원 · 1박" 이런 형태로 보낼 문자열
+                String priceText = totalPrice + "원 · " + nights + "박";
+
+                // 날짜 텍스트
                 String dateText;
                 if (startDate != null && endDate != null) {
                     dateText = startDate.format(dayFmt) + " - " + endDate.format(dayFmt);
@@ -231,6 +246,7 @@ public class RentHouseDetailActivity extends AppCompatActivity implements OnMapR
                     dateText = "12월 15일 ~ 12월 18일";
                 }
 
+                // 예약 확인 화면으로 데이터 전달
                 Intent i = new Intent(this, ReserveConfirmActivity.class);
                 i.putExtra(EXTRA_DATE,   dateText);
                 i.putExtra(EXTRA_GUESTS, "성인 " + adultCount + "명");

@@ -100,18 +100,18 @@ public class RentHouseActivity extends AppCompatActivity {
                 }
 
                 List<HouseDto> houses = response.body();
-                for (HouseDto h : houses) {
-                    Log.d("RentList", "id=" + h.id + ", lat=" + h.latitude + ", lng=" + h.longitude);
-                }
+
                 List<HouseDto> recommended = new ArrayList<>();
                 List<HouseDto> hot = new ArrayList<>();
 
-                for (int i = 0; i < houses.size(); i++) {
-                    HouseDto h = houses.get(i);
-
-                    if (i < 4) recommended.add(h);
-                    else hot.add(h);
+// 추천 숙소: 앞에 최대 4개만
+                int recommendCount = Math.min(4, houses.size());
+                for (int i = 0; i < recommendCount; i++) {
+                    recommended.add(houses.get(i));
                 }
+
+// 핫한 숙소: 전체
+                hot.addAll(houses);
 
                 recyclerRecommended.setAdapter(new RecommendedAdapter(recommended));
                 recyclerHot.setAdapter(new HotAdapter(hot));

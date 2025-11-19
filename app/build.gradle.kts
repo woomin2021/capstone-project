@@ -60,7 +60,6 @@ dependencies {
     // Firebase
     implementation(platform("com.google.firebase:firebase-bom:33.4.0"))
     implementation("com.google.firebase:firebase-auth")
-    implementation("com.google.firebase:firebase-storage")
 
 
     //구글 맵
@@ -81,15 +80,22 @@ dependencies {
     implementation("com.google.firebase:firebase-analytics")
     implementation("com.google.firebase:firebase-database")
 
-    // AndroidX
+    // AndroidX Materialx
     implementation(libs.appcompat)
     implementation(libs.material)
     implementation("androidx.activity:activity:1.9.3")
     implementation(libs.constraintlayout)
+    implementation(libs.legacy.support.v4)
+    implementation(libs.recyclerview)
+    implementation("com.google.android.material:material:1.12.0")
 
     // Google Maps & Location
     implementation("com.google.android.gms:play-services-maps:18.1.0")
     implementation("com.google.android.gms:play-services-location:21.3.0")
+
+    // SwipeRefresh
+    implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
+
 
     // Test
     testImplementation(libs.junit)
@@ -107,4 +113,6 @@ dependencies {
     // coreLibraryDesugaring
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.4")
 
+    // 토스 결제위젯 SDK (GitHub 버전)
+    implementation("com.github.tosspayments:payment-sdk-android:0.1.21")
 }
