@@ -139,10 +139,14 @@ public class ChatMsgFragment extends Fragment implements View.OnClickListener {
             if (content_et.getText().toString().trim().length() >=1){
                 Log.d(TAG, "입력처리");
 
-                SimpleDateFormat df = new SimpleDateFormat("yyyy--MM--dd HH:mm:ss");
+                SimpleDateFormat df = new SimpleDateFormat("MM/dd HH:mm:ss");
                 String currentTime = df.format(new Date());
 
-                ChatMsgVO msgVO = new ChatMsgVO(currentUserId, currentTime, content_et.getText().toString().trim());
+                String uid = PrefManager.get("uid", "guest");
+                String username = PrefManager.get("email", "Unknown user");
+
+
+                ChatMsgVO msgVO = new ChatMsgVO(currentUserId, currentTime, content_et.getText().toString().trim(), username);
                 
                 myRef.push().setValue(msgVO);
                 

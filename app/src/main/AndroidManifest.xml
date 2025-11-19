@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+<manifest
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
 <!--    인터넷 사용권한-->
@@ -46,6 +47,11 @@
         <activity android:name=".VerifyCodeActivity" />
         <activity android:name=".SignupFormActivity" />
         <activity android:name=".MainActivity" />
+        <activity android:name=".ProfileActivity" />
+        <activity android:name=".ProfileHouseListActivity" />
+        <activity android:name=".ProfileReservationListActivity" />
+        <activity android:name=".HostReviewActivity" />
+        <activity android:name=".HouseReviewActivity"/>
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyB0gphitktaQL9MhzcbxPUOtAgo8EG-qao" />

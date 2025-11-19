@@ -23,7 +23,7 @@ public class ReserveConfirmActivity extends AppCompatActivity {
         MaterialToolbar toolbar = findViewById(R.id.toolbar);
         if (toolbar != null) toolbar.setNavigationOnClickListener(v -> finish());
 
-        // 진행 바(2단계까지 채움) — 레이아웃에 seg1~seg4 가 없으면 그냥 넘어감
+        // 진행 바(2단계까지 채움) — 레이아웃에 seg1~seg4 가 없으면 그냥 넘어감 그리고 이거 오류 뜨는거 아무 문제 없음 실행 오류랑 상관 없으니까 걍 하셈
         View seg1 = findViewById(R.id.seg1);
         View seg2 = findViewById(R.id.seg2);
         View seg3 = findViewById(R.id.seg3);
@@ -49,7 +49,7 @@ public class ReserveConfirmActivity extends AppCompatActivity {
         if (tvGuest != null && guests!= null) tvGuest.setText(guests);
         if (tvPrice != null && price != null) tvPrice.setText(price);
 
-        // 결제 페이지로 이동 (PaymentActivity 만들기 전까지 임시 Toast)
+        // 결제 페이지로 이동 (PaymentActivity 만들기 전까지 임시 Toast라 토스페이가 되야지 될듯 일단 보류 )
         findViewById(R.id.btnNext).setOnClickListener(v ->
                 startActivity(new Intent(this, PaymentActivity.class))
         );

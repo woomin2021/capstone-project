@@ -1,4 +1,4 @@
-// 파일: app/src/main/java/com/example/jjb20/PaymentActivity.java
+
 package com.example.jjb20;
 
 import android.content.Intent;

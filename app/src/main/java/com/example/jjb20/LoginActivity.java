@@ -32,9 +32,10 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        PrefManager.init(this);
         setContentView(R.layout.activity_login);
 
-        PrefManager.init(this);
+
 
         etEmail    = findViewById(R.id.etUserID);
         etPassword = findViewById(R.id.etPassword);
@@ -120,15 +121,16 @@ public class LoginActivity extends AppCompatActivity {
                     PrefManager.put("idToken", idToken);
                     PrefManager.put("uid", me.firebaseUid);
                     PrefManager.put("email", me.email);
-//                    if (me.name != null) PrefManager.put("name", me.name);
+                    PrefManager.put("userId",me.id);
+                    PrefManager.put("userName", me.name);
 
                     Log.d("PrefCheck", "idToken: " + PrefManager.get("idToken", "없음"));
                     Log.d("PrefCheck", "uid: " + PrefManager.get("uid", "없음"));
                     Log.d("PrefCheck", "email: " + PrefManager.get("email", "없음"));
-//                    Log.d("PrefCheck", "name: " + PrefManager.get("name", "없음"));
+                    Log.d("PrefCheck", "userName: " + PrefManager.get("userName", "없음"));
+                    Log.d("PrefCheck", "userId: " + PrefManager.getLong("userId"));
 
-
-                     startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                    startActivity(new Intent(LoginActivity.this, MainActivity.class));
 //                     finish();
                 } else {
                     Toast.makeText(LoginActivity.this, "서버 로그인 실패(" + response.code() + ")", Toast.LENGTH_SHORT).show();
