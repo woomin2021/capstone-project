@@ -70,6 +70,7 @@ dependencies {
     implementation ("com.github.bumptech.glide:glide:4.11.0")
     implementation(libs.legacy.support.v4)
     implementation(libs.recyclerview)
+    implementation(libs.firebase.storage)
     annotationProcessor ("com.github.bumptech.glide:compiler:4.11.0")
 
     //새로고침
