@@ -1,6 +1,9 @@
 package com.example.jjb20;
 
 import com.example.jjb20.dto.FirebaseLoginRequestDto;
+import com.example.jjb20.dto.HouseAmenitiesCreateRequestDto;
+import com.example.jjb20.dto.HousesCreateRequestDto;
+import com.example.jjb20.dto.HousesResponseDto;
 import com.example.jjb20.dto.RegisterRequestDto;
 import com.example.jjb20.dto.UserResponseDto;
 import com.example.jjb20.entity.User;
@@ -36,4 +39,14 @@ public interface ApiService {
             @Header("Authorization") String bearerToken,
             @Body User user
     );
+
+    //  집 생성
+    @POST("api/houses")
+    Call<HousesResponseDto> createHouse(@Header("Authorization") String bearerToken,
+                                        @Body HousesCreateRequestDto requestDto);
+
+    //  집 편의시설 저장
+    @POST("api/houses/amenities")
+    Call<Void> saveHouseAmenities(@Header("Authorization") String bearerToken,
+                                  @Body HouseAmenitiesCreateRequestDto requestDto);
 }

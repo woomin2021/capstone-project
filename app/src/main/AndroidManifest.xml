@@ -34,6 +34,14 @@
         </activity>
 
 
+        <activity android:name=".RegisterBasicsActivity"/>
+        <activity android:name=".RegisterAmenitiesActivity"/>
+        <activity android:name=".RegisterTitleActivity"/>
+        <activity android:name=".RegisterDetailsActivity"/>
+        <activity android:name=".RegisterCalendarActivity"/>
+        <activity android:name=".RegisterFinalActivity"/>
+        <activity android:name=".SearchAddressActivity"/>
+
         <activity android:name=".SignupPhoneActivity" />
         <activity android:name=".VerifyCodeActivity" />
         <activity android:name=".SignupFormActivity" />

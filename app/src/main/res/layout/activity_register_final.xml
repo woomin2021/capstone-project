@@ -47,7 +47,7 @@
         android:textColor="#FFFFFF"
         android:textSize="16sp"
         android:textStyle="bold"
-        app:backgroundTint="#1DE9B6"
+        app:backgroundTint="#BDBDBD"
         app:cornerRadius="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -104,11 +104,13 @@
                 app:suffixText="원">
 
                 <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/price_edit_text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="number"
-                    android:text="30,000"
-                    android:maxLines="1" />
+                    android:maxLines="1"
+                    tools:ignore="SpeakableTextPresentCheck"
+                    />
             </com.google.android.material.textfield.TextInputLayout>
 
             <TextView
@@ -154,6 +156,7 @@
                                 app:tint="#757575" />
 
                             <TextView
+                                android:id="@+id/photoCounterText"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="4dp"
@@ -163,15 +166,6 @@
                         </LinearLayout>
                     </com.google.android.material.card.MaterialCardView>
 
-                    <com.google.android.material.card.MaterialCardView
-                        android:layout_width="100dp"
-                        android:layout_height="100dp"
-                        android:layout_marginStart="12dp"
-                        app:cardCornerRadius="8dp"
-                        app:cardElevation="0dp">
-
-
-                    </com.google.android.material.card.MaterialCardView>
 
                 </LinearLayout>
             </HorizontalScrollView>

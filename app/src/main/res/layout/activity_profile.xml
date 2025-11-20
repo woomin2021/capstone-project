@@ -67,8 +67,6 @@
             android:fontFamily="@font/pretendardvariable"/>
 
 
-
-
     </LinearLayout>
 
     <!-- 집 목록, 예약 내역 -->

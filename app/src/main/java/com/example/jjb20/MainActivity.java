@@ -16,6 +16,8 @@ public class MainActivity extends AppCompatActivity {
     private MaterialCardView btnRent;
     private MaterialCardView btnRegister;
 
+    Button btntest1, btntest2;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,9 +47,10 @@ public class MainActivity extends AppCompatActivity {
 
         //혜진님꺼 안합쳐서 여기 안바뀜 아직
         btnRegister.setOnClickListener(v -> {
-            Intent intent = new Intent(getApplicationContext(), RentHouseDetailActivity.class);
+            Intent intent = new Intent(getApplicationContext(), RegisterTitleActivity.class);
             startActivity(intent);
         });
+
 
 
     }

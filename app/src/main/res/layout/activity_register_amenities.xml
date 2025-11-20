@@ -44,18 +44,18 @@
         android:layout_marginStart="24dp"
         android:layout_marginEnd="24dp"
         android:layout_marginBottom="24dp"
-        android:enabled="false"
         android:text="다음"
         android:textColor="#FFFFFF"
         android:textSize="16sp"
         android:textStyle="bold"
-        app:backgroundTint="#BDBDBD"
+        app:backgroundTint="#00CBA8"
         app:cornerRadius="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
     <ScrollView
+        android:fillViewport="true"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginTop="16dp"
@@ -66,6 +66,7 @@
         app:layout_constraintTop_toBottomOf="@id/progressBar">
 
         <LinearLayout
+            android:id="@+id/amenities_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
@@ -89,104 +90,91 @@
                 android:layout_height="wrap_content"
                 android:text="주차장"
                 android:textSize="16sp"
-                android:drawablePadding="16dp"
-                android:checked="false" />
+                android:drawablePadding="16dp"/>
 
             <com.google.android.material.checkbox.MaterialCheckBox
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="와이파이"
                 android:textSize="16sp"
-                android:drawablePadding="16dp"
-                android:checked="true" />
+                android:drawablePadding="16dp" />
 
             <com.google.android.material.checkbox.MaterialCheckBox
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="에어컨"
                 android:textSize="16sp"
-                android:drawablePadding="16dp"
-                android:checked="true" />
+                android:drawablePadding="16dp" />
 
             <com.google.android.material.checkbox.MaterialCheckBox
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="난방"
                 android:textSize="16sp"
-                android:drawablePadding="16dp"
-                android:checked="true" />
+                android:drawablePadding="16dp" />
 
             <com.google.android.material.checkbox.MaterialCheckBox
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="주방"
                 android:textSize="16sp"
-                android:drawablePadding="16dp"
-                android:checked="true" />
+                android:drawablePadding="16dp"/>
 
             <com.google.android.material.checkbox.MaterialCheckBox
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="세탁기"
                 android:textSize="16sp"
-                android:drawablePadding="16dp"
-                android:checked="true" />
+                android:drawablePadding="16dp" />
 
             <com.google.android.material.checkbox.MaterialCheckBox
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="건조기"
                 android:textSize="16sp"
-                android:drawablePadding="16dp"
-                android:checked="false" />
+                android:drawablePadding="16dp"/>
 
             <com.google.android.material.checkbox.MaterialCheckBox
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="욕조"
                 android:textSize="16sp"
-                android:drawablePadding="16dp"
-                android:checked="false" />
+                android:drawablePadding="16dp"/>
 
             <com.google.android.material.checkbox.MaterialCheckBox
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="주방"
                 android:textSize="16sp"
-                android:drawablePadding="16dp"
-                android:checked="true" />
+                android:drawablePadding="16dp" />
 
             <com.google.android.material.checkbox.MaterialCheckBox
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="식탁"
                 android:textSize="16sp"
-                android:drawablePadding="16dp"
-                android:checked="false" />
+                android:drawablePadding="16dp" />
 
             <com.google.android.material.checkbox.MaterialCheckBox
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="전자레인지"
                 android:textSize="16sp"
-                android:drawablePadding="16dp"
-                android:checked="true" />
+                android:drawablePadding="16dp" />
 
             <com.google.android.material.checkbox.MaterialCheckBox
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="냉장고"
                 android:textSize="16sp"
-                android:drawablePadding="16dp"
-                android:checked="true" />
+                android:drawablePadding="16dp" />
 
             <com.google.android.material.checkbox.MaterialCheckBox
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="TV"
                 android:textSize="16sp"
-                android:drawablePadding="16dp"
-                android:checked="true" />
+                android:drawablePadding="16dp" />
 
         </LinearLayout>
     </ScrollView>
