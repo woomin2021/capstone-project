@@ -507,7 +507,7 @@
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:contentDescription="성인 수 감소"
                 app:srcCompat="@drawable/ic_remove_24"
-                android:tint="@color/mainColor1" />
+                app:tint="@color/mainColor1" />
 
             <TextView
                 android:id="@+id/tvGuestCount"

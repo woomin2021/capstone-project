@@ -56,6 +56,9 @@ public class RentHouseDetailActivity extends AppCompatActivity implements OnMapR
     public static final String EXTRA_DATE   = "extra_date";
     public static final String EXTRA_GUESTS = "extra_guests";
     public static final String EXTRA_PRICE  = "extra_price";
+    public static final String EXTRA_HOUSE_NAME = "extra_house_name";
+    public static final String EXTRA_HOUSE_ADDR = "extra_house_addr";
+    public static final String EXTRA_HOUSE_IMAGE = "extra_house_image";
 
     private ViewPager2 viewPagerImages;
     private TextView tvTitle, tvLocation, tvPrice;
@@ -221,24 +224,18 @@ public class RentHouseDetailActivity extends AppCompatActivity implements OnMapR
                 if (seg1 != null) seg1.setBackgroundColor(GRAY);
                 if (seg2 != null) seg2.setBackgroundColor(GREEN);
 
-                // 1) 1박 가격 (기본값 90,000원)
                 int pricePerNight = (house != null && house.pricePerNight != null)
                         ? house.pricePerNight
                         : 90000;
 
-                // 2) 박 수 계산 (체크인~체크아웃 날짜 차이)
-                long nights = 1L;   // 혹시 모를 예외 대비 기본 1박
+                long nights = 1L;
                 if (startDate != null && endDate != null) {
                     nights = ChronoUnit.DAYS.between(startDate, endDate);
                 }
 
-                // 3) 전체 금액 = 1박 가격 × 박 수
                 long totalPrice = pricePerNight * nights;
-
-                // "180000원 · 1박" 이런 형태로 보낼 문자열
                 String priceText = totalPrice + "원 · " + nights + "박";
 
-                // 날짜 텍스트
                 String dateText;
                 if (startDate != null && endDate != null) {
                     dateText = startDate.format(dayFmt) + " - " + endDate.format(dayFmt);
@@ -246,11 +243,47 @@ public class RentHouseDetailActivity extends AppCompatActivity implements OnMapR
                     dateText = "12월 15일 ~ 12월 18일";
                 }
 
+                // 여기서 이름/주소/이미지 준비
+                String name    = (house != null) ? house.title : null;
+                String address = null;
+                if (house != null) {
+                    String loc = house.addressLine1;
+                    if (house.city != null && !house.city.isEmpty()) {
+                        loc += "\n" + house.city;
+                    }
+                    if (house.country != null && !house.country.isEmpty()) {
+                        loc += " · " + house.country;
+                    }
+                    address = loc;
+                }
+                String imageUrl = (house != null) ? house.coverPhotoUrl : null;
+
+
+                // 1) DB에 저장할 raw 값들 준비 (yyyy-MM-dd 형태)
+                long houseId = (house != null) ? house.id : -1L;
+                String checkinDateRaw  = (startDate != null) ? startDate.toString() : null;   // 2026-01-06
+                String checkoutDateRaw = (endDate   != null) ? endDate.toString()   : null;   // 2026-01-08
+
+
+
                 // 예약 확인 화면으로 데이터 전달
                 Intent i = new Intent(this, ReserveConfirmActivity.class);
                 i.putExtra(EXTRA_DATE,   dateText);
                 i.putExtra(EXTRA_GUESTS, "성인 " + adultCount + "명");
                 i.putExtra(EXTRA_PRICE,  priceText);
+                i.putExtra(EXTRA_HOUSE_NAME,  name);
+                i.putExtra(EXTRA_HOUSE_ADDR,  address);
+                i.putExtra(EXTRA_HOUSE_IMAGE, imageUrl);
+
+                if (house != null) {
+                    i.putExtra("houseId", house.id);                // 숙소 PK
+                }
+                if (startDate != null) {
+                    i.putExtra("checkinDate", startDate.toString());   // "2025-11-21"
+                }
+                if (endDate != null) {
+                    i.putExtra("checkoutDate", endDate.toString());    // "2025-11-23"
+                }
                 startActivity(i);
             });
         }
