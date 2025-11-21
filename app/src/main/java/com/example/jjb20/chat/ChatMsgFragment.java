@@ -62,8 +62,13 @@ public class ChatMsgFragment extends Fragment implements View.OnClickListener {
     }
 
     @SuppressWarnings("unused")
-    public static ChatMsgFragment newInstance(int columnCount) {
+    public static ChatMsgFragment newInstance(String chatroomName) {
         ChatMsgFragment fragment = new ChatMsgFragment();
+
+        Bundle args = new Bundle();
+        args.putString("chatroom", chatroomName);  // 🔹 여기서 넘겨줌
+        fragment.setArguments(args);
+
         return fragment;
     }
 
@@ -84,7 +89,13 @@ public class ChatMsgFragment extends Fragment implements View.OnClickListener {
         send_iv.setOnClickListener(this);
 
         //CahtRoom Fragment에서 받는 채팅방 이름
-        chatroom = getArguments().getString("chatroom");
+        //chatroom = getArguments().getString("chatroom");
+        Bundle args = getArguments();
+        if (args != null) {
+            chatroom = args.getString("chatroom", "");
+        } else {
+            chatroom = "";
+        }
         currentUserId = PrefManager.get("uid", "guest");
         mAdapter = new ChatAdapter(msgList, currentUserId);
 
