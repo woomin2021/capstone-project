@@ -12,7 +12,8 @@
 
     <!-- 로그인 화면 텍스트 -->
     <string name="brand_logo">집잠빌</string>
-    <string name="login_title1">집 잠시</string>
+    <string name="login_title1_left">집 잠</string>
+    <string name="login_title1_right">시</string>
     <string name="login_title2_left">빌</string>
     <string name="login_title2_right">려드립니다</string>
     <string name="email_hint">이메일</string>
