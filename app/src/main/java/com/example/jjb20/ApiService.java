@@ -7,6 +7,7 @@ import com.example.jjb20.dto.HouseDto;
 import com.example.jjb20.dto.HousesCreateRequestDto;
 import com.example.jjb20.dto.HousesResponseDto;
 import com.example.jjb20.dto.RegisterRequestDto;
+import com.example.jjb20.dto.ReservationCreateRequestDto;
 import com.example.jjb20.dto.ReservationDTO;
 import com.example.jjb20.dto.ReviewRequestDto;
 import com.example.jjb20.dto.UserResponseDto;
@@ -80,4 +81,8 @@ public interface ApiService {
     //리뷰 업로드
     @POST("api/reviews/houses")
     Call<Object> createHouseReview(@Body ReviewRequestDto dto);
+
+    //예약 생성
+    @POST("/api/reservations")
+    Call<ReservationDTO> createReservation(@Body ReservationCreateRequestDto req);
 }

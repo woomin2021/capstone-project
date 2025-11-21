@@ -65,6 +65,8 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
         android:text="결제 페이지로 이동"
+        android:fontFamily="@font/cafe24ssurround_v2"
+
         android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
         android:paddingStart="24dp"
         android:paddingEnd="24dp"
@@ -78,6 +80,8 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:text="결제 수단을 선택하고 결제를 진행하세요."
+        android:fontFamily="@font/cafe24ssurround_v2"
+
         android:textStyle="bold"
         android:textSize="16sp"
         android:textColor="#222222"
@@ -92,35 +96,33 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="175dp"
         android:padding="8dp"
         app:layout_constraintTop_toBottomOf="@id/textPaymentInfo"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
         <!-- 1. 토스페이 결제하기 -->
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/btnTossPay"
+        <com.google.android.material.checkbox.MaterialCheckBox
             android:layout_width="match_parent"
-            android:layout_height="30dp"
-            android:layout_marginBottom="20dp"
-            android:text="토스페이로 결제"
-            android:background="@drawable/btn_mainbtn"
-            android:textColor="@android:color/white"
+            android:layout_height="wrap_content"
+            android:text="토스페이"
             android:textSize="16sp"
-            app:cornerRadius="16dp"/>
+            android:checked="false"
+            android:fontFamily="@font/cafe24ssurround_v2"
+            app:buttonTint="@color/teal_00cba8"
+            android:drawablePadding="16dp"/>
 
         <!-- 2. 일반 결제하기 -->
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/btnNormalPay"
+        <com.google.android.material.checkbox.MaterialCheckBox
             android:layout_width="match_parent"
-            android:layout_height="30dp"
-            android:layout_marginBottom="20dp"
-            android:text="현장 결제"
-            android:background="@drawable/btn_mainbtn"
-            android:textColor="@android:color/white"
+            android:layout_height="wrap_content"
+            android:text="현장결제"
             android:textSize="16sp"
-            app:cornerRadius="16dp"/>
+            android:checked="false"
+            android:fontFamily="@font/cafe24ssurround_v2"
+            app:buttonTint="@color/teal_00cba8"
+            android:drawablePadding="16dp"/>
 
 
 
@@ -133,9 +135,12 @@
         android:layout_width="0dp"
         android:layout_height="72dp"
         android:layout_margin="20dp"
+        android:textSize="20sp"
         android:text="결제하기"
         app:cornerRadius="16dp"
         android:background="@drawable/btn_mainbtn"
+        android:fontFamily="@font/cafe24ssurround_v2"
+
         android:textColor="@color/basic1"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
