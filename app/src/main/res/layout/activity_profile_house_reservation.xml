@@ -45,17 +45,26 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="예약 내역"
+            android:textColor="@color/white"
+            android:fontFamily="@font/cafe24ssurround_v2"
 
+            android:drawableRight="@drawable/ic_rent"
             android:background="@drawable/registerhouse_btn"
-            android:padding="24dp"
+            android:paddingHorizontal="28dp"
+            android:paddingVertical="10dp"
             android:layout_marginRight="14dp"/>
         <androidx.appcompat.widget.AppCompatButton
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="지난 내역"
+            android:textColor="@color/white"
+            android:fontFamily="@font/cafe24ssurround_v2"
+
             android:background="@drawable/registerhouse_btn"
-            android:padding="24dp"/>
+            android:paddingHorizontal="28dp"
+            android:paddingVertical="10dp"
+            android:drawableRight="@drawable/ic_rent"/>
 
     </LinearLayout>
 
