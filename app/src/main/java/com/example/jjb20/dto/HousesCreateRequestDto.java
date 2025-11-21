@@ -11,14 +11,14 @@ public class HousesCreateRequestDto {
     private int bedroomCount;
     private int bedCount;
     private int bathroomCount;
-    private String availableStartDate;
-    private String availableEndDate;
+    private String startDay;
+    private String endDay;
     private String imageUrl;
 
     public HousesCreateRequestDto(String title, String description, String addressLine1,
                                   String city, String country, int pricePerNight,
                                   int bedroomCount, int bedCount, int bathroomCount,
-                                  String availableStartDate, String availableEndDate, String imageUrl) {
+                                  String startDay, String endDay, String imageUrl) {
         this.title = title;
         this.description = description;
         this.addressLine1 = addressLine1;
@@ -28,8 +28,8 @@ public class HousesCreateRequestDto {
         this.bedroomCount = bedroomCount;
         this.bedCount = bedCount;
         this.bathroomCount = bathroomCount;
-        this.availableStartDate = availableStartDate;
-        this.availableEndDate = availableEndDate;
+        this.startDay = startDay;
+        this.endDay = endDay;
         this.imageUrl = imageUrl;
     }
 
@@ -113,20 +113,20 @@ public class HousesCreateRequestDto {
         this.bathroomCount = bathroomCount;
     }
 
-    public String getAvailableStartDate() {
-        return availableStartDate;
+    public String getStartDay() {
+        return startDay;
     }
 
-    public void setAvailableStartDate(String availableStartDate) {
-        this.availableStartDate = availableStartDate;
+    public void setStartDay(String startDay) {
+        this.startDay = startDay;
     }
 
-    public String getAvailableEndDate() {
-        return availableEndDate;
+    public String getEndDay() {
+        return endDay;
     }
 
-    public void setAvailableEndDate(String availableEndDate) {
-        this.availableEndDate = availableEndDate;
+    public void setEndDay(String endDay) {
+        this.endDay = endDay;
     }
 
     public String getImageUrl() {
