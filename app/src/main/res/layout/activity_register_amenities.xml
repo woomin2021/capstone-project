@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#FFFFFF"
-    android:fontFamily="@font/pretendardvariable">
+    android:fontFamily="@font/cafe24ssurroundotf">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appBarLayout"
@@ -22,6 +22,7 @@
             android:layout_height="?attr/actionBarSize"
             app:navigationIcon="@drawable/arrow_left"
             app:title="집 등록하기"
+            app:titleTextAppearance="@style/ToolbarTitleTextStyle"
             app:titleTextColor="#212121" />
 
     </com.google.android.material.appbar.AppBarLayout>
@@ -46,7 +47,7 @@
         android:layout_marginBottom="24dp"
         android:text="다음"
         android:textColor="#FFFFFF"
-        android:textSize="16sp"
+        android:textSize="18sp"
         android:textStyle="bold"
         app:backgroundTint="#00CBA8"
         app:cornerRadius="8dp"
@@ -80,6 +81,7 @@
                 android:layout_marginBottom="16dp"
                 android:layout_gravity="center"
                 android:text="편의시설 정보를\n추가해주세요"
+                android:fontFamily="@font/cafe24ssurroundotf"
                 android:textAlignment="center"
                 android:textColor="#1ABC9C"
                 android:textSize="25sp"
@@ -89,13 +91,18 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="주차장"
-                android:textSize="16sp"
+                android:checked="false"
+                android:fontFamily="@font/cafe24ssurround_v2"
+                app:buttonTint="@color/teal_00cba8"
                 android:drawablePadding="16dp"/>
 
             <com.google.android.material.checkbox.MaterialCheckBox
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="와이파이"
+                android:checked="false"
+                android:fontFamily="@font/cafe24ssurround_v2"
+                app:buttonTint="@color/teal_00cba8"
                 android:textSize="16sp"
                 android:drawablePadding="16dp" />
 
@@ -103,6 +110,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="에어컨"
+                android:checked="false"
+                android:fontFamily="@font/cafe24ssurround_v2"
+                app:buttonTint="@color/teal_00cba8"
                 android:textSize="16sp"
                 android:drawablePadding="16dp" />
 
@@ -110,6 +120,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="난방"
+                android:checked="false"
+                android:fontFamily="@font/cafe24ssurround_v2"
+                app:buttonTint="@color/teal_00cba8"
                 android:textSize="16sp"
                 android:drawablePadding="16dp" />
 
@@ -117,6 +130,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="주방"
+                android:checked="false"
+                android:fontFamily="@font/cafe24ssurround_v2"
+                app:buttonTint="@color/teal_00cba8"
                 android:textSize="16sp"
                 android:drawablePadding="16dp"/>
 
@@ -124,6 +140,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="세탁기"
+                android:checked="false"
+                android:fontFamily="@font/cafe24ssurround_v2"
+                app:buttonTint="@color/teal_00cba8"
                 android:textSize="16sp"
                 android:drawablePadding="16dp" />
 
@@ -131,20 +150,29 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="건조기"
+                android:checked="false"
+                android:fontFamily="@font/cafe24ssurround_v2"
+                app:buttonTint="@color/teal_00cba8"
                 android:textSize="16sp"
                 android:drawablePadding="16dp"/>
 
             <com.google.android.material.checkbox.MaterialCheckBox
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:checked="false"
+                android:drawablePadding="16dp"
+                android:fontFamily="@font/cafe24ssurround_v2"
                 android:text="욕조"
                 android:textSize="16sp"
-                android:drawablePadding="16dp"/>
+                app:buttonTint="@color/teal_00cba8" />
 
             <com.google.android.material.checkbox.MaterialCheckBox
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="주방"
+                android:checked="false"
+                android:fontFamily="@font/cafe24ssurround_v2"
+                app:buttonTint="@color/teal_00cba8"
                 android:textSize="16sp"
                 android:drawablePadding="16dp" />
 
@@ -152,6 +180,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="식탁"
+                android:checked="false"
+                android:fontFamily="@font/cafe24ssurround_v2"
+                app:buttonTint="@color/teal_00cba8"
                 android:textSize="16sp"
                 android:drawablePadding="16dp" />
 
@@ -159,6 +190,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="전자레인지"
+                android:checked="false"
+                android:fontFamily="@font/cafe24ssurround_v2"
+                app:buttonTint="@color/teal_00cba8"
                 android:textSize="16sp"
                 android:drawablePadding="16dp" />
 
@@ -166,6 +200,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="냉장고"
+                android:checked="false"
+                android:fontFamily="@font/cafe24ssurround_v2"
+                app:buttonTint="@color/teal_00cba8"
                 android:textSize="16sp"
                 android:drawablePadding="16dp" />
 
@@ -173,6 +210,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="TV"
+                android:checked="false"
+                android:fontFamily="@font/cafe24ssurround_v2"
+                app:buttonTint="@color/teal_00cba8"
                 android:textSize="16sp"
                 android:drawablePadding="16dp" />
 

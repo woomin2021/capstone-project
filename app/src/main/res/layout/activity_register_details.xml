@@ -109,7 +109,11 @@
                 app:boxCornerRadiusBottomEnd="8dp"
                 app:boxCornerRadiusBottomStart="8dp"
                 app:boxCornerRadiusTopEnd="8dp"
-                app:boxCornerRadiusTopStart="8dp">
+                app:boxCornerRadiusTopStart="8dp"
+                app:hintTextColor="@color/textinput_hint_color"
+                app:boxStrokeColor="@color/textinput_stroke_color"
+
+                >
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/address_edit_text"
@@ -142,7 +146,9 @@
                 app:boxCornerRadiusBottomEnd="8dp"
                 app:boxCornerRadiusBottomStart="8dp"
                 app:boxCornerRadiusTopEnd="8dp"
-                app:boxCornerRadiusTopStart="8dp">
+                app:boxCornerRadiusTopStart="8dp"
+                app:hintTextColor="@color/textinput_hint_color"
+                app:boxStrokeColor="@color/textinput_stroke_color">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/address_detail_edit_text"
@@ -173,7 +179,9 @@
                 app:boxCornerRadiusBottomEnd="8dp"
                 app:boxCornerRadiusBottomStart="8dp"
                 app:boxCornerRadiusTopEnd="8dp"
-                app:boxCornerRadiusTopStart="8dp">
+                app:boxCornerRadiusTopStart="8dp"
+                app:hintTextColor="@color/textinput_hint_color"
+                app:boxStrokeColor="@color/textinput_stroke_color">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/description_edit_text"
@@ -205,7 +213,9 @@
                 app:boxCornerRadiusBottomEnd="8dp"
                 app:boxCornerRadiusBottomStart="8dp"
                 app:boxCornerRadiusTopEnd="8dp"
-                app:boxCornerRadiusTopStart="8dp">
+                app:boxCornerRadiusTopStart="8dp"
+                app:hintTextColor="@color/textinput_hint_color"
+                app:boxStrokeColor="@color/textinput_stroke_color">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/summary_edit_text"
