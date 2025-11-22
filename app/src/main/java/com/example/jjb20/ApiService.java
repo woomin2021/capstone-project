@@ -85,4 +85,8 @@ public interface ApiService {
     //예약 생성
     @POST("/api/reservations")
     Call<ReservationDTO> createReservation(@Body ReservationCreateRequestDto req);
+
+    // 어메니티 포함 전체 상세
+    @GET("api/houses/{id}/full-detail")
+    Call<HouseDetailResponseDto> getHouseFullDetail(@Path("id") Long id);
 }

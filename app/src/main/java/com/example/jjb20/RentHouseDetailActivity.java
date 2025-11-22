@@ -327,14 +327,26 @@ public class RentHouseDetailActivity extends AppCompatActivity implements OnMapR
             }
             tvHostName.setText(ratingText);
             tvHostName.setVisibility(View.VISIBLE);
+            tvHostName.setOnClickListener(v -> {
+                Intent intent = new Intent(RentHouseDetailActivity.this, HostReviewActivity.class);
+
+                // 필요하면 호스트 ID 같은 것도 같이 넘길 수 있음
+                // intent.putExtra("hostId", dto.getHostId());
+
+                startActivity(intent);
+            });
         }
 
         if (divider2 != null) divider2.setVisibility(View.VISIBLE);
     }
 
-    //서버에서 상세 정보(호스트 이름/평점)를 다시 받아오기
+    //서버에서 상세 정보(호스트 이름/평점 /어매니티까지) 를 다시 받아오기
     private void loadHouseDetailFromServer(long houseId) {
-        apiService.getHouseDetail(houseId).enqueue(new Callback<HouseDetailResponseDto>() {
+        // 예전: getHouseDetail(houseId)
+        // apiService.getHouseDetail(houseId).enqueue(new Callback<HouseDetailResponseDto>() {
+
+        // 새 전체 상세 엔드포인트 사용
+        apiService.getHouseFullDetail(houseId).enqueue(new Callback<HouseDetailResponseDto>() {
             @Override
             public void onResponse(@NonNull Call<HouseDetailResponseDto> call,
                                    @NonNull Response<HouseDetailResponseDto> response) {
@@ -345,9 +357,9 @@ public class RentHouseDetailActivity extends AppCompatActivity implements OnMapR
 
                 HouseDetailResponseDto dto = response.body();
 
-                String hostName    = dto.getHostName();
-                Double ratingAvg   = dto.getHostRatingAvg();
-                Integer ratingCount= dto.getHostRatingCount();
+                String hostName     = dto.getHostName();
+                Double ratingAvg    = dto.getHostRatingAvg();
+                Integer ratingCount = dto.getHostRatingCount();
 
                 Log.d("RentDetail",
                         "hostName=" + hostName +
@@ -355,6 +367,8 @@ public class RentHouseDetailActivity extends AppCompatActivity implements OnMapR
                                 ", cnt=" + ratingCount);
 
                 showHostSection(hostName, ratingAvg, ratingCount);
+
+                // 나중에 어메니티도 쓰고 싶으면 여기서 dto.getParking() 이런 식으로 UI 반영하면 됨
             }
 
             @Override

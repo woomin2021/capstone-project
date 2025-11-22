@@ -26,7 +26,7 @@
             android:id="@+id/section_tit"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/pretendardvariable"
+            android:fontFamily="@font/cafe24ssurroundotf"
             android:text="예약 내역"
             android:textSize="24sp"
             android:textStyle="bold"
@@ -45,11 +45,12 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="예약 내역"
+            android:textSize="16.5sp"
             android:textColor="@color/white"
             android:fontFamily="@font/cafe24ssurround_v2"
 
             android:drawableRight="@drawable/ic_rent"
-            android:background="@drawable/registerhouse_btn"
+            android:background="@drawable/rounded_button_green"
             android:paddingHorizontal="28dp"
             android:paddingVertical="10dp"
             android:layout_marginRight="14dp"/>
@@ -58,10 +59,10 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="지난 내역"
+            android:textSize="16.5sp"
             android:textColor="@color/white"
             android:fontFamily="@font/cafe24ssurround_v2"
-
-            android:background="@drawable/registerhouse_btn"
+            android:background="@drawable/rounded_button_green"
             android:paddingHorizontal="28dp"
             android:paddingVertical="10dp"
             android:drawableRight="@drawable/ic_rent"/>
