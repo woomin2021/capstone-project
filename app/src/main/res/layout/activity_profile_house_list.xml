@@ -27,7 +27,7 @@
             android:id="@+id/section_tit"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/pretendardvariable"
+            android:fontFamily="@font/cafe24ssurroundotf"
             android:text="집 목록"
             android:textSize="24sp"
             android:textStyle="bold"

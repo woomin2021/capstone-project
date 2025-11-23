@@ -22,11 +22,11 @@
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
             android:text="userid_tv"
+            android:fontFamily="@font/cafe24ssurround_v2"
             android:textSize="16sp"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            android:fontFamily="@font/pretendardvariable"
             />
 
         <TextView
@@ -37,7 +37,7 @@
             android:textSize="10sp"
             app:layout_constraintStart_toStartOf="@+id/userid_tv"
             app:layout_constraintTop_toBottomOf="@+id/userid_tv"
-            android:fontFamily="@font/pretendardvariable"
+            android:fontFamily="@font/cafe24ssurround_v2"
             />
 
         <TextView
@@ -52,7 +52,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="@+id/date_tv"
             app:layout_constraintTop_toBottomOf="@+id/date_tv"
-            android:fontFamily="@font/pretendardvariable"
+            android:fontFamily="@font/cafe24ssurround_v2"
             />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -75,7 +75,7 @@
             android:textSize="10sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            android:fontFamily="@font/pretendardvariable"
+            android:fontFamily="@font/cafe24ssurround_v2"
             />
 
         <TextView
@@ -92,7 +92,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@+id/date_tv2"
             app:layout_constraintTop_toBottomOf="@+id/date_tv2"
-            android:fontFamily="@font/pretendardvariable"
+            android:fontFamily="@font/cafe24ssurround_v2"
             />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -123,6 +123,8 @@ public class RentHouseDetailActivity extends AppCompatActivity implements OnMapR
         TextView tvShortLabel         = findViewById(R.id.textShortDescLabel);
         TextView tvShortValue         = findViewById(R.id.textShortDescValue);
         TextView tvMapLabel           = findViewById(R.id.textMapLabel);
+        TextView tvAmenitiesLabel = findViewById(R.id.textAmenitiesLabel);
+        TextView tvAmenitiesValue = findViewById(R.id.textAmenitiesValue);
 
         // 목록에서 넘어온 기본 정보
         house = (HouseDto) getIntent().getSerializableExtra(EXTRA_HOUSE);
@@ -327,14 +329,22 @@ public class RentHouseDetailActivity extends AppCompatActivity implements OnMapR
             }
             tvHostName.setText(ratingText);
             tvHostName.setVisibility(View.VISIBLE);
+            tvHostName.setOnClickListener(v -> {
+                Intent intent = new Intent(RentHouseDetailActivity.this, HostReviewActivity.class);
+
+                // 필요하면 호스트 ID 같은 것도 같이 넘길 수 있음
+                // intent.putExtra("hostId", dto.getHostId());
+
+                startActivity(intent);
+            });
         }
 
         if (divider2 != null) divider2.setVisibility(View.VISIBLE);
     }
 
-    //서버에서 상세 정보(호스트 이름/평점)를 다시 받아오기
+    //서버에서 상세 정보(호스트 이름/평점 /어매니티까지) 를 다시 받아오기
     private void loadHouseDetailFromServer(long houseId) {
-        apiService.getHouseDetail(houseId).enqueue(new Callback<HouseDetailResponseDto>() {
+        apiService.getHouseFullDetail(houseId).enqueue(new Callback<HouseDetailResponseDto>() {
             @Override
             public void onResponse(@NonNull Call<HouseDetailResponseDto> call,
                                    @NonNull Response<HouseDetailResponseDto> response) {
@@ -345,9 +355,9 @@ public class RentHouseDetailActivity extends AppCompatActivity implements OnMapR
 
                 HouseDetailResponseDto dto = response.body();
 
-                String hostName    = dto.getHostName();
-                Double ratingAvg   = dto.getHostRatingAvg();
-                Integer ratingCount= dto.getHostRatingCount();
+                String hostName     = dto.getHostName();
+                Double ratingAvg    = dto.getHostRatingAvg();
+                Integer ratingCount = dto.getHostRatingCount();
 
                 Log.d("RentDetail",
                         "hostName=" + hostName +
@@ -355,6 +365,39 @@ public class RentHouseDetailActivity extends AppCompatActivity implements OnMapR
                                 ", cnt=" + ratingCount);
 
                 showHostSection(hostName, ratingAvg, ratingCount);
+
+                // ===== 어메니티 UI 채우기 =====
+                TextView tvAmenitiesLabel = findViewById(R.id.textAmenitiesLabel);
+                TextView tvAmenitiesValue = findViewById(R.id.textAmenitiesValue);
+
+                if (tvAmenitiesLabel != null) {
+                    tvAmenitiesLabel.setText("편의시설");
+                }
+
+                if (tvAmenitiesValue != null) {
+                    StringBuilder sb = new StringBuilder();
+
+                    if (Boolean.TRUE.equals(dto.getParking()))        sb.append("주차장 · ");
+                    if (Boolean.TRUE.equals(dto.getWifi()))           sb.append("와이파이 · ");
+                    if (Boolean.TRUE.equals(dto.getAirConditioning())) sb.append("에어컨 · ");
+                    if (Boolean.TRUE.equals(dto.getHeating()))        sb.append("난방 · ");
+                    if (Boolean.TRUE.equals(dto.getKitchen()))        sb.append("주방 · ");
+                    if (Boolean.TRUE.equals(dto.getWasher()))         sb.append("세탁기 · ");
+                    if (Boolean.TRUE.equals(dto.getDryer()))          sb.append("건조기 · ");
+                    if (Boolean.TRUE.equals(dto.getBathtub()))        sb.append("욕조 · ");
+                    if (Boolean.TRUE.equals(dto.getDiningTable()))    sb.append("식탁 · ");
+                    if (Boolean.TRUE.equals(dto.getMicrowave()))      sb.append("전자레인지 · ");
+                    if (Boolean.TRUE.equals(dto.getRefrigerator()))   sb.append("냉장고 · ");
+                    if (Boolean.TRUE.equals(dto.getTv()))             sb.append("TV · ");
+
+                    if (sb.length() == 0) {
+                        sb.append("등록된 편의시설이 없습니다.");
+                    } else {
+                        sb.setLength(sb.length() - 3); // 마지막 " · " 제거
+                    }
+
+                    tvAmenitiesValue.setText(sb.toString());
+                }
             }
 
             @Override

@@ -34,7 +34,7 @@
             android:text="프로필"
             android:textSize="20sp"
             android:gravity="center"
-            android:fontFamily="@font/pretendardvariable" />
+            android:fontFamily="@font/cafe24ssurroundotf" />
 
         <ImageView
             android:id="@+id/setting_btn"
@@ -83,7 +83,7 @@
                 android:text="홍길동"
                 android:textSize="22sp"
                 android:textStyle="bold"
-                android:fontFamily="@font/pretendardvariable"
+                android:fontFamily="@font/cafe24ssurroundotf"
                 android:layout_marginBottom="4dp" />
 
             <!-- 호스트 문구 -->
@@ -95,7 +95,7 @@
                 android:textColor="#888"
                 android:textSize="14sp"
                 android:layout_marginBottom="18dp"
-                android:fontFamily="@font/pretendardvariable" />
+                android:fontFamily="@font/cafe24ssurroundotf" />
 
             <!-- 지표 3개 -->
             <LinearLayout
@@ -120,7 +120,7 @@
                         android:textSize="18sp"
                         android:layout_height="wrap_content"
                         android:layout_width="wrap_content"
-                        android:fontFamily="@font/pretendardvariable" />
+                        android:fontFamily="@font/cafe24ssurroundotf" />
 
                     <TextView
                         android:text="받은후기"
@@ -128,7 +128,7 @@
                         android:textColor="#777"
                         android:layout_height="wrap_content"
                         android:layout_width="wrap_content"
-                        android:fontFamily="@font/pretendardvariable" />
+                        android:fontFamily="@font/cafe24ssurroundotf" />
                 </LinearLayout>
 
                 <!-- 평점 -->
@@ -145,7 +145,7 @@
                         android:textSize="18sp"
                         android:layout_height="wrap_content"
                         android:layout_width="wrap_content"
-                        android:fontFamily="@font/pretendardvariable" />
+                        android:fontFamily="@font/cafe24ssurroundotf" />
 
                     <TextView
                         android:text="평점"
@@ -153,7 +153,7 @@
                         android:textColor="#777"
                         android:layout_height="wrap_content"
                         android:layout_width="wrap_content"
-                        android:fontFamily="@font/pretendardvariable" />
+                        android:fontFamily="@font/cafe24ssurroundotf" />
                 </LinearLayout>
 
                 <!-- 매너온도 -->
@@ -170,7 +170,7 @@
                         android:textSize="18sp"
                         android:layout_height="wrap_content"
                         android:layout_width="wrap_content"
-                        android:fontFamily="@font/pretendardvariable" />
+                        android:fontFamily="@font/cafe24ssurroundotf" />
 
                     <TextView
                         android:text="매너온도"
@@ -178,7 +178,7 @@
                         android:textColor="#777"
                         android:layout_height="wrap_content"
                         android:layout_width="wrap_content"
-                        android:fontFamily="@font/pretendardvariable" />
+                        android:fontFamily="@font/cafe24ssurroundotf" />
                 </LinearLayout>
             </LinearLayout>
 
@@ -226,7 +226,7 @@
                     android:textStyle="bold"
                     android:textSize="18sp"
                     android:layout_marginStart="8dp"
-                    android:fontFamily="@font/pretendardvariable" />
+                    android:fontFamily="@font/cafe24ssurroundotf" />
 
                 <TextView
                     android:id="@+id/review_count"
@@ -234,7 +234,7 @@
                     android:layout_height="wrap_content"
                     android:text="1,364개"
                     android:textSize="16sp"
-                    android:fontFamily="@font/pretendardvariable" />
+                    android:fontFamily="@font/cafe24ssurroundotf" />
             </LinearLayout>
 
 
@@ -259,7 +259,7 @@
                 android:textSize="16sp"
                 android:layout_gravity="center"
                 android:paddingVertical="8dp"
-                android:fontFamily="@font/pretendardvariable" />
+                android:fontFamily="@font/cafe24ssurroundotf" />
 
         </LinearLayout>
 
