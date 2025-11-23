@@ -253,8 +253,8 @@ public class RegisterFinalActivity extends AppCompatActivity {
         int bedroomCount = PrefManager.getInt("house_bedroom_count", 0);
         int bedCount = PrefManager.getInt("house_bed_count", 0);
         int bathroomCount = PrefManager.getInt("house_bathroom_count", 0);
-        String availableStartDate = PrefManager.get("house_available_start");
-        String availableEndDate = PrefManager.get("house_available_end");
+        String startDay = PrefManager.get("start_day");
+        String endDay = PrefManager.get("end_day");
 
         // 디버깅용 로그 추가
         Log.d(TAG, "Registration data - title: " + title);
@@ -262,7 +262,7 @@ public class RegisterFinalActivity extends AppCompatActivity {
         Log.d(TAG, "Registration data - address: " + address);
         Log.d(TAG, "Registration data - city: " + city + ", country: " + country);
         Log.d(TAG, "Registration data - bedroomCount: " + bedroomCount + ", bedCount: " + bedCount + ", bathroomCount: " + bathroomCount);
-        Log.d(TAG, "Registration data - availableStartDate: " + availableStartDate + ", availableEndDate: " + availableEndDate);
+        Log.d(TAG, "Registration data - availableStartDate: " + startDay + ", availableEndDate: " + endDay);
         Log.d(TAG, "Registration data - pricePerNight: " + pricePerNight);
         Log.d(TAG, "Registration data - amenityCodes: " + amenityCodes);
 
@@ -280,18 +280,18 @@ public class RegisterFinalActivity extends AppCompatActivity {
             return;
         }
 
-        if (availableStartDate == null || availableStartDate.isEmpty() || 
-            availableEndDate == null || availableEndDate.isEmpty()) {
+        if (startDay == null || startDay.isEmpty() ||
+            endDay == null || endDay.isEmpty()) {
             Toast.makeText(this, "예약 가능 기간을 선택해주세요.", Toast.LENGTH_SHORT).show();
-            Log.e(TAG, "Available dates are missing - start: " + availableStartDate + ", end: " + availableEndDate);
+            Log.e(TAG, "Available dates are missing - start: " + startDay + ", end: " + endDay);
             return;
         }
 
         // 날짜 형식 검증 (yyyy-MM-dd 형식이어야 함)
-        if (!availableStartDate.matches("\\d{4}-\\d{2}-\\d{2}") || 
-            !availableEndDate.matches("\\d{4}-\\d{2}-\\d{2}")) {
+        if (!startDay.matches("\\d{4}-\\d{2}-\\d{2}") ||
+            !endDay.matches("\\d{4}-\\d{2}-\\d{2}")) {
             Toast.makeText(this, "날짜 형식이 올바르지 않습니다.", Toast.LENGTH_SHORT).show();
-            Log.e(TAG, "Invalid date format - start: " + availableStartDate + ", end: " + availableEndDate);
+            Log.e(TAG, "Invalid date format - start: " + startDay + ", end: " + endDay);
             return;
         }
 
@@ -325,8 +325,8 @@ public class RegisterFinalActivity extends AppCompatActivity {
                 bedroomCount,
                 bedCount,
                 bathroomCount,
-                availableStartDate,
-                availableEndDate,
+                startDay,
+                endDay,
                 imageUrl != null ? imageUrl : ""
         );
 
