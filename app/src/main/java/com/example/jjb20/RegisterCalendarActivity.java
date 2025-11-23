@@ -104,8 +104,8 @@ public class RegisterCalendarActivity extends AppCompatActivity {
         nextButton.setOnClickListener(v -> {
             if (nextButton.isEnabled()) {
                 if (startDate != null && endDate != null) {
-                    PrefManager.put("house_available_start", startDate.toString());
-                    PrefManager.put("house_available_end", endDate.toString());
+                    PrefManager.put("start_day", startDate.toString());
+                    PrefManager.put("end_day", endDate.toString());
                 }
                 Intent intent = new Intent(RegisterCalendarActivity.this, RegisterFinalActivity.class);
                 startActivity(intent);
