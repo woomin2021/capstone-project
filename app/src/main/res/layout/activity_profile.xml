@@ -29,11 +29,11 @@
             android:textSize="20sp"
             android:gravity="center_horizontal|top"
             android:fontFamily="@font/cafe24ssurroundotf"/>
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/cog"
-            android:layout_gravity="right"/>
+<!--        <ImageView-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:src="@drawable/icon"-->
+<!--            android:layout_gravity="right"/>-->
     </LinearLayout>
 
     <!-- 프로필 -->
@@ -48,6 +48,7 @@
             android:layout_height="wrap_content"
             android:src="@drawable/profile_image"/>
         <TextView
+            android:id="@+id/name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="홍길동"
@@ -107,6 +108,7 @@
                 android:textSize="16.5sp"
                 />
             <TextView
+                android:id="@+id/tvHouseCount"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="0개"
@@ -146,6 +148,7 @@
                 android:fontFamily="@font/cafe24ssurroundotf"
                 android:textSize="16.5sp" />
             <TextView
+                android:id="@+id/tvReserveCount"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="0개"
@@ -161,15 +164,16 @@
     </LinearLayout>
 
     <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/logoutbtn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/btn_mainbtn"
         android:fontFamily="@font/cafe24ssurroundotf"
         android:paddingHorizontal="16dp"
         android:paddingVertical="10dp"
-        android:textColor="@color/white"
         android:text="로그아웃"
         android:textAlignment="center"
+        android:textColor="@color/white"
         android:textSize="16sp" />
 
 </LinearLayout>

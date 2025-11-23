@@ -4,23 +4,51 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-public class ProfileActivity extends AppCompatActivity {
-    private LinearLayout houseListBtn, reservationListBtn;
+import com.example.jjb20.dto.ProfileStatsResponseDto;
+import com.google.firebase.Firebase;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
+public class ProfileActivity extends AppCompatActivity {
+
+    private LinearLayout houseListBtn, reservationListBtn;
+    TextView name;
+    private TextView tvHouseCount, tvReserveCount;
     Button profileEditbtn;
+    Button logoutBtn;
+
+    private FirebaseAuth mAuth;
+    ApiService apiService;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
 
+        apiService = RetrofitClient.getInstance().create(ApiService.class);
+
         houseListBtn = findViewById(R.id.houseList);
         reservationListBtn = findViewById(R.id.reservationList);
         profileEditbtn = findViewById(R.id.profileEditbtn);
+
+        tvHouseCount = findViewById(R.id.tvHouseCount);
+        tvReserveCount = findViewById(R.id.tvReserveCount);
+
+        name = findViewById(R.id.name);
+
+        name.setText(PrefManager.get("userName"));
+
+        loadCounts();
 
         houseListBtn.setOnClickListener(v -> {
             Intent intent = new Intent(getApplicationContext(), ProfileHouseListActivity.class);
@@ -33,7 +61,41 @@ public class ProfileActivity extends AppCompatActivity {
         });
 
         profileEditbtn.setOnClickListener(v -> {
-//            Intent intent = new Intent()
+            Intent intent = new Intent(getApplicationContext(), EditProfileActivity.class);
+            startActivity(intent);
+        });
+
+        logoutBtn = findViewById(R.id.logoutbtn);
+
+        logoutBtn.setOnClickListener( v -> {
+            mAuth = FirebaseAuth.getInstance();
+            mAuth.signOut();
+            Toast.makeText(this, "로그아웃", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+            startActivity(intent);
+        });
+    }
+
+    private void loadCounts() {
+        String token = PrefManager.get("idToken");
+        String bearer = "Bearer " + token;
+
+        apiService.getProfileStats(bearer).enqueue(new Callback<ProfileStatsResponseDto>() {
+            @Override
+            public void onResponse(Call<ProfileStatsResponseDto> call, Response<ProfileStatsResponseDto> response) {
+                if (response.isSuccessful() && response.body() != null){
+
+                    ProfileStatsResponseDto dto = response.body();
+
+                    tvHouseCount.setText(dto.houseCount + "개");
+                    tvReserveCount.setText(dto.reservationCount + "개");
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ProfileStatsResponseDto> call, Throwable t) {
+            }
         });
     }
 }
