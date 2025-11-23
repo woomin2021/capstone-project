@@ -14,6 +14,11 @@ import androidx.core.view.WindowInsetsCompat;
 import com.google.android.material.card.MaterialCardView;
 
 public class MainActivity extends AppCompatActivity {
+
+    // TODO
+    // 1. 예약 방법 radiobutton 하나만 선택할수 있게 변경
+    // 2. 예약 완료 시 상태 변경 및 빌리기 리스트에 안뜨게 하기
+
     private MaterialCardView btnRent;
     private MaterialCardView btnRegister;
     private ImageView btnProfile;
