@@ -35,11 +35,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="채팅방"
+            android:fontFamily="@font/cafe24ssurround_v2"
             android:textColor="@color/black"
             android:textSize="16sp"
             android:textStyle="bold"
             android:layout_marginStart="12dp"
-            android:fontFamily="@font/pretendardvariable" />
+            />
     </LinearLayout>
 
     <!-- 🔹 메시지 목록 -->
@@ -49,6 +50,7 @@
         android:layout_height="0dp"
         android:layout_marginHorizontal="12dp"
         android:layout_marginTop="8dp"
+
         android:layout_marginBottom="8dp"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintTop_toBottomOf="@id/header_layout"
@@ -82,11 +84,12 @@
                 android:layout_height="48dp"
                 android:layout_weight="1"
                 android:hint="메시지를 입력하세요"
+                android:fontFamily="@font/cafe24ssurround_v2"
                 android:background="@drawable/edittext_border"
                 android:paddingHorizontal="12dp"
                 android:textColor="@color/black"
                 android:textColorHint="@color/gray"
-                android:fontFamily="@font/pretendardvariable"
+
                 android:textSize="14sp"
                 android:imeOptions="actionSend"
                 android:inputType="textCapSentences" />

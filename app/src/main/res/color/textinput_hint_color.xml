@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- 포커스 됐을 때(입력 중일 때) -->
+    <item
+        android:state_focused="true"
+        android:color="@color/teal_00cba8" />
+
+    <!-- 호버(손가락 올려졌을 때) -->
+    <item
+        android:state_hovered="true"
+        android:color="@color/teal_00cba8" />
+
+    <!-- 기본 상태 -->
+    <item android:color="#757575" />  <!-- 연한 회색 등 기본 힌트 색 -->
+</selector>

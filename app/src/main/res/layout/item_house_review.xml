@@ -35,7 +35,7 @@
                 android:text="홍길동"
                 android:textSize="16sp"
                 android:textStyle="bold"
-                android:fontFamily="@font/pretendardvariable" />
+                android:fontFamily="@font/cafe24ssurroundotf" />
 
             <TextView
                 android:id="@+id/review_date"
@@ -44,7 +44,7 @@
                 android:text="3일 전"
                 android:textSize="12sp"
                 android:textColor="#777"
-                android:fontFamily="@font/pretendardvariable" />
+                android:fontFamily="@font/cafe24ssurroundotf" />
         </LinearLayout>
     </LinearLayout>
 
@@ -68,6 +68,6 @@
         android:textSize="14sp"
         android:textColor="#333"
         android:text="리뷰 내용이 들어갑니다."
-        android:fontFamily="@font/pretendardvariable" />
+        android:fontFamily="@font/cafe24ssurroundotf" />
 
 </LinearLayout>

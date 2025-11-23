@@ -56,6 +56,9 @@ public class RentHouseDetailActivity extends AppCompatActivity implements OnMapR
     public static final String EXTRA_DATE   = "extra_date";
     public static final String EXTRA_GUESTS = "extra_guests";
     public static final String EXTRA_PRICE  = "extra_price";
+    public static final String EXTRA_HOUSE_NAME = "extra_house_name";
+    public static final String EXTRA_HOUSE_ADDR = "extra_house_addr";
+    public static final String EXTRA_HOUSE_IMAGE = "extra_house_image";
 
     private ViewPager2 viewPagerImages;
     private TextView tvTitle, tvLocation, tvPrice;
@@ -120,6 +123,8 @@ public class RentHouseDetailActivity extends AppCompatActivity implements OnMapR
         TextView tvShortLabel         = findViewById(R.id.textShortDescLabel);
         TextView tvShortValue         = findViewById(R.id.textShortDescValue);
         TextView tvMapLabel           = findViewById(R.id.textMapLabel);
+        TextView tvAmenitiesLabel = findViewById(R.id.textAmenitiesLabel);
+        TextView tvAmenitiesValue = findViewById(R.id.textAmenitiesValue);
 
         // 목록에서 넘어온 기본 정보
         house = (HouseDto) getIntent().getSerializableExtra(EXTRA_HOUSE);
@@ -221,24 +226,18 @@ public class RentHouseDetailActivity extends AppCompatActivity implements OnMapR
                 if (seg1 != null) seg1.setBackgroundColor(GRAY);
                 if (seg2 != null) seg2.setBackgroundColor(GREEN);
 
-                // 1) 1박 가격 (기본값 90,000원)
                 int pricePerNight = (house != null && house.pricePerNight != null)
                         ? house.pricePerNight
                         : 90000;
 
-                // 2) 박 수 계산 (체크인~체크아웃 날짜 차이)
-                long nights = 1L;   // 혹시 모를 예외 대비 기본 1박
+                long nights = 1L;
                 if (startDate != null && endDate != null) {
                     nights = ChronoUnit.DAYS.between(startDate, endDate);
                 }
 
-                // 3) 전체 금액 = 1박 가격 × 박 수
                 long totalPrice = pricePerNight * nights;
-
-                // "180000원 · 1박" 이런 형태로 보낼 문자열
                 String priceText = totalPrice + "원 · " + nights + "박";
 
-                // 날짜 텍스트
                 String dateText;
                 if (startDate != null && endDate != null) {
                     dateText = startDate.format(dayFmt) + " - " + endDate.format(dayFmt);
@@ -246,11 +245,47 @@ public class RentHouseDetailActivity extends AppCompatActivity implements OnMapR
                     dateText = "12월 15일 ~ 12월 18일";
                 }
 
+                // 여기서 이름/주소/이미지 준비
+                String name    = (house != null) ? house.title : null;
+                String address = null;
+                if (house != null) {
+                    String loc = house.addressLine1;
+                    if (house.city != null && !house.city.isEmpty()) {
+                        loc += "\n" + house.city;
+                    }
+                    if (house.country != null && !house.country.isEmpty()) {
+                        loc += " · " + house.country;
+                    }
+                    address = loc;
+                }
+                String imageUrl = (house != null) ? house.coverPhotoUrl : null;
+
+
+                // 1) DB에 저장할 raw 값들 준비 (yyyy-MM-dd 형태)
+                long houseId = (house != null) ? house.id : -1L;
+                String checkinDateRaw  = (startDate != null) ? startDate.toString() : null;   // 2026-01-06
+                String checkoutDateRaw = (endDate   != null) ? endDate.toString()   : null;   // 2026-01-08
+
+
+
                 // 예약 확인 화면으로 데이터 전달
                 Intent i = new Intent(this, ReserveConfirmActivity.class);
                 i.putExtra(EXTRA_DATE,   dateText);
                 i.putExtra(EXTRA_GUESTS, "성인 " + adultCount + "명");
                 i.putExtra(EXTRA_PRICE,  priceText);
+                i.putExtra(EXTRA_HOUSE_NAME,  name);
+                i.putExtra(EXTRA_HOUSE_ADDR,  address);
+                i.putExtra(EXTRA_HOUSE_IMAGE, imageUrl);
+
+                if (house != null) {
+                    i.putExtra("houseId", house.id);                // 숙소 PK
+                }
+                if (startDate != null) {
+                    i.putExtra("checkinDate", startDate.toString());   // "2025-11-21"
+                }
+                if (endDate != null) {
+                    i.putExtra("checkoutDate", endDate.toString());    // "2025-11-23"
+                }
                 startActivity(i);
             });
         }
@@ -294,14 +329,22 @@ public class RentHouseDetailActivity extends AppCompatActivity implements OnMapR
             }
             tvHostName.setText(ratingText);
             tvHostName.setVisibility(View.VISIBLE);
+            tvHostName.setOnClickListener(v -> {
+                Intent intent = new Intent(RentHouseDetailActivity.this, HostReviewActivity.class);
+
+                // 필요하면 호스트 ID 같은 것도 같이 넘길 수 있음
+                // intent.putExtra("hostId", dto.getHostId());
+
+                startActivity(intent);
+            });
         }
 
         if (divider2 != null) divider2.setVisibility(View.VISIBLE);
     }
 
-    //서버에서 상세 정보(호스트 이름/평점)를 다시 받아오기
+    //서버에서 상세 정보(호스트 이름/평점 /어매니티까지) 를 다시 받아오기
     private void loadHouseDetailFromServer(long houseId) {
-        apiService.getHouseDetail(houseId).enqueue(new Callback<HouseDetailResponseDto>() {
+        apiService.getHouseFullDetail(houseId).enqueue(new Callback<HouseDetailResponseDto>() {
             @Override
             public void onResponse(@NonNull Call<HouseDetailResponseDto> call,
                                    @NonNull Response<HouseDetailResponseDto> response) {
@@ -312,9 +355,9 @@ public class RentHouseDetailActivity extends AppCompatActivity implements OnMapR
 
                 HouseDetailResponseDto dto = response.body();
 
-                String hostName    = dto.getHostName();
-                Double ratingAvg   = dto.getHostRatingAvg();
-                Integer ratingCount= dto.getHostRatingCount();
+                String hostName     = dto.getHostName();
+                Double ratingAvg    = dto.getHostRatingAvg();
+                Integer ratingCount = dto.getHostRatingCount();
 
                 Log.d("RentDetail",
                         "hostName=" + hostName +
@@ -322,6 +365,39 @@ public class RentHouseDetailActivity extends AppCompatActivity implements OnMapR
                                 ", cnt=" + ratingCount);
 
                 showHostSection(hostName, ratingAvg, ratingCount);
+
+                // ===== 어메니티 UI 채우기 =====
+                TextView tvAmenitiesLabel = findViewById(R.id.textAmenitiesLabel);
+                TextView tvAmenitiesValue = findViewById(R.id.textAmenitiesValue);
+
+                if (tvAmenitiesLabel != null) {
+                    tvAmenitiesLabel.setText("편의시설");
+                }
+
+                if (tvAmenitiesValue != null) {
+                    StringBuilder sb = new StringBuilder();
+
+                    if (Boolean.TRUE.equals(dto.getParking()))        sb.append("주차장 · ");
+                    if (Boolean.TRUE.equals(dto.getWifi()))           sb.append("와이파이 · ");
+                    if (Boolean.TRUE.equals(dto.getAirConditioning())) sb.append("에어컨 · ");
+                    if (Boolean.TRUE.equals(dto.getHeating()))        sb.append("난방 · ");
+                    if (Boolean.TRUE.equals(dto.getKitchen()))        sb.append("주방 · ");
+                    if (Boolean.TRUE.equals(dto.getWasher()))         sb.append("세탁기 · ");
+                    if (Boolean.TRUE.equals(dto.getDryer()))          sb.append("건조기 · ");
+                    if (Boolean.TRUE.equals(dto.getBathtub()))        sb.append("욕조 · ");
+                    if (Boolean.TRUE.equals(dto.getDiningTable()))    sb.append("식탁 · ");
+                    if (Boolean.TRUE.equals(dto.getMicrowave()))      sb.append("전자레인지 · ");
+                    if (Boolean.TRUE.equals(dto.getRefrigerator()))   sb.append("냉장고 · ");
+                    if (Boolean.TRUE.equals(dto.getTv()))             sb.append("TV · ");
+
+                    if (sb.length() == 0) {
+                        sb.append("등록된 편의시설이 없습니다.");
+                    } else {
+                        sb.setLength(sb.length() - 3); // 마지막 " · " 제거
+                    }
+
+                    tvAmenitiesValue.setText(sb.toString());
+                }
             }
 
             @Override
