@@ -141,12 +141,16 @@ public class LoginActivity extends AppCompatActivity {
                     PrefManager.put("email", me.email);
                     PrefManager.put("userId", me.id);
                     PrefManager.put("userName", me.name);
+                    PrefManager.put("phone", me.phone);
+                    PrefManager.put("profile_image", me.profileImageUrl);
 
                     Log.d("PrefCheck", "idToken: " + PrefManager.get("idToken", "없음"));
                     Log.d("PrefCheck", "uid: " + PrefManager.get("uid", "없음"));
                     Log.d("PrefCheck", "email: " + PrefManager.get("email", "없음"));
                     Log.d("PrefCheck", "userName: " + PrefManager.get("userName", "없음"));
                     Log.d("PrefCheck", "userId: " + PrefManager.getLong("userId"));
+                    Log.d("PrefCheck", "phone: " + PrefManager.get("phone"));
+                    Log.d("PrefCheck", "photourl: " + PrefManager.get("profile_image"));
 
                     startActivity(new Intent(LoginActivity.this, MainActivity.class));
                     // finish();
