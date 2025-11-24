@@ -8,14 +8,24 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.jjb20.dto.FirebaseLoginRequestDto;
 import com.example.jjb20.dto.UserResponseDto;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.button.MaterialButton;
+import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.GoogleAuthProvider;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -23,11 +33,16 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 
 public class LoginActivity extends AppCompatActivity {
+
     private EditText etEmail, etPassword;
-    private MaterialButton btnLogin, btnSignup;
+    private MaterialButton btnLogin, btnSignup, btnGoogleLogin;
 
     private FirebaseAuth firebaseAuth;
     private ApiService api;
+
+    // 구글 로그인용
+    private GoogleSignInClient googleSignInClient;
+    private ActivityResultLauncher<Intent> googleSignInLauncher;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -35,37 +50,38 @@ public class LoginActivity extends AppCompatActivity {
         PrefManager.init(this);
         setContentView(R.layout.activity_login);
 
-
-
         etEmail    = findViewById(R.id.etUserID);
         etPassword = findViewById(R.id.etPassword);
         btnLogin   = findViewById(R.id.btnLogin);
         btnSignup  = findViewById(R.id.btnSignup);
+        btnGoogleLogin = findViewById(R.id.btnGoogleLogin); // 새로 추가한 버튼
 
         firebaseAuth = FirebaseAuth.getInstance();
 
         Retrofit retrofit = RetrofitClient.getInstance();
         api = retrofit.create(ApiService.class);
 
-        // 키보드 "완료"로 로그인
+        // 1) 이메일/비번 로그인 기존 로직 그대로
         etPassword.setOnEditorActionListener((v, actionId, event) -> {
             if (actionId == EditorInfo.IME_ACTION_DONE) {
-                doLogin();
+                doLoginWithEmail();
                 return true;
             }
             return false;
         });
 
-        btnLogin.setOnClickListener(v -> doLogin());
+        btnLogin.setOnClickListener(v -> doLoginWithEmail());
 
+        btnSignup.setOnClickListener(v ->
+                startActivity(new Intent(this, SignupFormActivity.class))
+        );
 
-        btnSignup.setOnClickListener(v -> {
-            // 회원가입 화면이 있다면 이동, 없다면 Firebase createUserWithEmailAndPassword 로직을 붙여도 됩니다.
-            startActivity(new Intent(this, SignupFormActivity.class)); // 없으면 주석처리
-        });
+        // 2) 구글 로그인 세팅
+        setupGoogleSignIn();
     }
 
-    private void doLogin() {
+    /** ================= 이메일/비번 로그인 ================= */
+    private void doLoginWithEmail() {
         String email = etEmail.getText().toString().trim();
         String pw    = etPassword.getText().toString();
 
@@ -78,11 +94,9 @@ public class LoginActivity extends AppCompatActivity {
             return;
         }
 
-        // 1) 파이어베이스 이메일/비번 로그인
         btnLogin.setEnabled(false);
         firebaseAuth.signInWithEmailAndPassword(email, pw)
                 .addOnSuccessListener(authResult -> {
-                    // 2) ID 토큰 가져오기
                     firebaseAuth.getCurrentUser()
                             .getIdToken(true)
                             .addOnSuccessListener(result -> {
@@ -92,7 +106,6 @@ public class LoginActivity extends AppCompatActivity {
                                     Toast.makeText(this, "토큰을 가져오지 못했습니다.", Toast.LENGTH_SHORT).show();
                                     return;
                                 }
-                                // 3) 서버 로그인 호출 (본문에 idToken)
                                 callServerLogin(idToken);
                             })
                             .addOnFailureListener(e -> {
@@ -106,22 +119,27 @@ public class LoginActivity extends AppCompatActivity {
                 });
     }
 
+    /** ================= 공통: 서버 로그인 ================= */
     private void callServerLogin(@NonNull String idToken) {
         FirebaseLoginRequestDto body = new FirebaseLoginRequestDto(idToken);
         api.login(body).enqueue(new Callback<UserResponseDto>() {
             @Override
-            public void onResponse(@NonNull Call<UserResponseDto> call, @NonNull Response<UserResponseDto> response) {
+            public void onResponse(@NonNull Call<UserResponseDto> call,
+                                   @NonNull Response<UserResponseDto> response) {
                 btnLogin.setEnabled(true);
+                btnGoogleLogin.setEnabled(true);
+
                 if (response.isSuccessful() && response.body() != null) {
                     UserResponseDto me = response.body();
-                    Toast.makeText(LoginActivity.this, "환영합니다, " + (me.name != null ? me.name : me.email), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(LoginActivity.this,
+                            "환영합니다, " + (me.name != null ? me.name : me.email),
+                            Toast.LENGTH_SHORT).show();
 
-                    //정보 저장용
-                    //TODO 토큰 갱신
+                    // 정보 저장
                     PrefManager.put("idToken", idToken);
                     PrefManager.put("uid", me.firebaseUid);
                     PrefManager.put("email", me.email);
-                    PrefManager.put("userId",me.id);
+                    PrefManager.put("userId", me.id);
                     PrefManager.put("userName", me.name);
                     PrefManager.put("phone", me.phone);
                     PrefManager.put("profile_image", me.profileImageUrl);
@@ -135,18 +153,97 @@ public class LoginActivity extends AppCompatActivity {
                     Log.d("PrefCheck", "photourl: " + PrefManager.get("profile_image"));
 
                     startActivity(new Intent(LoginActivity.this, MainActivity.class));
-//                     finish();
+                    // finish();
                 } else {
-                    Toast.makeText(LoginActivity.this, "서버 로그인 실패(" + response.code() + ")", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(LoginActivity.this,
+                            "서버 로그인 실패(" + response.code() + ")",
+                            Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
-            public void onFailure(@NonNull Call<UserResponseDto> call, @NonNull Throwable t) {
+            public void onFailure(@NonNull Call<UserResponseDto> call,
+                                  @NonNull Throwable t) {
                 btnLogin.setEnabled(true);
-                Toast.makeText(LoginActivity.this, "서버 통신 오류: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                btnGoogleLogin.setEnabled(true);
+                Toast.makeText(LoginActivity.this,
+                        "서버 통신 오류: " + t.getMessage(),
+                        Toast.LENGTH_SHORT).show();
             }
         });
+    }
 
+    /** ================= 구글 로그인 관련 ================= */
+    private void setupGoogleSignIn() {
+        // google-services.json에서 자동으로 만들어진 web client id
+        // res/values/strings.xml 에 default_web_client_id 가 있어야 함
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(getString(R.string.default_web_client_id))
+                .requestEmail()
+                .build();
+
+        googleSignInClient = GoogleSignIn.getClient(this, gso);
+
+        // ActivityResultLauncher 등록
+        googleSignInLauncher =
+                registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+                    if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                        Task<GoogleSignInAccount> task =
+                                GoogleSignIn.getSignedInAccountFromIntent(result.getData());
+                        handleGoogleSignInResult(task);
+                    }
+                });
+
+        // 버튼 클릭 → 구글 로그인 시작
+        btnGoogleLogin.setOnClickListener(v -> {
+            btnGoogleLogin.setEnabled(false);
+            Intent signInIntent = googleSignInClient.getSignInIntent();
+            googleSignInLauncher.launch(signInIntent);
+        });
+    }
+
+    private void handleGoogleSignInResult(Task<GoogleSignInAccount> completedTask) {
+        try {
+            GoogleSignInAccount account = completedTask.getResult(ApiException.class);
+            // 구글 계정 → Firebase Auth 연동
+            AuthCredential credential =
+                    GoogleAuthProvider.getCredential(account.getIdToken(), null);
+
+            firebaseAuth.signInWithCredential(credential)
+                    .addOnSuccessListener(authResult -> {
+                        firebaseAuth.getCurrentUser()
+                                .getIdToken(true)
+                                .addOnSuccessListener(result -> {
+                                    String idToken = result.getToken();
+                                    if (TextUtils.isEmpty(idToken)) {
+                                        btnGoogleLogin.setEnabled(true);
+                                        Toast.makeText(this,
+                                                "토큰을 가져오지 못했습니다.",
+                                                Toast.LENGTH_SHORT).show();
+                                        return;
+                                    }
+                                    // 이메일/비번 로그인 때와 똑같이 서버 로그인 호출
+                                    callServerLogin(idToken);
+                                })
+                                .addOnFailureListener(e -> {
+                                    btnGoogleLogin.setEnabled(true);
+                                    Toast.makeText(this,
+                                            "토큰 획득 실패: " + e.getMessage(),
+                                            Toast.LENGTH_SHORT).show();
+                                });
+                    })
+                    .addOnFailureListener(e -> {
+                        btnGoogleLogin.setEnabled(true);
+                        Toast.makeText(this,
+                                "Google 계정 연동 실패: " + e.getMessage(),
+                                Toast.LENGTH_SHORT).show();
+                    });
+
+        } catch (ApiException e) {
+            btnGoogleLogin.setEnabled(true);
+            Toast.makeText(this,
+                    "Google 로그인 실패: " + e.getStatusCode(),
+                    Toast.LENGTH_SHORT).show();
+        }
     }
 }
