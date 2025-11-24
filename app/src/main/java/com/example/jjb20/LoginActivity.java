@@ -1,11 +1,14 @@
 package com.example.jjb20;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -22,6 +25,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
+import com.google.android.gms.common.SignInButton;
 import com.google.android.material.button.MaterialButton;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FirebaseAuth;
@@ -94,9 +98,11 @@ public class LoginActivity extends AppCompatActivity {
             return;
         }
 
+        // 1) 파이어베이스 이메일/비번 로그인
         btnLogin.setEnabled(false);
         firebaseAuth.signInWithEmailAndPassword(email, pw)
                 .addOnSuccessListener(authResult -> {
+                    // 2) ID 토큰 가져오기
                     firebaseAuth.getCurrentUser()
                             .getIdToken(true)
                             .addOnSuccessListener(result -> {
@@ -106,6 +112,7 @@ public class LoginActivity extends AppCompatActivity {
                                     Toast.makeText(this, "토큰을 가져오지 못했습니다.", Toast.LENGTH_SHORT).show();
                                     return;
                                 }
+                                // 3) 서버 로그인 호출 (본문에 idToken)
                                 callServerLogin(idToken);
                             })
                             .addOnFailureListener(e -> {
@@ -245,5 +252,6 @@ public class LoginActivity extends AppCompatActivity {
                     "Google 로그인 실패: " + e.getStatusCode(),
                     Toast.LENGTH_SHORT).show();
         }
+
     }
 }

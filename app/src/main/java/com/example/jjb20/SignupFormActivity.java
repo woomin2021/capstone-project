@@ -70,13 +70,12 @@ public class SignupFormActivity extends AppCompatActivity {
         // 뷰 바인딩
         btnBack     = findViewById(R.id.btnBack);
         etFirstName = findViewById(R.id.etFirstName);
-        etLastName  = findViewById(R.id.etLastName);
-        etBirth     = findViewById(R.id.etBirth);
-        etEmail     = findViewById(R.id.etEmail);
-        etPassword  = findViewById(R.id.etPassword);
-        etPhone     = findViewById(R.id.etphone);
-        cbConsent   = findViewById(R.id.cbConsent);
-        btnNext     = findViewById(R.id.btnNext);
+        etLastName = findViewById(R.id.etLastName);
+        etBirth = findViewById(R.id.etBirth);
+        etEmail = findViewById(R.id.etEmail);
+        etPassword = findViewById(R.id.etPassword);
+        cbConsent = findViewById(R.id.cbConsent);
+        btnNext = findViewById(R.id.btnNext);
 
         imgProfilePhoto = findViewById(R.id.imgProfilePhoto);
         btnAddPhoto     = findViewById(R.id.cardProfilePhoto);

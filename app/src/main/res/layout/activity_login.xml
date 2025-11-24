@@ -162,11 +162,37 @@
             android:fontFamily="@font/cafe24ssurround_v2"
             android:textColor="@color/signup_text_333"
             android:minHeight="0dp"
-        android:paddingVertical="10dp"
-        app:cornerRadius="28dp"
-        app:backgroundTint="@color/signup_bg_f3f7f7"
-        app:strokeColor="@color/signup_stroke"
-        app:strokeWidth="1dp" />
+            android:paddingVertical="10dp"
+            app:cornerRadius="28dp"
+            app:backgroundTint="@color/signup_bg_f3f7f7"
+            app:strokeColor="@color/signup_stroke"
+            app:strokeWidth="1dp" />
+
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnGoogleLogin"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginTop="12dp"
+            android:backgroundTint="@android:color/white"
+            android:text="구글 로그인"
+            android:textSize="16sp"
+            android:textColor="@color/signup_text_333"
+            android:fontFamily="@font/cafe24ssurround_v2"
+            app:cornerRadius="28dp"
+            app:strokeWidth="1dp"
+            app:strokeColor="#D0D0D0"
+            app:icon="@drawable/sibal_logo"
+            app:iconGravity="textStart"
+            app:iconPadding="12dp"
+            app:iconTint="@null"
+            app:iconSize="33dp"
+            android:paddingStart="0dp"
+            android:paddingEnd="16dp"/>
+
+
+
+
 
         <!-- 하단 여백 -->
         <Space

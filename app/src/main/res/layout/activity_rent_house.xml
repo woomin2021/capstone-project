@@ -41,12 +41,14 @@
                     android:fontFamily="@font/cafe24ssurroundotf" />
 
                 <ImageView
+                    android:id="@+id/btnProfile"
                     android:layout_width="24dp"
                     android:layout_height="24dp"
                     android:src="@drawable/ic_user"
                     android:layout_marginEnd="8dp" />
 
                 <Button
+                    android:id="@+id/btnRegisterHouse"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="집 등록하기"
@@ -79,6 +81,7 @@
                     android:fontFamily="@font/cafe24ssurroundotf" />
 
                 <ImageView
+                    android:id="@+id/searchButton"
                     android:layout_width="20dp"
                     android:layout_height="20dp"
                     android:src="@drawable/ic_search" />
@@ -103,16 +106,39 @@
                 android:overScrollMode="never"
                 android:nestedScrollingEnabled="false" />
 
-            <!-- HOT 섹션 -->
-            <TextView
-                android:layout_width="wrap_content"
+            <!-- 모든숙소 섹션 -->
+            <LinearLayout
+                android:id="@+id/layoutHotHeader"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="모든 숙소"
-                android:textColor="#E91E63"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                android:layout_marginTop="20dp"
-                android:fontFamily="@font/cafe24ssurroundotf" />
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginTop="20dp">
+
+                <!-- 왼쪽: 모든 숙소 (그냥 기본 전체 보여주는 역할) -->
+                <TextView
+                    android:id="@+id/tvAllHouses"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="start"
+                    android:text="모든 숙소"
+                    android:textColor="#E91E63"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:fontFamily="@font/cafe24ssurroundotf" />
+
+                <!-- 오른쪽: 근처 추천 숙소 (필터 버튼) -->
+                <TextView
+                    android:id="@+id/tvNearbyHouses"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="근처 추천 숙소"
+                    android:textColor="#555555"
+                    android:textSize="14sp"
+                    android:fontFamily="@font/cafe24ssurroundotf" />
+            </LinearLayout>
+
 
             <!-- 전체 숙소 그리드 -->
             <androidx.recyclerview.widget.RecyclerView

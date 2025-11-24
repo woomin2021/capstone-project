@@ -123,4 +123,8 @@ dependencies {
     //이미지 둥글게
 
     implementation("de.hdodenhof:circleimageview:3.1.0")
+
+    //추천 숙소 위치용
+        implementation ("com.google.android.gms:play-services-location:21.0.1")
+
 }
