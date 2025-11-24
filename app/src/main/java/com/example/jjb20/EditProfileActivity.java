@@ -1,5 +1,6 @@
 package com.example.jjb20;
 
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
@@ -7,6 +8,9 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.PickVisualMediaRequest;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -15,6 +19,8 @@ import com.example.jjb20.dto.UserUpdateRequestDto;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 
 import retrofit2.Call;
@@ -25,6 +31,8 @@ public class EditProfileActivity extends AppCompatActivity {
     FirebaseAuth mAuth = FirebaseAuth.getInstance();
     FirebaseUser user = mAuth.getCurrentUser();
     private TextView email, name, phone;
+    private Uri selectedImageUri;
+    private ActivityResultLauncher<PickVisualMediaRequest> pickImageLauncher;
 
 
 
@@ -70,7 +78,84 @@ public class EditProfileActivity extends AppCompatActivity {
             showEditPasswordDialog();
         });
 
+        pickImageLauncher = registerForActivityResult(
+                new ActivityResultContracts.PickVisualMedia(),
+                uri -> {
+                    if (uri != null) {
+                        selectedImageUri = uri;
+                        uploadProfileImageToFirebase(uri);
+                    } else {
+                        Toast.makeText(this, "이미지가 선택되지 않았습니다.", Toast.LENGTH_SHORT).show();
+                    }
+                }
+        );
+
+        edit_profile_image_btn.setOnClickListener(v -> pickImageLauncher.launch(
+                new PickVisualMediaRequest.Builder()
+                        .setMediaType(ActivityResultContracts.PickVisualMedia.ImageOnly.INSTANCE)
+                        .build()
+        ));
+
     }
+
+    private void uploadProfileImageToFirebase(Uri imageUri) {
+
+        String userId = PrefManager.get("uid", "unknown");
+
+        String filename = "profile_" + userId + "_" + System.currentTimeMillis();
+
+        StorageReference ref = FirebaseStorage.getInstance()
+                .getReference("profile_image/" + filename);
+
+        // 업로드 시작
+        ref.putFile(imageUri)
+                .continueWithTask(task -> ref.getDownloadUrl())
+                .addOnSuccessListener(downloadUri -> {
+
+                    String newImageUrl = downloadUri.toString();
+
+                    // 1) Pref 업데이트
+                    PrefManager.put("profileImageUrl", newImageUrl);
+
+                    // 2) 서버 업데이트
+                    updateProfileImageToServer(newImageUrl);
+
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(this, "업로드 실패: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                });
+    }
+
+    private void updateProfileImageToServer(String imageUrl) {
+
+        UserUpdateRequestDto dto = new UserUpdateRequestDto();
+        dto.profileImageUrl = imageUrl;
+
+        String token = PrefManager.get("idToken");
+        String bearer = "Bearer " + token;
+
+        apiService.updateMe(dto, bearer).enqueue(new Callback<UserUpdateRequestDto>() {
+            @Override
+            public void onResponse(Call<UserUpdateRequestDto> call, Response<UserUpdateRequestDto> response) {
+                if (response.isSuccessful()) {
+                    Toast.makeText(EditProfileActivity.this, "프로필 이미지 변경 완료", Toast.LENGTH_SHORT).show();
+
+                    // 화면에 즉시 반영하고 싶으면:
+                    // Glide.with(EditProfileActivity.this).load(imageUrl).into(profileImageView);
+                    PrefManager.put("profile_image", imageUrl);
+
+                } else {
+                    Toast.makeText(EditProfileActivity.this, "서버 업데이트 실패(" + response.code() + ")", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<UserUpdateRequestDto> call, Throwable t) {
+                Toast.makeText(EditProfileActivity.this, "서버 통신 실패: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
 
     //이름 변경
     private void showEditNameDialog(String currentName) { //이름 바꾸기 다이얼로그
@@ -262,4 +347,8 @@ public class EditProfileActivity extends AppCompatActivity {
 
         dialog.show();
     }
+
+
+
+
 }

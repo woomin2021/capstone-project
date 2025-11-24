@@ -4,6 +4,7 @@ public class UserUpdateRequestDto {
     public String email;
     public String name;
     public String phone;
+    public String profileImageUrl;
 
     public UserUpdateRequestDto() {
     }

@@ -88,4 +88,17 @@ public class ProfileActivity extends AppCompatActivity {
             startActivity(intent);
         });
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        String newImageUrl = PrefManager.get("profile_image");
+
+        if (newImageUrl != null && !newImageUrl.isEmpty()) {
+            Glide.with(this)
+                    .load(newImageUrl)
+                    .into(profile_image);
+        }
+    }
 }

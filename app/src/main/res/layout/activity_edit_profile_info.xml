@@ -251,15 +251,6 @@
             android:layout_height="1dp"
             android:background="#EEEEEE" />
 
-
-
-
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="#EEEEEE" />
-
         <RelativeLayout
             android:id="@+id/edit_profile_image_button"
             android:layout_width="match_parent"
