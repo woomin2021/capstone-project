@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "808477217447",
+    "firebase_url": "https://jjb-ver2-default-rtdb.firebaseio.com",
     "project_id": "jjb-ver2",
     "storage_bucket": "jjb-ver2.firebasestorage.app"
   },
@@ -12,7 +13,20 @@
           "package_name": "com.example.jjb20"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "808477217447-m8v3bem8jv5p7l5t77ap68t299no4aem.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.jjb20",
+            "certificate_hash": "2a63d4f3cb3cf87bba623c9cf1ed44c66f779041"
+          }
+        },
+        {
+          "client_id": "808477217447-q46epfae21jnuvrob05utekjdm5529jj.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyCoDD8nvy-agZwKME8hQKAEoXGxBNKW-20"
@@ -20,7 +34,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "808477217447-q46epfae21jnuvrob05utekjdm5529jj.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }
