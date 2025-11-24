@@ -306,16 +306,16 @@
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etphone"
                     android:layout_width="match_parent"
-                    android:inputType="textEmailAddress"
-                    android:hint="전화번호"
                     android:layout_height="wrap_content"
+                    android:background="@null"
                     android:fontFamily="@font/cafe24ssurround_v2"
-                    android:paddingTop="12dp"
+                    android:hint="전화번호"
+                    android:inputType="textEmailAddress"
                     android:paddingStart="16dp"
+                    android:paddingTop="12dp"
                     android:paddingEnd="16dp"
                     android:textColor="#333333"
-                    android:textColorHint="#BDBDBD"
-                    android:background="@null"/>
+                    android:textColorHint="#BDBDBD" />
             </com.google.android.material.textfield.TextInputLayout>
             <!-- 이메일 안내 -->
             <TextView
@@ -445,19 +445,9 @@
                 android:gravity="end"
                 android:orientation="horizontal">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="비밀번호 표시"
-                    android:fontFamily="@font/cafe24ssurround_v2"
-                    android:textColor="#666666"
-                    android:textSize="14sp"
-                    android:layout_marginEnd="6dp"/>
 
-                <CheckBox
-                    android:id="@+id/cbShowPassword"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+
+
             </LinearLayout>
 
             <!-- 개인정보 동의 -->
