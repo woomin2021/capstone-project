@@ -61,17 +61,22 @@ public class HostReviewActivity extends AppCompatActivity {
     }
 
     private void openChatFragment() {
-        // 컨테이너를 보이게
-        findViewById(R.id.chat_container).setVisibility(View.VISIBLE);
+        View container = findViewById(R.id.chat_container);
+        if (container == null) {
+            // chat_container 못 찾으면 XML id 문제
+            return;
+        }
 
-        // 일단은 임시 방 이름 (나중에 상대 uid나 예약 id로 바꾸면 됨)
-        String chatroomName = "testRoom";
+        container.setVisibility(View.VISIBLE);
+
+        String chatroomName = "testRoom"; // 나중에 실제 방 키로 교체
 
         ChatMsgFragment chatFragment = ChatMsgFragment.newInstance(chatroomName);
 
-        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        ft.replace(R.id.chat_container, chatFragment);
-        ft.addToBackStack(null);   // 뒤로가기 누르면 원래 화면으로 돌아가게
-        ft.commit();
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.chat_container, chatFragment)
+                .addToBackStack(null)
+                .commit();
     }
 }

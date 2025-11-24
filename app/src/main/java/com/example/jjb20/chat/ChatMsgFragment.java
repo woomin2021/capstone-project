@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.jjb20.PrefManager;
@@ -61,20 +62,19 @@ public class ChatMsgFragment extends Fragment implements View.OnClickListener {
     public ChatMsgFragment() {
     }
 
-    @SuppressWarnings("unused")
+    // 방 이름(roomId)을 받는 newInstance
     public static ChatMsgFragment newInstance(String chatroomName) {
         ChatMsgFragment fragment = new ChatMsgFragment();
-
         Bundle args = new Bundle();
-        args.putString("chatroom", chatroomName);  // 🔹 여기서 넘겨줌
+        args.putString("chatroom", chatroomName);
         fragment.setArguments(args);
-
         return fragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
     }
 
     @Override
@@ -82,89 +82,85 @@ public class ChatMsgFragment extends Fragment implements View.OnClickListener {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_chat_msg, container, false);
 
+        ImageView closeBtn = view.findViewById(R.id.close_btn);
+        closeBtn.setOnClickListener(v -> {
+            getParentFragmentManager().popBackStack();
+
+        });
+
         content_et = view.findViewById(R.id.content_et);
         send_iv = view.findViewById(R.id.send_iv);
-
         rv = view.findViewById(R.id.rv);
+
+        TextView titleTv = view.findViewById(R.id.chatroom_title);
+
         send_iv.setOnClickListener(this);
 
-        //CahtRoom Fragment에서 받는 채팅방 이름
-        //chatroom = getArguments().getString("chatroom");
+        // 🔹 인자 안전하게 받기 + 로그
         Bundle args = getArguments();
         if (args != null) {
             chatroom = args.getString("chatroom", "");
-        } else {
-            chatroom = "";
         }
         currentUserId = PrefManager.get("uid", "guest");
+        Log.d(TAG, "chatroom = " + chatroom + ", currentUserId = " + currentUserId);
+
+        // 여기서 실제로 방 이름을 화면에 표시
+        if (titleTv != null) {
+            titleTv.setText(chatroom);
+        }
+
         mAdapter = new ChatAdapter(msgList, currentUserId);
-
-
         rv.setLayoutManager(new LinearLayoutManager(getActivity()));
         rv.setAdapter(mAdapter);
 
-        //Firebase Databse 초기화
+        //Firebase Database 초기화
         myRef = databases.getReference("chatrooms").child(chatroom).child("messages");
 
-        //Firebase Database Listener 붙이기
+        //Firebase Database Listener
         myRef.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-
                 ChatMsgVO chatMsgVO = snapshot.getValue(ChatMsgVO.class);
                 if (chatMsgVO != null) {
                     msgList.add(chatMsgVO);
                     mAdapter.notifyItemInserted(msgList.size() - 1);
                     rv.scrollToPosition(msgList.size() - 1);
                 }
-                Log.d(TAG, msgList.size() + "");
+                Log.d(TAG, "msgList size = " + msgList.size());
             }
 
-            @Override
-            public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-
-            }
-
-            @Override
-            public void onChildRemoved(@NonNull DataSnapshot snapshot) {
-
-            }
-
-            @Override
-            public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
+            @Override public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {}
+            @Override public void onChildRemoved(@NonNull DataSnapshot snapshot) {}
+            @Override public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {}
+            @Override public void onCancelled(@NonNull DatabaseError error) {}
         });
-        Log.d(TAG, "chatroom " + chatroom);
+
         return view;
     }
 
     @Override
     public void onClick(View view) {
-        if (view.getId() == R.id.send_iv){
-            if (content_et.getText().toString().trim().length() >=1){
+        if (view.getId() == R.id.send_iv) {
+            if (content_et.getText().toString().trim().length() >= 1) {
                 Log.d(TAG, "입력처리");
 
                 SimpleDateFormat df = new SimpleDateFormat("MM/dd HH:mm:ss");
                 String currentTime = df.format(new Date());
 
-                String uid = PrefManager.get("uid", "guest");
                 String username = PrefManager.get("email", "Unknown user");
 
+                ChatMsgVO msgVO = new ChatMsgVO(
+                        currentUserId,
+                        currentTime,
+                        content_et.getText().toString().trim(),
+                        username
+                );
 
-                ChatMsgVO msgVO = new ChatMsgVO(currentUserId, currentTime, content_et.getText().toString().trim(), username);
-                
                 myRef.push().setValue(msgVO);
-                
                 content_et.setText("");
-            }
-            else
+            } else {
                 Toast.makeText(getActivity(), "메시지를 입력하세요", Toast.LENGTH_SHORT).show();
+            }
         }
     }
 }
