@@ -328,7 +328,67 @@
                 android:textSize="12sp"
                 android:textColor="#8C8C8C"
                 android:lineSpacingExtra="2dp"/>
+            <!-- 프로필 사진 -->
+            <TextView
+                android:id="@+id/labelProfilePhoto"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:text="프로필 사진"
+                android:fontFamily="@font/cafe24ssurround_v2"
+                android:textColor="#111111"
+                android:textSize="18sp"
+                android:textStyle="bold" />
 
+            <HorizontalScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:scrollbars="none">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <!-- 프로필 사진 추가 카드 (1장만 사용해도 됨 여러장 가능 ) -->
+                    <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/cardProfilePhoto"
+                        android:layout_width="100dp"
+                        android:layout_height="100dp"
+                        app:cardCornerRadius="8dp"
+                        app:cardBackgroundColor="#F5F5F5"
+                        app:cardElevation="0dp"
+                        app:strokeColor="#EEEEEE"
+                        app:strokeWidth="1dp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:gravity="center"
+                            android:orientation="vertical">
+
+                            <!-- 나중에 선택된 사진을 이 ImageView에 넣을 수 있게 하면 될듯 -->
+                            <ImageView
+                                android:id="@+id/imgProfilePhoto"
+                                android:layout_width="40dp"
+                                android:layout_height="40dp"
+                                android:src="@drawable/ic_camera_alt"
+                                app:tint="#757575" />
+
+                            <TextView
+                                android:id="@+id/tvProfilePhotoHint"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="4dp"
+                                android:text="사진 추가"
+                                android:textColor="#757575"
+                                android:textSize="12sp" />
+                        </LinearLayout>
+                    </com.google.android.material.card.MaterialCardView>
+
+                </LinearLayout>
+            </HorizontalScrollView>
 
 
             <!--  비밀번호 -->
