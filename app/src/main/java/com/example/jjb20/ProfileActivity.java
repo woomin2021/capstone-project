@@ -17,6 +17,7 @@ import com.google.firebase.Firebase;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import de.hdodenhof.circleimageview.CircleImageView;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -28,7 +29,8 @@ public class ProfileActivity extends AppCompatActivity {
     private TextView tvHouseCount, tvReserveCount;
     Button profileEditbtn;
     Button logoutBtn;
-    ImageView profile_image;
+    CircleImageView profile_image;
+
 
     private FirebaseAuth mAuth;
     ApiService apiService;
