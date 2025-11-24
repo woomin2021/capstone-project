@@ -11,6 +11,8 @@ public class UserResponseDto {
     @SerializedName("firebaseUid")
     public String firebaseUid;
 
+    public String profileImageUrl;
+
     // 서버가 문자열로 내려주면 String, epoch면 long으로 바꾸세요
     public String createdAt;
     public String updatedAt;
