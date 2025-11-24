@@ -12,6 +12,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
+import com.example.jjb20.dto.MyPageSummaryDto;
 import com.example.jjb20.dto.ProfileStatsResponseDto;
 import com.google.firebase.Firebase;
 import com.google.firebase.auth.FirebaseAuth;
@@ -34,6 +35,7 @@ public class ProfileActivity extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
     ApiService apiService;
+    private MyPageSummaryDto myPageSummaryDto;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -49,6 +51,36 @@ public class ProfileActivity extends AppCompatActivity {
 
         tvHouseCount = findViewById(R.id.tvHouseCount);
         tvReserveCount = findViewById(R.id.tvReserveCount);
+
+        int myUserId = PrefManager.getInt("userId", -1);
+        if (myUserId == -1) {
+            Toast.makeText(this, "로그인 정보가 없습니다.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        apiService.getSummary(myUserId).enqueue(new Callback<MyPageSummaryDto>() {
+            @Override
+            public void onResponse(Call<MyPageSummaryDto> call, Response<MyPageSummaryDto> response) {
+                if (response.isSuccessful() && response.body() != null) {
+
+                    MyPageSummaryDto dto = response.body();
+
+                    String fullHouseCount = String.valueOf(dto.getHouseCount()) + "개";
+                    String fullReserveCount = String.valueOf(dto.getReservationCount()) + "개";
+                    tvHouseCount.setText(fullHouseCount);
+                    tvReserveCount.setText(fullReserveCount);
+
+                } else {
+                    Toast.makeText(ProfileActivity.this, "요약 정보 불러오기 실패", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<MyPageSummaryDto> call, Throwable t) {
+                Toast.makeText(ProfileActivity.this, "서버 오류", Toast.LENGTH_SHORT).show();
+            }
+        });
+
 
         profile_image = findViewById(R.id.profile_image);
         name = findViewById(R.id.name);

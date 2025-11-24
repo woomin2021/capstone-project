@@ -6,6 +6,7 @@ import com.example.jjb20.dto.HouseDetailResponseDto;
 import com.example.jjb20.dto.HouseDto;
 import com.example.jjb20.dto.HousesCreateRequestDto;
 import com.example.jjb20.dto.HousesResponseDto;
+import com.example.jjb20.dto.MyPageSummaryDto;
 import com.example.jjb20.dto.ProfileStatsResponseDto;
 import com.example.jjb20.dto.RegisterRequestDto;
 import com.example.jjb20.dto.ReservationCreateRequestDto;
@@ -79,6 +80,11 @@ public interface ApiService {
     //내 예약 불러 오기
     @GET("/api/reservations/my")
     Call<List<ReservationDTO>> getReservations(@Query("userId") long userId);
+
+    @GET("/api/houses/summary")
+    Call<MyPageSummaryDto> getSummary(
+            @Query("userId") long userId
+    );
 
     @GET("api/houses/{id}/detail")
     Call<HouseDetailResponseDto> getHouseDetail(
