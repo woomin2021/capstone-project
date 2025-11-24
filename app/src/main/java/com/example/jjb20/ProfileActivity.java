@@ -37,6 +37,7 @@ public class ProfileActivity extends AppCompatActivity {
 
         apiService = RetrofitClient.getInstance().create(ApiService.class);
 
+        // 각종 버튼
         houseListBtn = findViewById(R.id.houseList);
         reservationListBtn = findViewById(R.id.reservationList);
         profileEditbtn = findViewById(R.id.profileEditbtn);
@@ -47,9 +48,7 @@ public class ProfileActivity extends AppCompatActivity {
         name = findViewById(R.id.name);
 
         name.setText(PrefManager.get("userName"));
-
-        loadCounts();
-
+        
         houseListBtn.setOnClickListener(v -> {
             Intent intent = new Intent(getApplicationContext(), ProfileHouseListActivity.class);
             startActivity(intent);
@@ -65,6 +64,8 @@ public class ProfileActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
+        
+        //로그아웃
         logoutBtn = findViewById(R.id.logoutbtn);
 
         logoutBtn.setOnClickListener( v -> {
@@ -73,29 +74,6 @@ public class ProfileActivity extends AppCompatActivity {
             Toast.makeText(this, "로그아웃", Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
             startActivity(intent);
-        });
-    }
-
-    private void loadCounts() {
-        String token = PrefManager.get("idToken");
-        String bearer = "Bearer " + token;
-
-        apiService.getProfileStats(bearer).enqueue(new Callback<ProfileStatsResponseDto>() {
-            @Override
-            public void onResponse(Call<ProfileStatsResponseDto> call, Response<ProfileStatsResponseDto> response) {
-                if (response.isSuccessful() && response.body() != null){
-
-                    ProfileStatsResponseDto dto = response.body();
-
-                    tvHouseCount.setText(dto.houseCount + "개");
-                    tvReserveCount.setText(dto.reservationCount + "개");
-
-                }
-            }
-
-            @Override
-            public void onFailure(Call<ProfileStatsResponseDto> call, Throwable t) {
-            }
         });
     }
 }

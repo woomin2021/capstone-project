@@ -32,6 +32,8 @@ public class MainActivity extends AppCompatActivity {
     // 14. 예약 내역 지난예약, 예약 내역 나누기
     // 15. 프로필에 집 개수 예약 개수 뜨게 하기
     // 16. 모든 뒤로가기 버튼 체크
+    // 17. 프로필 수정 이메일 2번 하고 뒤로갔다 올시 팅김
+    // 18 .비밀번호 변경 시 현재 비밀번호 확인
 
     private MaterialCardView btnRent;
     private MaterialCardView btnRegister;

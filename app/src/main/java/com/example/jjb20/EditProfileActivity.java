@@ -72,6 +72,7 @@ public class EditProfileActivity extends AppCompatActivity {
 
     }
 
+    //이름 변경
     private void showEditNameDialog(String currentName) { //이름 바꾸기 다이얼로그
         View view = getLayoutInflater().inflate(R.layout.dialog_edit_name, null); //이름수저 다이얼로그 인플레이트
         EditText etName = view.findViewById(R.id.editNameInput);
@@ -119,6 +120,7 @@ public class EditProfileActivity extends AppCompatActivity {
         dialog.show();
     }
 
+    //이메일 변경 ( 스프링 email 변경 + firebase email 변경)
     private void showEditEmailDialog(String currentName) { //이름 바꾸기 다이얼로그
         View view = getLayoutInflater().inflate(R.layout.dialog_edit_email, null); //이름수저 다이얼로그 인플레이트
         EditText etEmail = view.findViewById(R.id.editEmailInput);
@@ -172,6 +174,7 @@ public class EditProfileActivity extends AppCompatActivity {
         dialog.show();
     }
 
+    // 전화번호 변경
     private void showEditPhoneDialog(String currentPhone) { //이름 바꾸기 다이얼로그
         View view = getLayoutInflater().inflate(R.layout.dialog_edit_phone, null); //이름수저 다이얼로그 인플레이트
         EditText etPhone = view.findViewById(R.id.editEmailInput);
@@ -216,7 +219,7 @@ public class EditProfileActivity extends AppCompatActivity {
         dialog.show();
     }
 
-    //비밀번호 수정
+    //firebase 비밀번호 수정
     private void showEditPasswordDialog() {
         View view = getLayoutInflater().inflate(R.layout.dialog_edit_password, null);
         EditText newPassword = view.findViewById(R.id.editPasswordInput);
