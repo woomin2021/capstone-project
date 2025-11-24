@@ -12,18 +12,28 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.example.jjb20.R;
 import com.example.jjb20.RentHouseDetailActivity;
 import com.example.jjb20.dto.HouseDto;
-import com.example.jjb20.R;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class HotAdapter extends RecyclerView.Adapter<HotAdapter.ViewHolder> {
 
-    private final List<HouseDto> items;
+    private final List<HouseDto> items = new ArrayList<>();
 
     public HotAdapter(List<HouseDto> items) {
-        this.items = items;
+        if (items != null) this.items.addAll(items);
+    }
+
+    // 근처 숙소 추천용
+    public void updateData(List<HouseDto> newItems) {
+        items.clear();
+        if (newItems != null) {
+            items.addAll(newItems);
+        }
+        notifyDataSetChanged();
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
@@ -32,11 +42,11 @@ public class HotAdapter extends RecyclerView.Adapter<HotAdapter.ViewHolder> {
 
         ViewHolder(@NonNull View itemView) {
             super(itemView);
-            imageHot    = itemView.findViewById(R.id.imageHot);
-            textTitle   = itemView.findViewById(R.id.textHotTitle);
-            textLocation= itemView.findViewById(R.id.textHotLocation);
-            textDate    = itemView.findViewById(R.id.textDate);
-            textPrice   = itemView.findViewById(R.id.textHotPrice);
+            imageHot = itemView.findViewById(R.id.imageHot);
+            textTitle = itemView.findViewById(R.id.textHotTitle);
+            textLocation = itemView.findViewById(R.id.textHotLocation);
+            textDate = itemView.findViewById(R.id.textDate);
+            textPrice = itemView.findViewById(R.id.textHotPrice);
         }
     }
 
@@ -44,7 +54,7 @@ public class HotAdapter extends RecyclerView.Adapter<HotAdapter.ViewHolder> {
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.item_hot, parent, false); // HOT 섹션 XML
+                .inflate(R.layout.item_hot, parent, false);
         return new ViewHolder(v);
     }
 
@@ -52,10 +62,9 @@ public class HotAdapter extends RecyclerView.Adapter<HotAdapter.ViewHolder> {
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         HouseDto item = items.get(position);
 
-        // 제목
         holder.textTitle.setText(item.title != null ? item.title : "");
 
-        // 위치(도시 + 주소)
+        // 위치
         String loc = "";
         if (item.city != null) loc += item.city;
         if (item.addressLine1 != null) {
@@ -74,18 +83,16 @@ public class HotAdapter extends RecyclerView.Adapter<HotAdapter.ViewHolder> {
         // 가격
         if (item.pricePerNight != null) {
             holder.textPrice.setText(String.format("%,d원", item.pricePerNight));
-        } else {
-            holder.textPrice.setText("");
         }
 
-        // 대표 이미지
+        // 이미지
         if (item.coverPhotoUrl != null) {
             Glide.with(holder.itemView.getContext())
                     .load(item.coverPhotoUrl)
                     .into(holder.imageHot);
         }
 
-        // 카드 클릭 → 상세 페이지 이동
+        // 상세 페이지 이동
         holder.itemView.setOnClickListener(v -> {
             Context ctx = holder.itemView.getContext();
             Intent intent = new Intent(ctx, RentHouseDetailActivity.class);
@@ -96,6 +103,6 @@ public class HotAdapter extends RecyclerView.Adapter<HotAdapter.ViewHolder> {
 
     @Override
     public int getItemCount() {
-        return items == null ? 0 : items.size();
+        return items.size();
     }
 }

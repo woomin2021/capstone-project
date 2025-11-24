@@ -52,7 +52,7 @@ public class SignupFormActivity extends AppCompatActivity {
         etBirth = findViewById(R.id.etBirth);
         etEmail = findViewById(R.id.etEmail);
         etPassword = findViewById(R.id.etPassword);
-        cbShowPassword = findViewById(R.id.cbShowPassword);
+
         cbConsent = findViewById(R.id.cbConsent);
         btnNext = findViewById(R.id.btnNext);
 

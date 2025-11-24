@@ -1,13 +1,21 @@
 package com.example.jjb20;
 
+import android.Manifest;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Location;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -17,9 +25,12 @@ import com.example.jjb20.adapter.HotAdapter;
 import com.example.jjb20.adapter.RecommendedAdapter;
 import com.example.jjb20.chat.ChatRoomFragment;
 import com.example.jjb20.dto.HouseDto;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
 
 import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
@@ -36,6 +47,18 @@ public class RentHouseActivity extends AppCompatActivity {
 
     private ApiService api;
 
+    // 전체 숙소 리스트
+    private List<HouseDto> allHouses = new ArrayList<>();
+    private HotAdapter hotAdapter;
+
+
+    // 위치 관련
+    private FusedLocationProviderClient fusedClient;
+    private Double userLat = null;
+    private Double userLng = null;
+
+
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,11 +66,50 @@ public class RentHouseActivity extends AppCompatActivity {
 
         PrefManager.init(this);
 
+        // 뷰 연결
         recyclerRecommended = findViewById(R.id.recyclerRecommended);
         recyclerHot = findViewById(R.id.recyclerHot);
         chattingButton = findViewById(R.id.chattingButton);
-        TextView textGreeting = findViewById(R.id.textGreeting);
-        // 채팅 프래그먼트 열기
+
+        TextView textGreeting   = findViewById(R.id.textGreeting);
+        TextView tvAllHouses    = findViewById(R.id.tvAllHouses);
+        TextView tvNearbyHouses = findViewById(R.id.tvNearbyHouses);
+
+        EditText searchEditText = findViewById(R.id.searchEditText);
+        ImageView searchButton   = findViewById(R.id.searchButton);
+        ImageView profileIcon = findViewById(R.id.btnProfile);
+        Button btnRegisterHouse = findViewById(R.id.btnRegisterHouse);
+        searchButton.setOnClickListener(v -> {
+            String keyword = searchEditText.getText().toString().trim();
+
+            if (keyword.isEmpty()) {
+                // 검색어 없을 때 전체 숙소 출력
+                hotAdapter.updateData(allHouses);
+                return;
+            }
+
+            // 프로필 버튼
+            profileIcon.setOnClickListener(view -> {
+                Intent i = new Intent(this, ProfileActivity.class);
+                startActivity(i);
+            });
+
+            // 집 등록하기 버튼
+            btnRegisterHouse.setOnClickListener(view -> {
+                Intent i = new Intent(this, RegisterTitleActivity.class);
+                startActivity(i);
+            });
+
+
+            // 검색 필터 실행
+            List<HouseDto> filtered = filterHouses(keyword);
+            hotAdapter.updateData(filtered);
+        });
+        // 위치 클라이언트 초기화
+        fusedClient = LocationServices.getFusedLocationProviderClient(this);
+        requestLocationPermission();   // 위치 권한 요청 → 성공 시 userLat/userLng 셋팅됨
+
+        // 채팅 버튼 → 프래그먼트 열기
         chattingButton.setOnClickListener(v -> {
             ChatRoomFragment fragment = new ChatRoomFragment();
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
@@ -57,28 +119,38 @@ public class RentHouseActivity extends AppCompatActivity {
             transaction.commit();
         });
 
-        // 로그인한 사용자 이름 가져오기
+        // 로그인한 사용자 이름 표시
         String userName = PrefManager.get("userName", "회원");
-
-
-        if (userName == null || userName.trim().isEmpty()) {
-            userName = "회원";
-        }
-
-        // UI에 적용
+        if (userName == null || userName.trim().isEmpty()) userName = "회원";
         textGreeting.setText(userName + "님, 여긴 어떠세요?");
 
-        // 레이아웃 매니저 설정
+        // 리사이클러뷰 레이아웃 세팅
         recyclerRecommended.setLayoutManager(
                 new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+
         recyclerHot.setLayoutManager(new GridLayoutManager(this, 2));
 
-        // Retrofit
+        // HotAdapter 초기화
+        hotAdapter = new HotAdapter(new ArrayList<>());
+        recyclerHot.setAdapter(hotAdapter);
+
+        // Retrofit API
         Retrofit retrofit = RetrofitClient.getInstance();
         api = retrofit.create(ApiService.class);
 
-        // 서버에서 집 목록 불러오기 이거 나중가면 등록 많이 되면 알아서 올라감
+        // 서버에서 집 목록 로딩
         loadHouses();
+
+        // "모든 숙소" 버튼
+        tvAllHouses.setOnClickListener(v -> {
+            hotAdapter.updateData(allHouses);  // 전체 출력
+        });
+
+        // "근처 추천 숙소" 버튼
+        tvNearbyHouses.setOnClickListener(v -> {
+            List<HouseDto> nearby = getNearbyHouses(allHouses);
+            hotAdapter.updateData(nearby);
+        });
     }
 
     private void loadHouses() {
@@ -95,36 +167,134 @@ public class RentHouseActivity extends AppCompatActivity {
                     Log.e("RentHouse", "houses load failed: " + response.code());
 
                     recyclerRecommended.setAdapter(new RecommendedAdapter(new ArrayList<>()));
-                    recyclerHot.setAdapter(new HotAdapter(new ArrayList<>()));
+                    hotAdapter.updateData(new ArrayList<>());
                     return;
                 }
 
                 List<HouseDto> houses = response.body();
 
                 List<HouseDto> recommended = new ArrayList<>();
-                List<HouseDto> hot = new ArrayList<>();
 
-// 추천 숙소: 앞에 최대 4개만
+                // 추천 숙소: 앞에 최대 4개만
                 int recommendCount = Math.min(4, houses.size());
                 for (int i = 0; i < recommendCount; i++) {
                     recommended.add(houses.get(i));
                 }
 
-// 핫한 숙소: 전체
-                hot.addAll(houses);
+                // 전체 숙소는 allHouses에 저장
+                allHouses.clear();
+                allHouses.addAll(houses);
 
+                // 어댑터 세팅
                 recyclerRecommended.setAdapter(new RecommendedAdapter(recommended));
-                recyclerHot.setAdapter(new HotAdapter(hot));
+                hotAdapter.updateData(allHouses);   // 기본은 “모든 숙소”
+
+
+
             }
 
             @Override
             public void onFailure(Call<List<HouseDto>> call, Throwable t) {
                 Log.e("RentHouse", "houses load error", t);
                 recyclerRecommended.setAdapter(new RecommendedAdapter(new ArrayList<>()));
-                recyclerHot.setAdapter(new HotAdapter(new ArrayList<>()));
+                hotAdapter.updateData(new ArrayList<>());
             }
         });
+
     }
+
+
+    private static final int REQ_LOCATION = 1001;
+
+    private void requestLocationPermission() {
+        if (ActivityCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            getCurrentLocation();
+        } else {
+            ActivityCompat.requestPermissions(
+                    this,
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                    REQ_LOCATION
+            );
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if (requestCode == REQ_LOCATION &&
+                grantResults.length > 0 &&
+                grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            getCurrentLocation();
+        }
+    }
+    private void getCurrentLocation() {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+
+        fusedClient.getLastLocation()
+                .addOnSuccessListener(location -> {
+                    if (location != null) {
+                        userLat = location.getLatitude();
+                        userLng = location.getLongitude();
+                    }
+                });
+    }
+
+    private List<HouseDto> getNearbyHouses(List<HouseDto> houses) {
+
+        if (userLat == null || userLng == null) {
+            return houses;   // 위치 못 얻은 경우 전체 반환
+        }
+
+        List<HouseDistance> temp = new ArrayList<>();
+
+        for (HouseDto h : houses) {
+            if (h.latitude == null || h.longitude == null) continue; // 위동 경도 없으면 안나옵니다 그 집은
+
+            float[] dist = new float[1];
+            Location.distanceBetween(
+                    userLat, userLng,
+                    h.latitude, h.longitude,
+                    dist
+            );
+
+            temp.add(new HouseDistance(h, dist[0]));
+        }
+
+        Collections.sort(temp, (a, b) -> Float.compare(a.distance, b.distance));
+
+        List<HouseDto> result = new ArrayList<>();
+        for (int i = 0; i < Math.min(8, temp.size()); i++) {
+            result.add(temp.get(i).house);
+        }
+
+        return result;
+    }
+
+    private static class HouseDistance {
+        HouseDto house;
+        float distance;
+
+        HouseDistance(HouseDto h, float d) {
+            house = h;
+            distance = d;
+        }
+    }
+
+
+
+
+
+
+
+
+
 
     // 화면 표시 유틸
     private String buildDateRange(String start, String end) {
@@ -149,7 +319,21 @@ public class RentHouseActivity extends AppCompatActivity {
         NumberFormat nf = NumberFormat.getNumberInstance(Locale.KOREA);
         return nf.format(pricePerNight) + "원 · 1박";
     }
+    private List<HouseDto> filterHouses(String keyword) {
+        List<HouseDto> result = new ArrayList<>();
 
+        for (HouseDto h : allHouses) {
+            boolean matchTitle = h.title != null && h.title.toLowerCase().contains(keyword.toLowerCase());
+            boolean matchCity = h.city != null && h.city.toLowerCase().contains(keyword.toLowerCase());
+            boolean matchAddress = h.addressLine1 != null && h.addressLine1.toLowerCase().contains(keyword.toLowerCase());
+
+            if (matchTitle || matchCity || matchAddress) {
+                result.add(h);
+            }
+        }
+
+        return result;
+    }
     private String safe(String s) {
         return s == null ? "" : s;
     }

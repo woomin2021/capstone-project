@@ -1,11 +1,14 @@
 package com.example.jjb20;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -14,6 +17,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.jjb20.dto.FirebaseLoginRequestDto;
 import com.example.jjb20.dto.UserResponseDto;
+import com.google.android.gms.common.SignInButton;
 import com.google.android.material.button.MaterialButton;
 import com.google.firebase.auth.FirebaseAuth;
 
@@ -121,7 +125,7 @@ public class LoginActivity extends AppCompatActivity {
                     PrefManager.put("idToken", idToken);
                     PrefManager.put("uid", me.firebaseUid);
                     PrefManager.put("email", me.email);
-                    PrefManager.put("userId",me.id);
+                    PrefManager.put("userId", me.id);
                     PrefManager.put("userName", me.name);
 
                     Log.d("PrefCheck", "idToken: " + PrefManager.get("idToken", "없음"));
@@ -143,6 +147,7 @@ public class LoginActivity extends AppCompatActivity {
                 Toast.makeText(LoginActivity.this, "서버 통신 오류: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
+
 
     }
 }

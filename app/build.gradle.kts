@@ -116,4 +116,8 @@ dependencies {
 
     // 토스 결제위젯 SDK (GitHub 버전)
     implementation("com.github.tosspayments:payment-sdk-android:0.1.21")
+
+    //추천 숙소 위치용
+        implementation ("com.google.android.gms:play-services-location:21.0.1")
+
 }
