@@ -25,6 +25,9 @@ public class HostProfileDto {
     @SerializedName("ratingCount")
     public int ratingCount;
 
+    @SerializedName("temperature")
+    public double temperature;   // 온도 추가
+
     public HostProfileDto(String displayName, String businessNo, String hostingPolicy) {
         this.displayName = displayName;
         this.businessNo = businessNo;

@@ -1,5 +1,7 @@
 package com.example.jjb20;
 
+import android.app.DownloadManager;
+
 import com.example.jjb20.dto.FirebaseLoginRequestDto;
 import com.example.jjb20.dto.HostProfileDto;
 import com.example.jjb20.dto.HouseAmenitiesCreateRequestDto;
@@ -108,4 +110,10 @@ public interface ApiService {
     // 어메니티 포함 전체 상세
     @GET("api/houses/{id}/full-detail")
     Call<HouseDetailResponseDto> getHouseFullDetail(@Path("id") Long id);
+
+    @GET("/api/hosts/{hostId}/profile")
+    Call<HostProfileDto> getHostProfile(
+            @Header("Authorization") String bearerToken,
+            @Path("hostId") long hostId
+    );
 }
