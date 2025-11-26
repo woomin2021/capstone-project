@@ -15,4 +15,10 @@ public class RegisterRequestDto {
 
     public RegisterRequestDto() {
     }
+
+    public RegisterRequestDto(String idToken, String fullName, String phone) {
+        this.idToken = idToken;
+        this.name = fullName;
+        this.phone = phone;
+    }
 }

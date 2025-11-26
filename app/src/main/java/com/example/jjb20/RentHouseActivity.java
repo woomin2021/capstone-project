@@ -88,22 +88,24 @@ public class RentHouseActivity extends AppCompatActivity {
                 return;
             }
 
-            // 프로필 버튼
-            profileIcon.setOnClickListener(view -> {
-                Intent i = new Intent(this, ProfileActivity.class);
-                startActivity(i);
-            });
 
-            // 집 등록하기 버튼
-            btnRegisterHouse.setOnClickListener(view -> {
-                Intent i = new Intent(this, RegisterTitleActivity.class);
-                startActivity(i);
-            });
 
 
             // 검색 필터 실행
             List<HouseDto> filtered = filterHouses(keyword);
             hotAdapter.updateData(filtered);
+        });
+
+        // 프로필 버튼
+        profileIcon.setOnClickListener(view -> {
+            Intent i = new Intent(this, ProfileActivity.class);
+            startActivity(i);
+        });
+
+        // 집 등록하기 버튼
+        btnRegisterHouse.setOnClickListener(view -> {
+            Intent i = new Intent(this, RegisterTitleActivity.class);
+            startActivity(i);
         });
         // 위치 클라이언트 초기화
         fusedClient = LocationServices.getFusedLocationProviderClient(this);

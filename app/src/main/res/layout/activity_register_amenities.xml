@@ -91,6 +91,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="주차장"
+                android:textSize="16sp"
                 android:checked="false"
                 android:fontFamily="@font/cafe24ssurround_v2"
                 app:buttonTint="@color/teal_00cba8"

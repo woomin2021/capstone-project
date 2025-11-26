@@ -1,9 +1,11 @@
 package com.example.jjb20.adapter;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -25,6 +27,7 @@ public class HouseListAdapter extends RecyclerView.Adapter<HouseListAdapter.Hous
     // 클릭 콜백 인터페이스
     public interface OnItemClickListener {
         void onItemClick(HouseDto item);
+        void onEditClick(HouseDto item);
     }
 
     // ✔ 클릭 없는 기본 생성자
@@ -56,14 +59,13 @@ public class HouseListAdapter extends RecyclerView.Adapter<HouseListAdapter.Hous
         holder.txtAddress.setText(item.addressLine1);
         holder.txtPrice.setText(item.pricePerNight + " / 박");
 
-        Glide.with(context)
-                .load(item.coverPhotoUrl)
-                .placeholder(R.drawable.sample1)
-                .into(holder.imgHouse);
 
-        // 클릭이 필요할 때만 동작
         if (listener != null) {
             holder.itemView.setOnClickListener(v -> listener.onItemClick(item));
+            holder.btnEdit.setOnClickListener(v -> listener.onEditClick(item));
+        } else {
+            holder.itemView.setOnClickListener(null);
+            holder.btnEdit.setOnClickListener(null);
         }
     }
 
@@ -76,6 +78,7 @@ public class HouseListAdapter extends RecyclerView.Adapter<HouseListAdapter.Hous
 
         ImageView imgHouse;
         TextView txtTitle, txtAddress, txtPrice;
+        Button btnEdit;
 
         public HouseViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -84,6 +87,7 @@ public class HouseListAdapter extends RecyclerView.Adapter<HouseListAdapter.Hous
             txtTitle = itemView.findViewById(R.id.txtHouseName);
             txtAddress = itemView.findViewById(R.id.txtHouseAddress);
             txtPrice = itemView.findViewById(R.id.txtHousePrice);
+            btnEdit = itemView.findViewById(R.id.btnEdit);
         }
     }
 }

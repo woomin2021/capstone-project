@@ -23,6 +23,14 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import com.example.jjb20.dto.HouseDto;
+
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class ProfileActivity extends AppCompatActivity {
 
     private LinearLayout houseListBtn, reservationListBtn;
@@ -31,8 +39,6 @@ public class ProfileActivity extends AppCompatActivity {
     Button profileEditbtn;
     Button logoutBtn;
     CircleImageView profile_image;
-
-
     private FirebaseAuth mAuth;
     ApiService apiService;
     private MyPageSummaryDto myPageSummaryDto;
@@ -108,7 +114,7 @@ public class ProfileActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
-        
+
         //로그아웃
         logoutBtn = findViewById(R.id.logoutbtn);
 

@@ -99,20 +99,26 @@ public class MainActivity extends AppCompatActivity {
         api.getMyHostProfile().enqueue(new Callback<HostProfileDto>() {
             @Override
             public void onResponse(Call<HostProfileDto> call, Response<HostProfileDto> response) {
-                if (response.code() == 404){
-                    // 호스트 프로필 없음 host_profile 등록 화면
+
+                if (response.isSuccessful()) {
+                    // 200 OK → 호스트 프로필 있음
+                    Log.d("checkHost", "호스트 프로필 있음");
+                    Intent intent = new Intent(getApplicationContext(), RegisterTitleActivity.class);
+                    startActivity(intent);
+                    return;
+                }
+
+                if (response.code() == 404) {
+                    // 404 → 호스트 프로필 없음
                     Log.d("checkHost", "호스트 프로필 없음");
                     Intent intent = new Intent(getApplicationContext(), RegisterHostActivity.class);
                     startActivity(intent);
+                    return;
                 }
 
-                if (response.isSuccessful()){
-                    // 호스트 프로필 있음
-                    Intent intent = new Intent(getApplicationContext(), RegisterTitleActivity.class);
-                    startActivity(intent);
-                }else {
-                    Toast.makeText(MainActivity.this, "알 수 없는 오류", Toast.LENGTH_SHORT).show();
-                }
+                // 그 외 다른 오류
+                Log.e("checkHost", "기타 오류: " + response.code());
+                Toast.makeText(MainActivity.this, "알 수 없는 오류", Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -121,4 +127,5 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
 }

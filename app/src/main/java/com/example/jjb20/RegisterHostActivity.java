@@ -10,6 +10,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.jjb20.dto.HostProfileDto;
+import com.example.jjb20.dto.HostRegisterRequestDto;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -49,7 +50,7 @@ public class RegisterHostActivity extends AppCompatActivity {
 
         String realName = PrefManager.get("userName");
 
-        HostProfileDto dto = new HostProfileDto(realName, businessNo, hostingPolicy);
+        HostRegisterRequestDto dto = new HostRegisterRequestDto(realName, businessNo, hostingPolicy);
 
         api.registerHostProfile(dto).enqueue(new Callback<Void>() {
             @Override
