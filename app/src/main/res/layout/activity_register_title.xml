@@ -90,7 +90,8 @@
         android:layout_marginStart="24dp"
         android:layout_marginTop="24dp"
         android:layout_marginEnd="24dp"
-        android:hint="길동이네 하우스"
+        android:hint=""
+        app:hintEnabled="false"
         app:buttonTint="@color/teal_00cba8"
         app:hintTextAppearance="@style/TextInputHintCafe24"
 
@@ -106,6 +107,7 @@
             android:layout_height="wrap_content"
             android:inputType="text"
             android:maxLines="1"
+            android:hint="길동이네 하우스"
             android:fontFamily="@font/cafe24ssurroundotf" />
 
     </com.google.android.material.textfield.TextInputLayout>

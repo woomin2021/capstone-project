@@ -40,13 +40,34 @@ public class ProfileHouseListActivity extends AppCompatActivity {
         rvHouseList.setLayoutManager(new LinearLayoutManager(this));
 
 
-        adapter = new HouseListAdapter(this, houseList, item -> {
+        adapter = new HouseListAdapter(this, houseList, new HouseListAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(HouseDto item) {
+                // TODO: 집 정보 상세 화면이 완성되면 아래 Intent를 연결합니다.
+//                Intent intent = new Intent(ProfileHouseListActivity.this, HouseDetailActivity.class);
+//                intent.putExtra("houseId", item.id);
+//                startActivity(intent);
+            }
 
-            //클릭된 집 정보 전달
-//            Intent intent = new Intent(ProfileHouseListActivity.this, HouseReviewActivity.class);
-//            intent.putExtra("house", item);
-//            startActivity(intent);
-
+            @Override
+            public void onEditClick(HouseDto item) {
+                Intent intent = new Intent(ProfileHouseListActivity.this, EditHouseActivity.class);
+                intent.putExtra("houseId", item.id);
+                intent.putExtra("houseTitle", item.title);
+                intent.putExtra("houseAddress", item.addressLine1);
+                intent.putExtra("houseAddressDetail", item.addressDetail);
+                intent.putExtra("houseDescription", item.description);
+                intent.putExtra("houseSummary", item.summary);
+                intent.putExtra("houseCity", item.city);
+                intent.putExtra("houseCountry", item.country);
+                intent.putExtra("houseStartDay", item.startDay);
+                intent.putExtra("houseEndDay", item.endDay);
+                if (item.pricePerNight != null) {
+                    intent.putExtra("housePrice", item.pricePerNight);
+                }
+                intent.putExtra("houseCoverPhoto", item.coverPhotoUrl);
+                startActivity(intent);
+            }
         });
         rvHouseList.setAdapter(adapter);
 

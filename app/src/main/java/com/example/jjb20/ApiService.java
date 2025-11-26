@@ -1,9 +1,14 @@
 package com.example.jjb20;
 
+import android.app.DownloadManager;
+
 import com.example.jjb20.dto.FirebaseLoginRequestDto;
+import com.example.jjb20.dto.HostProfileDto;
+import com.example.jjb20.dto.HostRegisterRequestDto;
 import com.example.jjb20.dto.HouseAmenitiesCreateRequestDto;
 import com.example.jjb20.dto.HouseDetailResponseDto;
 import com.example.jjb20.dto.HouseDto;
+import com.example.jjb20.dto.HouseUpdateRequestDto;
 import com.example.jjb20.dto.HousesCreateRequestDto;
 import com.example.jjb20.dto.HousesResponseDto;
 import com.example.jjb20.dto.MyPageSummaryDto;
@@ -17,6 +22,7 @@ import com.example.jjb20.dto.UserUpdateRequestDto;
 import com.example.jjb20.entity.User;
 
 import java.util.List;
+import java.util.Objects;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -24,6 +30,7 @@ import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.PATCH;
 import retrofit2.http.POST;
+import retrofit2.http.PUT;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 
@@ -58,6 +65,11 @@ public interface ApiService {
             @Header("Authorization") String bearerToken
     );
 
+    @POST("/api/hosts/me")
+    Call<Void> registerHostProfile(@Body HostRegisterRequestDto req);
+
+    @GET("/api/hosts/me")
+    Call<HostProfileDto> getMyHostProfile();
 
     //  집 생성
     @POST("api/houses")
@@ -102,4 +114,14 @@ public interface ApiService {
     // 어메니티 포함 전체 상세
     @GET("api/houses/{id}/full-detail")
     Call<HouseDetailResponseDto> getHouseFullDetail(@Path("id") Long id);
+
+    //혜민 : 집 개수 불러오기
+    @PUT("api/houses/{id}")
+    Call<Void> updateHouseBasicInfo(@Path("id") long id, @Body HouseUpdateRequestDto requestDto);
+
+    @GET("/api/hosts/{hostId}/profile")
+    Call<HostProfileDto> getHostProfile(
+            @Header("Authorization") String bearerToken,
+            @Path("hostId") long hostId
+    );
 }

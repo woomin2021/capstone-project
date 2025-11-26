@@ -50,6 +50,12 @@ public class HouseDetailResponseDto {
     @SerializedName("hostRatingCount")
     private Integer hostRatingCount;
 
+    @SerializedName("startDay")
+    private String startDay;
+
+    @SerializedName("endDay")
+    private String endDay;
+
     public HouseDetailResponseDto() {}
 
 
@@ -84,6 +90,10 @@ public class HouseDetailResponseDto {
     public Double getHostRatingAvg() { return hostRatingAvg; }
 
     public Integer getHostRatingCount() { return hostRatingCount; }
+
+    public String getStartDay() { return startDay; }
+
+    public String getEndDay() { return endDay; }
 
 
 

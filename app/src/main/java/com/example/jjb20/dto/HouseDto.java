@@ -29,6 +29,12 @@ public class HouseDto implements Serializable {
     @SerializedName("pricePerNight")
     public Integer pricePerNight;
 
+    @SerializedName("addressDetail")
+    public String addressDetail;
+
+    @SerializedName("summary")
+    public String summary;
+
     @SerializedName("status")
     public String status;
 

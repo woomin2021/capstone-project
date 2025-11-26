@@ -1,13 +1,15 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
-    <style name="Base.Theme.JJB20" parent="Theme.Material3.Light.NoActionBar">
-        <!-- Customize your dark theme here. -->
-        <!-- <item name="colorPrimary">@color/my_dark_primary</item> -->
-    </style>
-    <style name="Theme.JJB20" parent="Theme.Material3.Light.NoActionBar">
-        <!-- 전체 기본 폰트 -->
-        <item name="android:fontFamily">@font/cafe24ssurroundotf</item>
-        <!-- 혹은 -->
-        <item name="fontFamily">@font/cafe24ssurroundotf</item>
-    </style>
+<!--    &lt;!&ndash; Base application theme. &ndash;&gt;-->
+<!--    <style name="Base.Theme.JJB20" parent="Theme.MaterialComponents.NoActionBar">-->
+<!--        &lt;!&ndash; Customize your dark theme here. &ndash;&gt;-->
+<!--        &lt;!&ndash; <item name="colorPrimary">@color/my_dark_primary</item> &ndash;&gt;-->
+<!--    </style>-->
+<!--    <style name="Theme.JJB20" parent="Theme.MaterialComponents.NoActionBar">-->
+<!--        &lt;!&ndash; 전체 기본 폰트 &ndash;&gt;-->
+<!--        <item name="android:fontFamily">@font/cafe24ssurroundotf</item>-->
+<!--        &lt;!&ndash; 혹은 &ndash;&gt;-->
+<!--        <item name="fontFamily">@font/cafe24ssurroundotf</item>-->
+
+
+<!--    </style>-->
 </resources>
