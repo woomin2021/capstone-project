@@ -1,10 +1,10 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
 
     <!-- 베이스 테마 -->
-    <style name="Base.Theme.JJB20" parent="Theme.MaterialComponents.Light.NoActionBar">
+    <style name="Base.Theme.JJB20" parent="Theme.Material3.Light.NoActionBar">
         <!-- 전체 앱 공통 폰트 -->
-        <item name="android:fontFamily">@font/cafe24ssurroundotf</item>
-        <item name="fontFamily">@font/cafe24ssurroundotf</item>
+
+
 
         <!-- 상태바 밝기: 밝은 배경 → 아이콘/글씨는 검정색 -->
         <item name="android:windowLightStatusBar">true</item>

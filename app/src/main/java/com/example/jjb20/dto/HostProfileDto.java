@@ -7,11 +7,8 @@ public class HostProfileDto {
     @SerializedName("userId")
     public long userId;
 
-    @SerializedName("displayName")
-    public String displayName;
-
-    @SerializedName("payoutMethod")
-    public String payoutMethod;
+    @SerializedName("realName")
+    public String realName;
 
     @SerializedName("businessNo")
     public String businessNo;
@@ -28,8 +25,8 @@ public class HostProfileDto {
     @SerializedName("temperature")
     public double temperature;   // 온도 추가
 
-    public HostProfileDto(String displayName, String businessNo, String hostingPolicy) {
-        this.displayName = displayName;
+    public HostProfileDto(String realName, String businessNo, String hostingPolicy) {
+        this.realName = realName;
         this.businessNo = businessNo;
         this.hostingPolicy = hostingPolicy;
     }

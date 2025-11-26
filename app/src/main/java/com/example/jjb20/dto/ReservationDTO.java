@@ -34,4 +34,6 @@ public class ReservationDTO implements Serializable {
 
     @SerializedName("updatedAt")
     public String updatedAt;
+
+    public boolean hasReview;
 }

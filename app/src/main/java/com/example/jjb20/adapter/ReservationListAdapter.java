@@ -16,16 +16,18 @@ import java.util.List;
 
 public class ReservationListAdapter extends RecyclerView.Adapter<ReservationListAdapter.ReservationViewHolder> {
 
-    private Context context;
-    private List<ReservationDTO> reservationList;
-    private OnItemClickListener listener;
+    private final Context context;
+    private final List<ReservationDTO> reservationList;
+    private final OnItemClickListener listener;
 
     // 아이템 클릭 인터페이스
     public interface OnItemClickListener {
         void onItemClick(ReservationDTO item);
     }
 
-    public ReservationListAdapter(Context context, List<ReservationDTO> reservationList, OnItemClickListener listener) {
+    public ReservationListAdapter(Context context,
+                                  List<ReservationDTO> reservationList,
+                                  OnItemClickListener listener) {
         this.context = context;
         this.reservationList = reservationList;
         this.listener = listener;
@@ -48,6 +50,30 @@ public class ReservationListAdapter extends RecyclerView.Adapter<ReservationList
         holder.txtGuestCount.setText("인원: " + item.guestCount + "명");
         holder.txtTotalPrice.setText("₩ " + item.totalPrice);
 
+        // status → 한글로 변환해서 표시
+        if (item.status != null) {
+            String statusText;
+            switch (item.status) {
+                case "IN_PROGRESS":
+                    statusText = "예약 진행중";
+                    break;
+                case "TRADE_DONE":
+                    statusText = "거래 승인";
+                    break;
+                case "COMPLETED":
+                    statusText = "이용 완료";
+                    break;
+                case "UNCOMPLETED":
+                    statusText = "취소/거절";
+                    break;
+                default:
+                    statusText = "알 수 없음";
+            }
+            holder.txtStatus.setText(statusText);
+        } else {
+            holder.txtStatus.setText("알 수 없음");
+        }
+
         holder.itemView.setOnClickListener(v -> {
             if (listener != null) listener.onItemClick(item);
         });
@@ -60,15 +86,16 @@ public class ReservationListAdapter extends RecyclerView.Adapter<ReservationList
 
     static class ReservationViewHolder extends RecyclerView.ViewHolder {
 
-        TextView txtReservationId, txtDateRange, txtGuestCount, txtTotalPrice;
+        TextView txtReservationId, txtDateRange, txtGuestCount, txtTotalPrice, txtStatus;
 
         public ReservationViewHolder(@NonNull View itemView) {
             super(itemView);
 
             txtReservationId = itemView.findViewById(R.id.txtReservationId);
-            txtDateRange = itemView.findViewById(R.id.txtDateRange);
-            txtGuestCount = itemView.findViewById(R.id.txtGuestCount);
-            txtTotalPrice = itemView.findViewById(R.id.txtTotalPrice);
+            txtDateRange     = itemView.findViewById(R.id.txtDateRange);
+            txtGuestCount    = itemView.findViewById(R.id.txtGuestCount);
+            txtTotalPrice    = itemView.findViewById(R.id.txtTotalPrice);
+            txtStatus        = itemView.findViewById(R.id.txtStatus);
         }
     }
 }

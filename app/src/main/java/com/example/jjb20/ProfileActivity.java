@@ -110,7 +110,8 @@ public class ProfileActivity extends AppCompatActivity {
         });
 
         profileEditbtn.setOnClickListener(v -> {
-//            Intent intent = new Intent()
+            Intent intent = new Intent(getApplicationContext(), EditProfileActivity.class);
+            startActivity(intent);
         });
 
 
