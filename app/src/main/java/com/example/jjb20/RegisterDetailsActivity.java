@@ -5,19 +5,24 @@ import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.View;
+import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.jjb20.dto.HouseUpdateRequestDto;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
-import com.example.jjb20.SearchAddressActivity;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class RegisterDetailsActivity extends AppCompatActivity {
 
@@ -36,6 +41,17 @@ public class RegisterDetailsActivity extends AppCompatActivity {
     private TextInputEditText summaryEditText;
 
     private ActivityResultLauncher<Intent> addressSearchLauncher;
+
+    private boolean isEditMode = false;
+    private long houseId = -1L;
+    private String editTarget;
+    private String currentAddress;
+    private String currentAddressDetail;
+    private String currentDescription;
+    private String currentSummary;
+    private String currentCity;
+    private String currentCountry;
+    private ApiService apiService;
 
     // 모든 EditText의 변경을 감지할 공용 TextWatcher
     private final TextWatcher textWatcher = new TextWatcher() {
@@ -58,6 +74,25 @@ public class RegisterDetailsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         // 1. XML 레이아웃 파일 설정
         setContentView(R.layout.activity_register_details);
+
+        String mode = getIntent().getStringExtra("mode");
+        isEditMode = "edit".equalsIgnoreCase(mode);
+        editTarget = getIntent().getStringExtra("target");
+        houseId = getIntent().getLongExtra("houseId", -1L);
+        currentAddress = getIntent().getStringExtra("currentAddress");
+        currentAddressDetail = getIntent().getStringExtra("currentAddressDetail");
+        currentDescription = getIntent().getStringExtra("currentDescription");
+        currentSummary = getIntent().getStringExtra("currentSummary");
+        currentCity = getIntent().getStringExtra("houseCity");
+        currentCountry = getIntent().getStringExtra("houseCountry");
+
+        if (isEditMode && houseId == -1L) {
+            Toast.makeText(this, "집 정보를 불러올 수 없습니다.", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
+
+        apiService = RetrofitClient.getInstance().create(ApiService.class);
 
         // 2. ActivityResultLauncher 초기화
         // AddressSearchActivity가 반환한 주소값을 받아서 addressEditText에 설정
@@ -103,6 +138,27 @@ public class RegisterDetailsActivity extends AppCompatActivity {
         // 한줄 설명
         summaryInputLayout = findViewById(R.id.summary_input_layout);
         summaryEditText = findViewById(R.id.summary_edit_text);
+
+        if (isEditMode) {
+            nextButton.setText("완료");
+            toolbar.setTitle("집 정보 수정");
+
+            if (!TextUtils.isEmpty(currentAddress) && addressEditText != null) {
+                addressEditText.setText(currentAddress);
+            }
+            if (!TextUtils.isEmpty(currentAddressDetail) && addressDetailEditText != null) {
+                addressDetailEditText.setText(currentAddressDetail);
+                addressDetailEditText.setSelection(currentAddressDetail.length());
+            }
+            if (!TextUtils.isEmpty(currentDescription) && descriptionEditText != null) {
+                descriptionEditText.setText(currentDescription);
+                descriptionEditText.setSelection(currentDescription.length());
+            }
+            if (!TextUtils.isEmpty(currentSummary) && summaryEditText != null) {
+                summaryEditText.setText(currentSummary);
+                summaryEditText.setSelection(currentSummary.length());
+            }
+        }
     }
 
     private void setupListeners() {
@@ -123,16 +179,20 @@ public class RegisterDetailsActivity extends AppCompatActivity {
                     fullAddress += " " + addressDetail;
                 }
                 
-                // SharedPreferences에 저장
-                PrefManager.put("house_address", fullAddress);
-                PrefManager.put("house_description", description);
-                // city와 country는 일단 기본값으로 설정 (나중에 주소에서 파싱하거나 별도 입력 가능)
-                PrefManager.put("house_city", "서울");
-                PrefManager.put("house_country", "한국");
-                
-                // 다음 액티비티로 이동
-                Intent intent = new Intent(RegisterDetailsActivity.this, RegisterCalendarActivity.class);
-                startActivity(intent);
+                if (isEditMode) {
+                    submitEdit(fullAddress, description);
+                } else {
+                    // SharedPreferences에 저장
+                    PrefManager.put("house_address", fullAddress);
+                    PrefManager.put("house_description", description);
+                    // city와 country는 일단 기본값으로 설정 (나중에 주소에서 파싱하거나 별도 입력 가능)
+                    PrefManager.put("house_city", "서울");
+                    PrefManager.put("house_country", "한국");
+
+                    // 다음 액티비티로 이동
+                    Intent intent = new Intent(RegisterDetailsActivity.this, RegisterCalendarActivity.class);
+                    startActivity(intent);
+                }
             }
         });
 
@@ -181,13 +241,24 @@ public class RegisterDetailsActivity extends AppCompatActivity {
         String address = (addressEditText != null) ? addressEditText.getText().toString().trim() : "";
         String detail = (addressDetailEditText != null) ? addressDetailEditText.getText().toString().trim() : "";
         String description = (descriptionEditText != null) ? descriptionEditText.getText().toString().trim() : "";
-        String summary = (summaryEditText != null) ? summaryEditText.getText().  toString().trim() : "";
+        String summary = (summaryEditText != null) ? summaryEditText.getText().toString().trim() : "";
 
-        // 모든 필드가 비어있지 않은지 확인
-        boolean allFieldsFilled = !address.isEmpty() &&
-                !detail.isEmpty() &&
-                !description.isEmpty() &&
-                !summary.isEmpty();
+        boolean allFieldsFilled;
+        if (isEditMode) {
+            if ("address".equalsIgnoreCase(editTarget)) {
+                allFieldsFilled = !address.isEmpty() && !detail.isEmpty();
+            } else if ("description".equalsIgnoreCase(editTarget)) {
+                allFieldsFilled = !description.isEmpty();
+            } else {
+                allFieldsFilled = !address.isEmpty() && !detail.isEmpty() && !description.isEmpty();
+            }
+        } else {
+            // 모든 필드가 비어있지 않은지 확인
+            allFieldsFilled = !address.isEmpty() &&
+                    !detail.isEmpty() &&
+                    !description.isEmpty() &&
+                    !summary.isEmpty();
+        }
 
         // 모든 필드가 채워졌으면 버튼 활성화
         nextButton.setEnabled(allFieldsFilled);
@@ -202,5 +273,50 @@ public class RegisterDetailsActivity extends AppCompatActivity {
             int color = Color.parseColor("#BDBDBD");
             nextButton.setBackgroundTintList(ColorStateList.valueOf(color));
         }
+    }
+
+    private void submitEdit(String fullAddress, String description) {
+        nextButton.setEnabled(false);
+        nextButton.setText("저장 중...");
+
+        HouseUpdateRequestDto dto = new HouseUpdateRequestDto();
+        boolean wantsAddressUpdate = "address".equalsIgnoreCase(editTarget) || TextUtils.isEmpty(editTarget);
+        boolean wantsDescriptionUpdate = "description".equalsIgnoreCase(editTarget) || TextUtils.isEmpty(editTarget);
+
+        if (wantsAddressUpdate) {
+            dto.setAddressLine1(fullAddress);
+            dto.setCity(!TextUtils.isEmpty(currentCity) ? currentCity : "서울");
+            dto.setCountry(!TextUtils.isEmpty(currentCountry) ? currentCountry : "한국");
+        }
+
+        if (wantsDescriptionUpdate) {
+            dto.setDescription(description);
+        }
+
+        apiService.updateHouseBasicInfo(houseId, dto).enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                if (response.isSuccessful()) {
+                    Toast.makeText(RegisterDetailsActivity.this, "집 정보가 수정되었습니다.", Toast.LENGTH_SHORT).show();
+                    finish();
+                } else {
+                    restoreButtonState();
+                    Toast.makeText(RegisterDetailsActivity.this,
+                            "수정에 실패했습니다. (" + response.code() + ")", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                restoreButtonState();
+                Toast.makeText(RegisterDetailsActivity.this,
+                        "네트워크 오류: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void restoreButtonState() {
+        nextButton.setEnabled(true);
+        nextButton.setText(isEditMode ? "완료" : "다음");
     }
 }

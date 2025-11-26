@@ -73,6 +73,7 @@
                     android:textStyle="bold" />
 
                 <TextView
+                    android:id="@+id/tvEditInfoTitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="길동이네 하우스"
@@ -122,6 +123,7 @@
                     android:textStyle="bold" />
 
                 <TextView
+                    android:id="@+id/tvEditInfoAddress"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="서울특별시 서대문구 가좌로 134\n공601호"
@@ -172,6 +174,7 @@
                     android:textStyle="bold" />
 
                 <TextView
+                    android:id="@+id/tvEditInfoDescription"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="안녕하세요! 제 공간에 오신 걸 환영합니다..."
@@ -223,6 +226,7 @@
                     android:textStyle="bold" />
 
                 <TextView
+                    android:id="@+id/tvEditInfoPeriod"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="2025.10.01 ~ 2025.10.31"
@@ -272,6 +276,7 @@
                     android:textStyle="bold" />
 
                 <TextView
+                    android:id="@+id/tvEditInfoPrice"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="30,000원"
