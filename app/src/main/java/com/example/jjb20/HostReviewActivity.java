@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
@@ -19,11 +20,12 @@ import com.example.jjb20.dto.HouseReviewDTO;
 import java.util.ArrayList;
 
 import retrofit2.Call;
+import retrofit2.Callback;
 import retrofit2.Response;
 
 public class HostReviewActivity extends AppCompatActivity {
     private AppCompatButton chatBtn;
-    private TextView tempTextView;   // 온도 표시용
+    private TextView tempTextView, hostName, rating;   // 온도 표시용
 
     private long hostId;             // 이 화면에 들어온 호스트의 id
 
@@ -34,13 +36,15 @@ public class HostReviewActivity extends AppCompatActivity {
 
         chatBtn = findViewById(R.id.chatBtn);
 
-        tempTextView = findViewById(R.id.host_temperature); // 🔹 추가
+        tempTextView = findViewById(R.id.host_temperature); // 추가
+        hostName = findViewById(R.id.user_name);
+        rating = findViewById(R.id.rating);
 
         // 이 액티비티를 띄울 때 putExtra("hostId", 호스트아이디)로 넘겨준다고 가정
         hostId = getIntent().getLongExtra("hostId", -1L);
 
         // 온도 / 프로필 불러오기
-        fetchHostProfile();  // ⭐ 이 줄이 핵심
+        fetchHostProfile();  // 이 줄이 핵심
 
         chatBtn.setOnClickListener(v -> {
             openChatFragment();
@@ -100,43 +104,69 @@ public class HostReviewActivity extends AppCompatActivity {
     private void fetchHostProfile() {
         if (hostId <= 0) {
             tempTextView.setText("--.-°");
-            return;
-        }
-
-        // 🔹 토큰은 프로젝트에서 쓰는 방식대로 꺼내오세요 (예: SharedPreferences)
-        String token = getSharedPreferences("auth", MODE_PRIVATE)
-                .getString("accessToken", null);
-
-        if (token == null) {
-            tempTextView.setText("--.-°");
+            if (hostName != null) hostName.setText("호스트");
+            if (rating != null) rating.setText("평점 없음");
             return;
         }
 
         ApiService api = RetrofitClient.getInstance().create(ApiService.class);
 
-        api.getHostProfile("Bearer " + token, hostId)
-                .enqueue(new retrofit2.Callback<HostProfileDto>() {
+        api.getHostProfile(hostId)
+                .enqueue(new Callback<HostProfileDto>() {
                     @Override
                     public void onResponse(Call<HostProfileDto> call,
                                            Response<HostProfileDto> response) {
+
+                        android.util.Log.d("TEMP_API",
+                                "code=" + response.code() + ", body=" + response.body());
+
                         if (response.isSuccessful() && response.body() != null) {
                             HostProfileDto body = response.body();
 
-                            // 🔹 temperature 필드 사용 (앞에서 dto에 추가한 필드)
-                            String text = String.format(
+                            // 온도
+                            String temp = String.format(
                                     java.util.Locale.getDefault(),
                                     "%.1f°",
                                     body.temperature
                             );
-                            tempTextView.setText(text);
+                            tempTextView.setText(temp);
+
+                            // 호스트 이름
+                            if (hostName != null) {
+                                if (body.realName != null && !body.realName.isEmpty()) {
+                                    hostName.setText(body.realName);
+                                } else {
+                                    hostName.setText("호스트");
+                                }
+                            }
+
+                            // 평점
+                            if (rating != null) {
+                                if (body.ratingCount > 0) {
+                                    String ratingText = String.format(
+                                            java.util.Locale.getDefault(),
+                                            "★ %.1f (%d명)",
+                                            body.ratingAvg,
+                                            body.ratingCount
+                                    );
+                                    rating.setText(ratingText);
+                                } else {
+                                    rating.setText("평점 없음");
+                                }
+                            }
+
                         } else {
                             tempTextView.setText("--.-°");
+                            if (rating != null) rating.setText("평점 없음");
                         }
                     }
 
                     @Override
-                    public void onFailure(Call<HostProfileDto> call, Throwable t) {
+                    public void onFailure(@NonNull Call<HostProfileDto> call,
+                                          @NonNull Throwable t) {
+                        android.util.Log.e("TEMP_API", "fail", t);
                         tempTextView.setText("--.-°");
+                        if (rating != null) rating.setText("평점 없음");
                     }
                 });
     }

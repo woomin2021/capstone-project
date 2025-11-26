@@ -121,7 +121,7 @@ public interface ApiService {
 
     @GET("/api/hosts/{hostId}/profile")
     Call<HostProfileDto> getHostProfile(
-            @Header("Authorization") String bearerToken,
             @Path("hostId") long hostId
     );
+
 }

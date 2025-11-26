@@ -115,6 +115,7 @@
                     android:gravity="center">
 
                     <TextView
+                        android:id="@+id/review_count1"
                         android:text="+999 개"
                         android:textStyle="bold"
                         android:textSize="18sp"
@@ -140,6 +141,7 @@
                     android:gravity="center">
 
                     <TextView
+                        android:id="@+id/rating"
                         android:text="4.9 점"
                         android:textStyle="bold"
                         android:textSize="18sp"
@@ -230,7 +232,7 @@
                     android:fontFamily="@font/cafe24ssurroundotf" />
 
                 <TextView
-                    android:id="@+id/review_count"
+                    android:id="@+id/review_count2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="1,364개"
