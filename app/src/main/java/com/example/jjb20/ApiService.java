@@ -128,4 +128,11 @@ public interface ApiService {
     @GET("api/reviews/houses/by-host")
     Call<List<HouseReviewDTO>> getHostReviews(@Query("hostId") long hostId);
 
+
+    @GET("/api/reservations/my/current")
+    Call<List<ReservationDTO>> getCurrentReservations(@Query("userId") long userId);
+
+    @GET("/api/reservations/my/past")
+    Call<List<ReservationDTO>> getPastReservations(@Query("userId") long userId);
+
 }
