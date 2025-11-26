@@ -31,6 +31,8 @@ public class HostReviewActivity extends AppCompatActivity {
     private TextView tvReviewCountTop, tvReviewCountSection;
 
     private long hostId;             // 이 화면에 들어온 호스트의 id
+    private long myUserId;
+    private String chatroomName;
 
     private RecyclerView recyclerView;
     private ArrayList<HouseReviewDTO> reviewList = new ArrayList<>();
@@ -50,6 +52,7 @@ public class HostReviewActivity extends AppCompatActivity {
         tvReviewCountSection = findViewById(R.id.review_count2);
 
         hostId = getIntent().getLongExtra("hostId", -1L);
+        myUserId = PrefManager.getInt("userId", -1);
 
         // 리사이클러뷰 초기화
         recyclerView = findViewById(R.id.review_list);
@@ -70,15 +73,27 @@ public class HostReviewActivity extends AppCompatActivity {
     private void openChatFragment() {
         View container = findViewById(R.id.chat_container);
         if (container == null) {
-            // chat_container 못 찾으면 XML id 문제
             return;
         }
 
+        // 내 userId 또는 hostId가 이상하면 방 못 열게
+        if (myUserId <= 0 || hostId <= 0) {
+            android.widget.Toast.makeText(
+                    this,
+                    "채팅 정보를 불러올 수 없습니다.",
+                    android.widget.Toast.LENGTH_SHORT
+            ).show();
+            return;
+        }
+
+        // 두 사람의 ID를 이용해서 항상 같은 방 이름이 나오도록 정렬
+        long a = Math.min(myUserId, hostId);
+        long b = Math.max(myUserId, hostId);
+        String roomName = "dm_" + a + "_" + b;   // 예: dm_1_5
+
         container.setVisibility(View.VISIBLE);
 
-        String chatroomName = "testRoom"; // 나중에 실제 방 키로 교체
-
-        ChatMsgFragment chatFragment = ChatMsgFragment.newInstance(chatroomName);
+        ChatMsgFragment chatFragment = ChatMsgFragment.newInstance(roomName);
 
         getSupportFragmentManager()
                 .beginTransaction()
@@ -140,6 +155,10 @@ public class HostReviewActivity extends AppCompatActivity {
                                     rating.setText("평점 없음");
                                 }
                             }
+
+                            // 여기서 채팅방 이름 확정 (host_호스트ID)
+                            chatroomName = "host_" + hostId;
+
 
                             // 후기
                             if (tvReviewCountTop != null) {
