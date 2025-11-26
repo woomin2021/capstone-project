@@ -18,6 +18,8 @@ import com.example.jjb20.dto.HostProfileDto;
 import com.example.jjb20.dto.HouseReviewDTO;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -26,8 +28,13 @@ import retrofit2.Response;
 public class HostReviewActivity extends AppCompatActivity {
     private AppCompatButton chatBtn;
     private TextView tempTextView, hostName, rating;   // 온도 표시용
+    private TextView tvReviewCountTop, tvReviewCountSection;
 
     private long hostId;             // 이 화면에 들어온 호스트의 id
+
+    private RecyclerView recyclerView;
+    private ArrayList<HouseReviewDTO> reviewList = new ArrayList<>();
+    private ReviewAdapter adapter;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -36,49 +43,28 @@ public class HostReviewActivity extends AppCompatActivity {
 
         chatBtn = findViewById(R.id.chatBtn);
 
-        tempTextView = findViewById(R.id.host_temperature); // 추가
-        hostName = findViewById(R.id.user_name);
-        rating = findViewById(R.id.rating);
+        tempTextView = findViewById(R.id.host_temperature);
+        hostName     = findViewById(R.id.user_name);
+        rating       = findViewById(R.id.rating);
+        tvReviewCountTop = findViewById(R.id.review_count1);
+        tvReviewCountSection = findViewById(R.id.review_count2);
 
-        // 이 액티비티를 띄울 때 putExtra("hostId", 호스트아이디)로 넘겨준다고 가정
         hostId = getIntent().getLongExtra("hostId", -1L);
 
-        // 온도 / 프로필 불러오기
-        fetchHostProfile();  // 이 줄이 핵심
-
-        chatBtn.setOnClickListener(v -> {
-            openChatFragment();
-        });
-
-
-
-
-        RecyclerView recyclerView = findViewById(R.id.review_list);
+        // 리사이클러뷰 초기화
+        recyclerView = findViewById(R.id.review_list);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        ArrayList<HouseReviewDTO> reviewList = new ArrayList<>();
-
-        reviewList.add(new HouseReviewDTO(
-                1, 10, 3, 5, 5,
-                "정말 만족스러웠습니다. 다시 오고 싶습니다.",
-                "오늘"
-        ));
-
-        reviewList.add(new HouseReviewDTO(
-                2, 11, 7, 5, 4,
-                "숙소 위치가 좋고 호스트가 친절했습니다.",
-                "2주 전"
-        ));
-
-        reviewList.add(new HouseReviewDTO(
-                3, 15, 12, 5, 3,
-                "전반적으로 무난했습니다.",
-                "1년 전"
-        ));
-
-        ReviewAdapter adapter = new ReviewAdapter(reviewList);
+        adapter = new ReviewAdapter(reviewList);
         recyclerView.setAdapter(adapter);
 
+
+        // 온도 / 프로필 불러오기
+        fetchHostProfile();
+        // 리뷰 목록 불러오기
+        loadHostReviews();
+
+        chatBtn.setOnClickListener(v -> openChatFragment());
     }
 
     private void openChatFragment() {
@@ -155,6 +141,16 @@ public class HostReviewActivity extends AppCompatActivity {
                                 }
                             }
 
+                            // 후기
+                            if (tvReviewCountTop != null) {
+                                String countText = String.format(Locale.getDefault(), "+%,d개", body.ratingCount);
+                                tvReviewCountTop.setText(countText);
+                            }
+                            if (tvReviewCountSection != null) {
+                                String countText = String.format(Locale.getDefault(), "%,d개", body.ratingCount);
+                                tvReviewCountSection.setText(countText);
+                            }
+
                         } else {
                             tempTextView.setText("--.-°");
                             if (rating != null) rating.setText("평점 없음");
@@ -168,6 +164,28 @@ public class HostReviewActivity extends AppCompatActivity {
                         tempTextView.setText("--.-°");
                         if (rating != null) rating.setText("평점 없음");
                     }
+                });
+    }
+
+
+    private void loadHostReviews() {
+        if (hostId <= 0) return;
+
+        ApiService api = RetrofitClient.getInstance().create(ApiService.class);
+        api.getHostReviews(hostId)
+                .enqueue(new Callback<List<HouseReviewDTO>>() {
+                    @Override
+                    public void onResponse(Call<List<HouseReviewDTO>> call,
+                                           Response<List<HouseReviewDTO>> response) {
+                        if (response.isSuccessful() && response.body() != null) {
+                            reviewList.clear();
+                            reviewList.addAll(response.body());
+                            adapter.notifyDataSetChanged();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<List<HouseReviewDTO>> call, Throwable t) { }
                 });
     }
 }

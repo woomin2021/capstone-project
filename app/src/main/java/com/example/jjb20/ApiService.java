@@ -8,6 +8,7 @@ import com.example.jjb20.dto.HostRegisterRequestDto;
 import com.example.jjb20.dto.HouseAmenitiesCreateRequestDto;
 import com.example.jjb20.dto.HouseDetailResponseDto;
 import com.example.jjb20.dto.HouseDto;
+import com.example.jjb20.dto.HouseReviewDTO;
 import com.example.jjb20.dto.HouseUpdateRequestDto;
 import com.example.jjb20.dto.HousesCreateRequestDto;
 import com.example.jjb20.dto.HousesResponseDto;
@@ -123,5 +124,8 @@ public interface ApiService {
     Call<HostProfileDto> getHostProfile(
             @Path("hostId") long hostId
     );
+
+    @GET("api/reviews/houses/by-host")
+    Call<List<HouseReviewDTO>> getHostReviews(@Query("hostId") long hostId);
 
 }
