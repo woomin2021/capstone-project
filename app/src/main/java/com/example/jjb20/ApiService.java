@@ -2,6 +2,7 @@ package com.example.jjb20;
 
 import com.example.jjb20.dto.FirebaseLoginRequestDto;
 import com.example.jjb20.dto.HostProfileDto;
+import com.example.jjb20.dto.HostRegisterRequestDto;
 import com.example.jjb20.dto.HouseAmenitiesCreateRequestDto;
 import com.example.jjb20.dto.HouseDetailResponseDto;
 import com.example.jjb20.dto.HouseDto;
@@ -60,7 +61,7 @@ public interface ApiService {
     );
 
     @POST("/api/hosts/me")
-    Call<Void> registerHostProfile(@Body HostProfileDto req);
+    Call<Void> registerHostProfile(@Body HostRegisterRequestDto req);
 
     @GET("/api/hosts/me")
     Call<HostProfileDto> getMyHostProfile();

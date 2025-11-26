@@ -63,6 +63,7 @@
         <activity android:name=".HostReviewActivity" />
         <activity android:name=".HouseReviewActivity"/>
         <activity android:name=".EditProfileActivity"/>
+        <activity android:name=".RegisterHostActivity"/>
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyB0gphitktaQL9MhzcbxPUOtAgo8EG-qao" />
