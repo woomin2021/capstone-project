@@ -4,6 +4,7 @@ import com.example.jjb20.dto.FirebaseLoginRequestDto;
 import com.example.jjb20.dto.HouseAmenitiesCreateRequestDto;
 import com.example.jjb20.dto.HouseDetailResponseDto;
 import com.example.jjb20.dto.HouseDto;
+import com.example.jjb20.dto.HouseUpdateRequestDto;
 import com.example.jjb20.dto.HousesCreateRequestDto;
 import com.example.jjb20.dto.HousesResponseDto;
 import com.example.jjb20.dto.RegisterRequestDto;
@@ -21,6 +22,7 @@ import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.POST;
+import retrofit2.http.PUT;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 
@@ -89,4 +91,7 @@ public interface ApiService {
     // 어메니티 포함 전체 상세
     @GET("api/houses/{id}/full-detail")
     Call<HouseDetailResponseDto> getHouseFullDetail(@Path("id") Long id);
+
+    @PUT("api/houses/{id}")
+    Call<Void> updateHouseBasicInfo(@Path("id") long id, @Body HouseUpdateRequestDto requestDto);
 }
