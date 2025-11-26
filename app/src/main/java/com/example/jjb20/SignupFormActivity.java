@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.text.method.PasswordTransformationMethod;
 import android.widget.CheckBox;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -34,58 +35,66 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 
 /**
- * 회원가입 3단계 : 이름/생년월일/전화번호/이메일/비밀번호 입력 + 프로필 사진 선택
- *  - Firebase 이메일/비번 계정 생성
- *  - ID 토큰을 받아서 서버 /api/auth/register 로 전송 → DB에 Users 레코드 생성
- *  - 프로필 사진은 Firebase Storage 에 업로드 후 URL 을 함께 전송
+ * 회원가입 3단계 :
+ *  - 이름/생년월일/전화번호/이메일/비밀번호 입력
+ *  - 프로필 사진 등록
+ *  - 1단계: Firebase 계정 생성 + 이메일 인증 메일 발송
+ *  - 2단계: 이메일 인증 완료 확인 → 서버 register 호출
  */
 public class SignupFormActivity extends AppCompatActivity {
 
     private ImageButton btnBack;
-    private TextInputEditText etFirstName, etLastName, etBirth, etPhone, etEmail, etPassword;
+    private TextInputEditText etFirstName, etLastName, etBirth, etEmail, etPassword;
     private CheckBox cbConsent;
     private MaterialButton btnNext;
 
     private CardView btnAddPhoto;
     private ImageView imgProfilePhoto;
-    private Uri selectedImageUri;   // 갤러리에서 선택한 1장의 사진
+    private Uri selectedImageUri;
     private StorageReference storageReference;
 
     private FirebaseAuth auth;
     private ApiService api;
 
-    // 갤러리에서 이미지를 선택하기 위한 최신 방식 (ActivityResultLauncher)
     private ActivityResultLauncher<PickVisualMediaRequest> pickMedia;
+
+    private String phoneFromPrev;  // 이전 단계에서 받은 전화번호
+    private boolean verificationMailSent = false;
+
+    private String fullName;
+    private String phone;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup_form);
 
-        // Firebase / Retrofit 초기화
         auth = FirebaseAuth.getInstance();
         Retrofit retrofit = RetrofitClient.getInstance();
         api = retrofit.create(ApiService.class);
 
-        // 뷰 바인딩
         btnBack     = findViewById(R.id.btnBack);
         etFirstName = findViewById(R.id.etFirstName);
-        etLastName = findViewById(R.id.etLastName);
-        etBirth = findViewById(R.id.etBirth);
-        etEmail = findViewById(R.id.etEmail);
-        etPassword = findViewById(R.id.etPassword);
-        cbConsent = findViewById(R.id.cbConsent);
-        btnNext = findViewById(R.id.btnNext);
+        etLastName  = findViewById(R.id.etLastName);
+        etBirth     = findViewById(R.id.etBirth);
+        etEmail     = findViewById(R.id.etEmail);
+        etPassword  = findViewById(R.id.etPassword);
+        cbConsent   = findViewById(R.id.cbConsent);
 
+
+        btnNext = findViewById(R.id.btnNext);
         imgProfilePhoto = findViewById(R.id.imgProfilePhoto);
         btnAddPhoto     = findViewById(R.id.cardProfilePhoto);
 
+        phoneFromPrev = getIntent().getStringExtra("phone");
+
         btnBack.setOnClickListener(v -> finish());
 
-        // 사진 선택 카드 클릭
+
+
+        // 사진 선택
         btnAddPhoto.setOnClickListener(v -> openGallery());
 
-        // 갤러리 런처 초기화
         pickMedia = registerForActivityResult(
                 new ActivityResultContracts.PickVisualMedia(),
                 uri -> {
@@ -93,83 +102,32 @@ public class SignupFormActivity extends AppCompatActivity {
                         selectedImageUri = uri;
                         imgProfilePhoto.clearColorFilter();
                         imgProfilePhoto.setImageURI(uri);
-                        // 사진 업로드
                         uploadImageToFirebase();
-                        Toast.makeText(this, "사진 선택됨", Toast.LENGTH_SHORT).show();
                     } else {
                         Toast.makeText(this, "이미지가 선택되지 않았습니다.", Toast.LENGTH_SHORT).show();
                     }
                 }
         );
 
-        // "다음(가입)" 버튼
-        btnNext.setOnClickListener(v -> doSignUp());
+        // "다음" 버튼: 1단계 → 2단계
+        btnNext.setOnClickListener(v -> {
+            if (!verificationMailSent) startSignupAndSendEmail();
+            else completeSignupIfEmailVerified();
+        });
     }
 
-    // 이미지 Firebase Storage 업로드
-    private void uploadImageToFirebase() {
-        if (selectedImageUri == null) {
-            Toast.makeText(this, "업로드할 이미지가 없습니다.", Toast.LENGTH_SHORT).show();
-            return;
-        }
+    // -------------------------
+    // 1단계: 계정 생성 + 인증 메일 발송
+    // -------------------------
+    private void startSignupAndSendEmail() {
 
-        ProgressDialog progressDialog = new ProgressDialog(this);
-        progressDialog.setTitle("Uploading File...");
-        progressDialog.show();
-
-        // 파일명 생성 (uid가 없으면 임시 값 사용)
-        String userId = PrefManager.get("uid", "unknown");
-        if (userId.isEmpty()) userId = "임시_ID";
-
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss", Locale.KOREA);
-        String fileName = userId + "_Profile_Image_" + sdf.format(new Date());
-
-        storageReference = FirebaseStorage.getInstance()
-                .getReference("profile_image/" + fileName);
-
-        storageReference.putFile(selectedImageUri)
-                .continueWithTask(task -> {
-                    if (!task.isSuccessful()) {
-                        throw task.getException();
-                    }
-                    // 업로드 성공 → 다운로드 URL 받기
-                    return storageReference.getDownloadUrl();
-                })
-                .addOnSuccessListener(downloadUri -> {
-                    String imageUrl = downloadUri.toString();
-                    // 로컬에 URL 저장 (회원가입 시 같이 보내기 위해)
-                    PrefManager.put("profile_image_url", imageUrl);
-
-                    Toast.makeText(this,
-                            "성공적으로 업로드 되었습니다.",
-                            Toast.LENGTH_SHORT).show();
-
-                    if (progressDialog.isShowing()) {
-                        progressDialog.dismiss();
-                    }
-                })
-                .addOnFailureListener(e -> {
-                    Toast.makeText(this,
-                            "업로드 실패했습니다: " + e.getMessage(),
-                            Toast.LENGTH_SHORT).show();
-
-                    if (progressDialog.isShowing()) {
-                        progressDialog.dismiss();
-                    }
-                });
-    }
-
-    // 회원가입 처리
-    private void doSignUp() {
         String firstName = safeText(etFirstName);
         String lastName  = safeText(etLastName);
         String birth     = safeText(etBirth);
         String email     = safeText(etEmail);
         String password  = safeText(etPassword);
-        String phone     = safeText(etPhone);
         String imageUrl  = PrefManager.get("profile_image_url");
 
-        // 기본 검증
         if (TextUtils.isEmpty(firstName) || TextUtils.isEmpty(lastName)) {
             Toast.makeText(this, "이름과 성을 모두 입력하세요.", Toast.LENGTH_SHORT).show();
             return;
@@ -182,65 +140,122 @@ public class SignupFormActivity extends AppCompatActivity {
             Toast.makeText(this, "이메일을 입력하세요.", Toast.LENGTH_SHORT).show();
             return;
         }
-        if (TextUtils.isEmpty(phone)) {
-            Toast.makeText(this, "전화번호를 입력하세요.", Toast.LENGTH_SHORT).show();
-            return;
-        }
         if (TextUtils.isEmpty(password) || password.length() < 6) {
             Toast.makeText(this, "비밀번호는 6자 이상이어야 합니다.", Toast.LENGTH_SHORT).show();
             return;
         }
         if (!cbConsent.isChecked()) {
-            Toast.makeText(this, "개인정보 수집 및 이용에 동의해야 합니다.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "개인정보 수집에 동의해야 합니다.", Toast.LENGTH_SHORT).show();
             return;
         }
-        if (imageUrl == null) {
-            imageUrl = ""; // 사진을 안 올렸으면 빈 문자열
-        }
+        if (imageUrl == null) imageUrl = "";
 
-        String fullName = lastName + firstName; // "홍" + "길동" → "홍길동"
+        // 서버 요청 때 사용할 값 저장
+        fullName = lastName + firstName;
+        phone = phoneFromPrev;
 
         btnNext.setEnabled(false);
 
-        RegisterRequestDto rdto = new RegisterRequestDto();
-        rdto.profileImageUrl = imageUrl;
-
-        // 1) Firebase 이메일/비밀번호 계정 생성
+        // Firebase 계정 생성
         auth.createUserWithEmailAndPassword(email, password)
                 .addOnSuccessListener(authResult -> {
-                    // 2) ID 토큰 가져오기
+
+                    if (auth.getCurrentUser() == null) {
+                        btnNext.setEnabled(true);
+                        Toast.makeText(this, "사용자 정보를 가져오지 못했습니다.", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+
+                    auth.getCurrentUser().sendEmailVerification()
+                            .addOnSuccessListener(unused -> {
+                                btnNext.setEnabled(true);
+                                verificationMailSent = true;
+
+                                Toast.makeText(this,
+                                        "인증메일을 발송했습니다.\n메일에서 인증을 완료한 뒤 버튼을 다시 눌러주세요.",
+                                        Toast.LENGTH_LONG).show();
+
+                                btnNext.setText("이메일 인증 완료");
+                            })
+                            .addOnFailureListener(e -> {
+                                btnNext.setEnabled(true);
+                                Toast.makeText(this,
+                                        "인증 메일 전송 실패: " + e.getMessage(),
+                                        Toast.LENGTH_SHORT).show();
+                            });
+
+                })
+                .addOnFailureListener(e -> {
+                    btnNext.setEnabled(true);
+                    Toast.makeText(this,
+                            "Firebase 계정 생성 실패: " + e.getMessage(),
+                            Toast.LENGTH_SHORT).show();
+                });
+    }
+
+    // -------------------------
+    // 2단계: 이메일 인증 확인 → 서버 회원가입
+    // -------------------------
+    private void completeSignupIfEmailVerified() {
+
+        if (auth.getCurrentUser() == null) {
+            Toast.makeText(this, "로그인 정보가 없습니다. 다시 시도해주세요.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        btnNext.setEnabled(false);
+
+        auth.getCurrentUser().reload()
+                .addOnSuccessListener(unused -> {
+
+                    if (!auth.getCurrentUser().isEmailVerified()) {
+                        btnNext.setEnabled(true);
+                        Toast.makeText(this,
+                                "이메일 인증이 아직 완료되지 않았습니다.",
+                                Toast.LENGTH_LONG).show();
+                        return;
+                    }
+
+                    // 인증 완료 → ID 토큰 발급
                     auth.getCurrentUser().getIdToken(true)
                             .addOnSuccessListener(result -> {
+
                                 String idToken = result.getToken();
                                 if (TextUtils.isEmpty(idToken)) {
                                     btnNext.setEnabled(true);
                                     Toast.makeText(this,
-                                            "토큰을 가져오지 못했습니다.", Toast.LENGTH_SHORT).show();
+                                            "토큰을 가져오지 못했습니다.",
+                                            Toast.LENGTH_SHORT).show();
                                     return;
                                 }
 
-                                // 3) 서버 /api/auth/register 호출
-                                rdto.idToken = idToken;
-                                rdto.name    = fullName;
-                                rdto.phone   = phone;
+                                RegisterRequestDto dto = new RegisterRequestDto(
+                                        idToken,
+                                        fullName,
+                                        phone
+                                );
+                                dto.profileImageUrl = PrefManager.get("profile_image_url");
 
-                                api.register(rdto).enqueue(new Callback<UserResponseDto>() {
+                                api.register(dto).enqueue(new Callback<UserResponseDto>() {
                                     @Override
                                     public void onResponse(@NonNull Call<UserResponseDto> call,
                                                            @NonNull Response<UserResponseDto> response) {
+
                                         btnNext.setEnabled(true);
+
                                         if (response.isSuccessful() && response.body() != null) {
-                                            UserResponseDto user = response.body();
                                             Toast.makeText(SignupFormActivity.this,
-                                                    "가입 완료! " + user.name + "님 환영합니다.",
+                                                    "가입 완료! " + response.body().name + "님 환영합니다.",
                                                     Toast.LENGTH_LONG).show();
                                             finish();
                                         } else if (response.code() == 409) {
                                             Toast.makeText(SignupFormActivity.this,
-                                                    "이미 가입된 사용자입니다.", Toast.LENGTH_SHORT).show();
+                                                    "이미 가입된 사용자입니다.",
+                                                    Toast.LENGTH_SHORT).show();
                                         } else {
                                             Toast.makeText(SignupFormActivity.this,
-                                                    "서버 에러(" + response.code() + ")", Toast.LENGTH_SHORT).show();
+                                                    "서버 에러(" + response.code() + ")",
+                                                    Toast.LENGTH_SHORT).show();
                                         }
                                     }
 
@@ -257,15 +272,49 @@ public class SignupFormActivity extends AppCompatActivity {
                             .addOnFailureListener(e -> {
                                 btnNext.setEnabled(true);
                                 Toast.makeText(this,
-                                        "토큰 획득 실패: " + e.getMessage(),
+                                        "토큰 발급 실패: " + e.getMessage(),
                                         Toast.LENGTH_SHORT).show();
                             });
+
                 })
                 .addOnFailureListener(e -> {
                     btnNext.setEnabled(true);
                     Toast.makeText(this,
-                            "Firebase 계정 생성 실패: " + e.getMessage(),
+                            "사용자 정보 갱신 실패: " + e.getMessage(),
                             Toast.LENGTH_SHORT).show();
+                });
+    }
+
+    // -------------------------
+    // 프로필 사진 업로드
+    // -------------------------
+    private void uploadImageToFirebase() {
+        if (selectedImageUri == null) {
+            Toast.makeText(this, "업로드할 이미지가 없습니다.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        ProgressDialog pd = new ProgressDialog(this);
+        pd.setTitle("Uploading...");
+        pd.show();
+
+        String uid = PrefManager.get("uid", "unknown");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss", Locale.KOREA);
+        String filename = uid + "_Profile_" + sdf.format(new Date());
+
+        storageReference = FirebaseStorage.getInstance()
+                .getReference("profile_image/" + filename);
+
+        storageReference.putFile(selectedImageUri)
+                .continueWithTask(task -> storageReference.getDownloadUrl())
+                .addOnSuccessListener(uri -> {
+                    PrefManager.put("profile_image_url", uri.toString());
+                    Toast.makeText(this, "사진 업로드 완료", Toast.LENGTH_SHORT).show();
+                    pd.dismiss();
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(this, "업로드 실패: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    pd.dismiss();
                 });
     }
 
@@ -273,14 +322,11 @@ public class SignupFormActivity extends AppCompatActivity {
         return et.getText() == null ? "" : et.getText().toString().trim();
     }
 
-    // 갤러리 열기
     private void openGallery() {
-        if (pickMedia != null) {
-            pickMedia.launch(new PickVisualMediaRequest.Builder()
-                    .setMediaType(ActivityResultContracts.PickVisualMedia.ImageOnly.INSTANCE)
-                    .build());
-        } else {
-            Toast.makeText(this, "갤러리를 열 수 없습니다.", Toast.LENGTH_SHORT).show();
-        }
+        pickMedia.launch(
+                new PickVisualMediaRequest.Builder()
+                        .setMediaType(ActivityResultContracts.PickVisualMedia.ImageOnly.INSTANCE)
+                        .build()
+        );
     }
 }
