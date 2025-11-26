@@ -61,6 +61,9 @@ dependencies {
     implementation(platform("com.google.firebase:firebase-bom:33.4.0"))
     implementation("com.google.firebase:firebase-auth")
 
+    // firebase google
+    implementation("com.google.android.gms:play-services-auth:21.2.0")
+
 
     //구글 맵
     implementation("com.google.android.gms:play-services-location:21.3.0")
@@ -70,6 +73,7 @@ dependencies {
     implementation ("com.github.bumptech.glide:glide:4.11.0")
     implementation(libs.legacy.support.v4)
     implementation(libs.recyclerview)
+    implementation(libs.firebase.storage)
     annotationProcessor ("com.github.bumptech.glide:compiler:4.11.0")
 
     //새로고침
@@ -80,15 +84,22 @@ dependencies {
     implementation("com.google.firebase:firebase-analytics")
     implementation("com.google.firebase:firebase-database")
 
-    // AndroidX
+    // AndroidX Materialx
     implementation(libs.appcompat)
     implementation(libs.material)
     implementation("androidx.activity:activity:1.9.3")
     implementation(libs.constraintlayout)
+    implementation(libs.legacy.support.v4)
+    implementation(libs.recyclerview)
+    implementation("com.google.android.material:material:1.12.0")
 
     // Google Maps & Location
     implementation("com.google.android.gms:play-services-maps:18.1.0")
     implementation("com.google.android.gms:play-services-location:21.3.0")
+
+    // SwipeRefresh
+    implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
+
 
     // Test
     testImplementation(libs.junit)
@@ -98,5 +109,22 @@ dependencies {
     // Material (중복이지만 문제는 없음 – 유지)
     implementation("com.google.android.material:material:1.12.0")
 
+
+
+    // Kizitonwose/Calendar-View
+    implementation("com.kizitonwose.calendar:view:2.5.4")
+
+    // coreLibraryDesugaring
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.4")
+
+    // 토스 결제위젯 SDK (GitHub 버전)
+    implementation("com.github.tosspayments:payment-sdk-android:0.1.21")
+
+    //이미지 둥글게
+
+    implementation("de.hdodenhof:circleimageview:3.1.0")
+
+    //추천 숙소 위치용
+        implementation ("com.google.android.gms:play-services-location:21.0.1")
 
 }

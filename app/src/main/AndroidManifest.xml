@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+<manifest
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
-<!--    인터넷 사용권한-->
     <uses-permission android:name="android.permission.INTERNET" />
-
+    <!-- AndroidManifest.xml -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <!-- 위치용  -->
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <application
         android:usesCleartextTraffic="true"
         android:allowBackup="true"
@@ -14,13 +17,22 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.JJB20">
+        android:theme="@style/Base.Theme.JJB20">
 
         <activity android:name=".RentHouseActivity" />
         <activity android:name=".RentHouseDetailActivity" />
-
         <activity android:name=".ReserveConfirmActivity"/>
-        <activity android:name=".PaymentActivity"/>
+
+        <activity
+            android:name=".PaymentActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="tosspayments" android:host="com.example.jjb20" />
+            </intent-filter>
+        </activity>
 
         <activity android:name=".PaymentCompleteActivity"/>
 
@@ -32,7 +44,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
 
         <activity android:name=".RegisterBasicsActivity"/>
         <activity android:name=".RegisterAmenitiesActivity"/>
@@ -46,6 +57,14 @@
         <activity android:name=".VerifyCodeActivity" />
         <activity android:name=".SignupFormActivity" />
         <activity android:name=".MainActivity" />
+        <activity android:name=".ProfileActivity" />
+        <activity android:name=".ProfileHouseListActivity" />
+        <activity android:name=".ProfileReservationListActivity" />
+        <activity android:name=".HostReviewActivity" />
+        <activity android:name=".HouseReviewActivity"/>
+        <activity android:name=".EditProfileActivity"/>
+        <activity android:name=".RegisterHostActivity"/>
+        <activity android:name=".EditHouseActivity"/>
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyB0gphitktaQL9MhzcbxPUOtAgo8EG-qao" />

@@ -1,0 +1,141 @@
+package com.example.jjb20;
+
+import android.content.Intent;
+import android.os.Bundle;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+
+import com.bumptech.glide.Glide;
+import com.example.jjb20.dto.MyPageSummaryDto;
+import com.example.jjb20.dto.ProfileStatsResponseDto;
+import com.google.firebase.Firebase;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+
+import de.hdodenhof.circleimageview.CircleImageView;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
+import com.example.jjb20.dto.HouseDto;
+
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
+public class ProfileActivity extends AppCompatActivity {
+
+    private LinearLayout houseListBtn, reservationListBtn;
+    TextView name;
+    private TextView tvHouseCount, tvReserveCount;
+    Button profileEditbtn;
+    Button logoutBtn;
+    CircleImageView profile_image;
+    private FirebaseAuth mAuth;
+    ApiService apiService;
+    private MyPageSummaryDto myPageSummaryDto;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_profile);
+
+        apiService = RetrofitClient.getInstance().create(ApiService.class);
+
+        // 각종 버튼
+        houseListBtn = findViewById(R.id.houseList);
+        reservationListBtn = findViewById(R.id.reservationList);
+        profileEditbtn = findViewById(R.id.profileEditbtn);
+
+        tvHouseCount = findViewById(R.id.tvHouseCount);
+        tvReserveCount = findViewById(R.id.tvReserveCount);
+
+        int myUserId = PrefManager.getInt("userId", -1);
+        if (myUserId == -1) {
+            Toast.makeText(this, "로그인 정보가 없습니다.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        apiService.getSummary(myUserId).enqueue(new Callback<MyPageSummaryDto>() {
+            @Override
+            public void onResponse(Call<MyPageSummaryDto> call, Response<MyPageSummaryDto> response) {
+                if (response.isSuccessful() && response.body() != null) {
+
+                    MyPageSummaryDto dto = response.body();
+
+                    String fullHouseCount = String.valueOf(dto.getHouseCount()) + "개";
+                    String fullReserveCount = String.valueOf(dto.getReservationCount()) + "개";
+                    tvHouseCount.setText(fullHouseCount);
+                    tvReserveCount.setText(fullReserveCount);
+
+                } else {
+                    Toast.makeText(ProfileActivity.this, "요약 정보 불러오기 실패", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<MyPageSummaryDto> call, Throwable t) {
+                Toast.makeText(ProfileActivity.this, "서버 오류", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+
+        profile_image = findViewById(R.id.profile_image);
+        name = findViewById(R.id.name);
+
+        name.setText(PrefManager.get("userName"));
+
+        String imageUrl = PrefManager.get("profile_image");
+        //프로필 이미지 불러오기
+        Glide.with(this)
+                        .load(imageUrl)
+                                .into(profile_image);
+
+        houseListBtn.setOnClickListener(v -> {
+            Intent intent = new Intent(getApplicationContext(), ProfileHouseListActivity.class);
+            startActivity(intent);
+        });
+
+        reservationListBtn.setOnClickListener(v -> {
+            Intent intent = new Intent(getApplicationContext(), ProfileReservationListActivity.class);
+            startActivity(intent);
+        });
+
+        profileEditbtn.setOnClickListener(v -> {
+//            Intent intent = new Intent()
+        });
+
+
+        //로그아웃
+        logoutBtn = findViewById(R.id.logoutbtn);
+
+        logoutBtn.setOnClickListener( v -> {
+            mAuth = FirebaseAuth.getInstance();
+            mAuth.signOut();
+            Toast.makeText(this, "로그아웃", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+            startActivity(intent);
+        });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        String newImageUrl = PrefManager.get("profile_image");
+
+        if (newImageUrl != null && !newImageUrl.isEmpty()) {
+            Glide.with(this)
+                    .load(newImageUrl)
+                    .into(profile_image);
+        }
+    }
+}

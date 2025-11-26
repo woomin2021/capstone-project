@@ -5,6 +5,18 @@ public class ChatMsgVO {
     private String userid;
     private String crt_dt;
     private String content;
+    private String username;
+
+    public String getUsername() {
+        return username;
+    }
+
+    public ChatMsgVO(String userid, String crt_dt, String content, String username) {
+        this.userid = userid;
+        this.crt_dt = crt_dt;
+        this.content = content;
+        this.username = username;
+    }
 
     public ChatMsgVO() {
     }

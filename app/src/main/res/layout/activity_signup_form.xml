@@ -29,7 +29,7 @@
         android:layout_marginTop="12dp"
         android:layout_marginStart="24dp"
         android:layout_marginEnd="24dp"
-        android:text="집 등록하기"
+        android:text="회원가입"
         android:textColor="#333333"
         android:textSize="18sp"
         android:textStyle="bold"
@@ -273,6 +273,124 @@
                 android:textColor="#8C8C8C"
                 android:lineSpacingExtra="2dp"/>
 
+            <!-- 전화번호 -->
+            <TextView
+                android:id="@+id/labelphone"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:text="전화번호"
+                android:textColor="#111111"
+
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:fontFamily="@font/cafe24ssurround_v2"/>
+
+            <!-- 전화번호   입력 -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/tilphone"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                app:boxBackgroundMode="outline"
+                app:boxBackgroundColor="#FFFFFF"
+                app:boxStrokeColor="#E5E8E8"
+                app:boxStrokeWidth="1dp"
+                app:boxStrokeWidthFocused="2dp"
+                app:boxCornerRadiusTopStart="12dp"
+                app:boxCornerRadiusTopEnd="12dp"
+                app:boxCornerRadiusBottomStart="12dp"
+                app:boxCornerRadiusBottomEnd="12dp"
+                app:hintEnabled="false">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etphone"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@null"
+                    android:fontFamily="@font/cafe24ssurround_v2"
+                    android:hint="전화번호"
+                    android:inputType="textEmailAddress"
+                    android:paddingStart="16dp"
+                    android:paddingTop="12dp"
+                    android:paddingEnd="16dp"
+                    android:textColor="#333333"
+                    android:textColorHint="#BDBDBD" />
+            </com.google.android.material.textfield.TextInputLayout>
+            <!-- 이메일 안내 -->
+            <TextView
+                android:id="@+id/helpphone"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="예약확인 문자가 번호로 전송됩니다."
+                android:fontFamily="@font/cafe24ssurround_v2"
+                android:textSize="12sp"
+                android:textColor="#8C8C8C"
+                android:lineSpacingExtra="2dp"/>
+            <!-- 프로필 사진 -->
+            <TextView
+                android:id="@+id/labelProfilePhoto"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:text="프로필 사진"
+                android:fontFamily="@font/cafe24ssurround_v2"
+                android:textColor="#111111"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <HorizontalScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:scrollbars="none">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <!-- 프로필 사진 추가 카드 (1장만 사용해도 됨 여러장 가능 ) -->
+                    <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/cardProfilePhoto"
+                        android:layout_width="100dp"
+                        android:layout_height="100dp"
+                        app:cardCornerRadius="8dp"
+                        app:cardBackgroundColor="#F5F5F5"
+                        app:cardElevation="0dp"
+                        app:strokeColor="#EEEEEE"
+                        app:strokeWidth="1dp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:gravity="center"
+                            android:orientation="vertical">
+
+                            <!-- 나중에 선택된 사진을 이 ImageView에 넣을 수 있게 하면 될듯 -->
+                            <ImageView
+                                android:id="@+id/imgProfilePhoto"
+                                android:layout_width="40dp"
+                                android:layout_height="40dp"
+                                android:src="@drawable/ic_camera_alt"
+                                app:tint="#757575" />
+
+                            <TextView
+                                android:id="@+id/tvProfilePhotoHint"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="4dp"
+                                android:text="사진 추가"
+                                android:textColor="#757575"
+                                android:textSize="12sp" />
+                        </LinearLayout>
+                    </com.google.android.material.card.MaterialCardView>
+
+                </LinearLayout>
+            </HorizontalScrollView>
+
+
             <!--  비밀번호 -->
             <TextView
                 android:id="@+id/labelPassword"
@@ -327,19 +445,9 @@
                 android:gravity="end"
                 android:orientation="horizontal">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="비밀번호 표시"
-                    android:fontFamily="@font/cafe24ssurround_v2"
-                    android:textColor="#666666"
-                    android:textSize="14sp"
-                    android:layout_marginEnd="6dp"/>
 
-                <CheckBox
-                    android:id="@+id/cbShowPassword"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+
+
             </LinearLayout>
 
             <!-- 개인정보 동의 -->

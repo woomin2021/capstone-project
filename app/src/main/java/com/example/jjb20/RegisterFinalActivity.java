@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.text.TextUtils;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -16,6 +17,7 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.jjb20.dto.HouseAmenitiesCreateRequestDto;
+import com.example.jjb20.dto.HouseUpdateRequestDto;
 import com.example.jjb20.dto.HousesCreateRequestDto;
 import com.example.jjb20.dto.HousesResponseDto;
 import com.google.android.material.appbar.MaterialToolbar;
@@ -48,6 +50,15 @@ public class RegisterFinalActivity extends AppCompatActivity {
 
     private TextInputEditText priceEditText;
     private TextView photoCounterText;
+
+    private boolean isEditMode = false;
+    private String editTarget;
+    private boolean wantsPriceUpdate = true;
+    private boolean wantsPhotoUpdate = true;
+    private long houseId = -1L;
+    private Integer currentPrice;
+    private String currentImageUrl;
+    private String uploadedImageUrl;
 
     // API 서비스
     private ApiService apiService;
@@ -92,7 +103,12 @@ public class RegisterFinalActivity extends AppCompatActivity {
                 .addOnSuccessListener(downloadUri -> {
                     // PrefManager 또는 서버에 이미지 URL 저장
                     String imageUrl = downloadUri.toString();
-                    PrefManager.put("house_image_url", imageUrl);
+                    if (isEditMode) {
+                        uploadedImageUrl = imageUrl;
+                        currentImageUrl = imageUrl;
+                    } else {
+                        PrefManager.put("house_image_url", imageUrl);
+                    }
 
                     Toast.makeText(RegisterFinalActivity.this,
                             "성공적으로 업로드 되었습니다.",
@@ -122,6 +138,10 @@ public class RegisterFinalActivity extends AppCompatActivity {
         
         // 1. XML 레이아웃 파일 설정
         setContentView(R.layout.activity_register_final);
+
+        if (!readIntentData()) {
+            return;
+        }
 
         // 2. Retrofit 초기화
         Retrofit retrofit = RetrofitClient.getInstance();
@@ -159,6 +179,35 @@ public class RegisterFinalActivity extends AppCompatActivity {
         setupListeners();
     }
 
+    private boolean readIntentData() {
+        String mode = getIntent().getStringExtra("mode");
+        editTarget = getIntent().getStringExtra("target");
+        isEditMode = "edit".equalsIgnoreCase(mode);
+
+        wantsPriceUpdate = TextUtils.isEmpty(editTarget) || "price".equalsIgnoreCase(editTarget);
+        wantsPhotoUpdate = TextUtils.isEmpty(editTarget) || "photos".equalsIgnoreCase(editTarget);
+
+        houseId = getIntent().getLongExtra("houseId", -1L);
+
+        if (isEditMode) {
+            if (houseId == -1L) {
+                Toast.makeText(this, "집 정보를 불러올 수 없습니다.", Toast.LENGTH_SHORT).show();
+                finish();
+                return false;
+            }
+            if (getIntent().hasExtra("currentPrice")) {
+                int price = getIntent().getIntExtra("currentPrice", -1);
+                if (price >= 0) {
+                    currentPrice = price;
+                }
+            }
+            currentImageUrl = getIntent().getStringExtra("currentImageUrl");
+            uploadedImageUrl = currentImageUrl;
+        }
+
+        return true;
+    }
+
     private void initViews() {
         toolbar = findViewById(R.id.toolbar);
         progressBar = findViewById(R.id.progressBar);
@@ -167,6 +216,28 @@ public class RegisterFinalActivity extends AppCompatActivity {
         addPhotoButton = findViewById(R.id.add_photo_button);
         priceEditText = findViewById(R.id.price_edit_text);
         photoCounterText = findViewById(R.id.photoCounterText);
+
+        if (isEditMode) {
+            registerButton.setText("완료");
+            toolbar.setTitle("집 정보 수정");
+
+            if (wantsPriceUpdate && currentPrice != null) {
+                priceEditText.setText(String.valueOf(currentPrice));
+                priceEditText.setSelection(priceEditText.getText().length());
+            }
+            if (!wantsPriceUpdate) {
+                priceEditText.setEnabled(false);
+            }
+
+            if (!wantsPhotoUpdate) {
+                addPhotoButton.setEnabled(false);
+                addPhotoButton.setAlpha(0.5f);
+            }
+
+            if (!TextUtils.isEmpty(currentImageUrl) && photoCounterText != null) {
+                photoCounterText.setText("1/5");
+            }
+        }
     }
 
     private void setupListeners() {
@@ -177,13 +248,92 @@ public class RegisterFinalActivity extends AppCompatActivity {
 
         // '사진 추가' 버튼 클릭 리스너
         addPhotoButton.setOnClickListener(v -> {
+            if (isEditMode && !wantsPhotoUpdate) {
+                Toast.makeText(this, "사진 수정 화면이 아닙니다.", Toast.LENGTH_SHORT).show();
+                return;
+            }
             openGallery();
         });
 
         // '등록하기' 버튼 클릭 리스너
         registerButton.setOnClickListener(v -> {
-            performRegistration();
+            if (isEditMode) {
+                submitEdit();
+            } else {
+                performRegistration();
+            }
         });
+    }
+
+    private void submitEdit() {
+        if (houseId == -1L) {
+            Toast.makeText(this, "집 정보를 불러올 수 없습니다.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        HouseUpdateRequestDto dto = new HouseUpdateRequestDto();
+        boolean hasChanges = false;
+
+        if (wantsPriceUpdate) {
+            String priceStr = priceEditText.getText() != null
+                    ? priceEditText.getText().toString().trim() : "";
+            if (TextUtils.isEmpty(priceStr)) {
+                Toast.makeText(this, "가격을 입력해주세요.", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            try {
+                int pricePerNight = Integer.parseInt(priceStr);
+                dto.setPricePerNight(pricePerNight);
+                hasChanges = true;
+            } catch (NumberFormatException e) {
+                Toast.makeText(this, "올바른 가격을 입력해주세요.", Toast.LENGTH_SHORT).show();
+                return;
+            }
+        }
+
+        if (wantsPhotoUpdate) {
+            String imageUrl = !TextUtils.isEmpty(uploadedImageUrl) ? uploadedImageUrl : currentImageUrl;
+            if (TextUtils.isEmpty(imageUrl)) {
+                Toast.makeText(this, "사진을 한 장 이상 등록해주세요.", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            dto.setImageUrl(imageUrl);
+            hasChanges = true;
+        }
+
+        if (!hasChanges) {
+            Toast.makeText(this, "변경할 내용이 없습니다.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        registerButton.setEnabled(false);
+        registerButton.setText("저장 중...");
+
+        apiService.updateHouseBasicInfo(houseId, dto).enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                if (response.isSuccessful()) {
+                    Toast.makeText(RegisterFinalActivity.this, "정보가 수정되었습니다.", Toast.LENGTH_SHORT).show();
+                    finish();
+                } else {
+                    restoreEditButtonState();
+                    Toast.makeText(RegisterFinalActivity.this,
+                            "수정에 실패했습니다. (" + response.code() + ")", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                restoreEditButtonState();
+                Toast.makeText(RegisterFinalActivity.this,
+                        "네트워크 오류: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void restoreEditButtonState() {
+        registerButton.setEnabled(true);
+        registerButton.setText(isEditMode ? "완료" : "등록하기");
     }
 
     /**
@@ -191,6 +341,10 @@ public class RegisterFinalActivity extends AppCompatActivity {
      * 집이 생성된 상태에서 취소하면 houseId를 정리
      */
     private void handleBackPressed() {
+        if (isEditMode) {
+            finish();
+            return;
+        }
         // 집이 이미 생성된 상태라면 houseId 정리
         Long houseId = PrefManager.getLong("houseId");
         if (houseId != null && houseId != -1L) {
@@ -253,8 +407,8 @@ public class RegisterFinalActivity extends AppCompatActivity {
         int bedroomCount = PrefManager.getInt("house_bedroom_count", 0);
         int bedCount = PrefManager.getInt("house_bed_count", 0);
         int bathroomCount = PrefManager.getInt("house_bathroom_count", 0);
-        String availableStartDate = PrefManager.get("house_available_start");
-        String availableEndDate = PrefManager.get("house_available_end");
+        String startDay = PrefManager.get("start_day");
+        String endDay = PrefManager.get("end_day");
 
         // 디버깅용 로그 추가
         Log.d(TAG, "Registration data - title: " + title);
@@ -262,7 +416,7 @@ public class RegisterFinalActivity extends AppCompatActivity {
         Log.d(TAG, "Registration data - address: " + address);
         Log.d(TAG, "Registration data - city: " + city + ", country: " + country);
         Log.d(TAG, "Registration data - bedroomCount: " + bedroomCount + ", bedCount: " + bedCount + ", bathroomCount: " + bathroomCount);
-        Log.d(TAG, "Registration data - availableStartDate: " + availableStartDate + ", availableEndDate: " + availableEndDate);
+        Log.d(TAG, "Registration data - availableStartDate: " + startDay + ", availableEndDate: " + endDay);
         Log.d(TAG, "Registration data - pricePerNight: " + pricePerNight);
         Log.d(TAG, "Registration data - amenityCodes: " + amenityCodes);
 
@@ -280,18 +434,18 @@ public class RegisterFinalActivity extends AppCompatActivity {
             return;
         }
 
-        if (availableStartDate == null || availableStartDate.isEmpty() || 
-            availableEndDate == null || availableEndDate.isEmpty()) {
+        if (startDay == null || startDay.isEmpty() ||
+            endDay == null || endDay.isEmpty()) {
             Toast.makeText(this, "예약 가능 기간을 선택해주세요.", Toast.LENGTH_SHORT).show();
-            Log.e(TAG, "Available dates are missing - start: " + availableStartDate + ", end: " + availableEndDate);
+            Log.e(TAG, "Available dates are missing - start: " + startDay + ", end: " + endDay);
             return;
         }
 
         // 날짜 형식 검증 (yyyy-MM-dd 형식이어야 함)
-        if (!availableStartDate.matches("\\d{4}-\\d{2}-\\d{2}") || 
-            !availableEndDate.matches("\\d{4}-\\d{2}-\\d{2}")) {
+        if (!startDay.matches("\\d{4}-\\d{2}-\\d{2}") ||
+            !endDay.matches("\\d{4}-\\d{2}-\\d{2}")) {
             Toast.makeText(this, "날짜 형식이 올바르지 않습니다.", Toast.LENGTH_SHORT).show();
-            Log.e(TAG, "Invalid date format - start: " + availableStartDate + ", end: " + availableEndDate);
+            Log.e(TAG, "Invalid date format - start: " + startDay + ", end: " + endDay);
             return;
         }
 
@@ -325,8 +479,8 @@ public class RegisterFinalActivity extends AppCompatActivity {
                 bedroomCount,
                 bedCount,
                 bathroomCount,
-                availableStartDate,
-                availableEndDate,
+                startDay,
+                endDay,
                 imageUrl != null ? imageUrl : ""
         );
 

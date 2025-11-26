@@ -1,133 +1,166 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#FFFFFF"
-    android:fillViewport="true"
-    android:padding="16dp"
-    android:id="@+id/main"
-    >
+    android:padding="16dp">
 
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+    <!-- 전체 스크롤 영역 -->
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/scrollContainer"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:fillViewport="true"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
 
-    <LinearLayout
-        android:orientation="vertical"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <!-- 상단바 -->
         <LinearLayout
-            android:orientation="horizontal"
+            android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_vertical">
+            android:layout_height="wrap_content">
+
+            <!-- 상단바 -->
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:text="집잡빌"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:textColor="#000000"
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/cafe24ssurroundotf" />
+
+                <ImageView
+                    android:id="@+id/btnProfile"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_user"
+                    android:layout_marginEnd="8dp" />
+
+                <Button
+                    android:id="@+id/btnRegisterHouse"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="집 등록하기"
+                    android:textSize="12sp"
+                    android:background="@drawable/btn_mainbtn"
+                    app:backgroundTint="@null"
+                    android:textColor="@color/basic1"
+                    android:fontFamily="@font/cafe24ssurroundotf" />
+            </LinearLayout>
+
+            <!-- 검색창 -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="44dp"
+                android:background="@drawable/search_bg"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:layout_marginTop="12dp"
+                android:paddingHorizontal="12dp">
+
+                <EditText
+                    android:id="@+id/searchEditText"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:hint="어디에 가고 싶으세요?"
+                    android:textColor="#000"
+                    android:background="@null"
+                    android:textSize="14sp"
+                    android:fontFamily="@font/cafe24ssurroundotf" />
+
+                <ImageView
+                    android:id="@+id/searchButton"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:src="@drawable/ic_search" />
+            </LinearLayout>
 
             <TextView
-                android:text="집잡빌"
-                android:textSize="20sp"
-                android:textStyle="bold"
-                android:textColor="#000000"
-                android:layout_weight="1"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/cafe24ssurroundotf"
-                />
-
-            <ImageView
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:src="@drawable/ic_user"
-                android:layout_marginEnd="8dp"/>
-
-            <Button
+                android:id="@+id/textGreeting"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="집 등록하기"
-                android:textColor="#000"
-                android:textSize="12sp"
-                android:backgroundTint="@color/basic1"
-                android:fontFamily="@font/pretendardvariable"
+                android:textColor="#00A88E"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:layout_marginTop="20dp"
+                android:fontFamily="@font/cafe24ssurroundotf" />
 
-                />
-        </LinearLayout>
-
-        <!-- 검색창 -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="44dp"
-            android:background="@drawable/search_bg"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            android:layout_marginTop="12dp"
-            android:paddingHorizontal="12dp">
-
-            <EditText
-                android:id="@+id/searchEditText"
-                android:layout_width="0dp"
+            <!-- 추천 숙소 (가로 스크롤) -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerRecommended"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:hint="어디에 가고 싶으세요?"
-                android:textColor="#000"
-                android:background="@null"
-                android:textSize="14sp"
-                android:fontFamily="@font/pretendardvariable"
-                />
+                android:layout_marginTop="8dp"
+                android:overScrollMode="never"
+                android:nestedScrollingEnabled="false" />
 
-            <ImageView
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:src="@drawable/ic_search"/>
+            <!-- 모든숙소 섹션 -->
+            <LinearLayout
+                android:id="@+id/layoutHotHeader"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginTop="20dp">
+
+                <!-- 왼쪽: 모든 숙소 (그냥 기본 전체 보여주는 역할) -->
+                <TextView
+                    android:id="@+id/tvAllHouses"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="start"
+                    android:text="모든 숙소"
+                    android:textColor="#E91E63"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:fontFamily="@font/cafe24ssurroundotf" />
+
+                <!-- 오른쪽: 근처 추천 숙소 (필터 버튼) -->
+                <TextView
+                    android:id="@+id/tvNearbyHouses"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="근처 추천 숙소"
+                    android:textColor="#555555"
+                    android:textSize="14sp"
+                    android:fontFamily="@font/cafe24ssurroundotf" />
+            </LinearLayout>
+
+
+            <!-- 전체 숙소 그리드 -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerHot"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:nestedScrollingEnabled="false" />
         </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
 
-        <!-- 추천 섹션 -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="홍길동님, 여긴 어떠세요?"
-            android:textColor="#00A88E"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:layout_marginTop="20dp"
-            android:fontFamily="@font/pretendardvariable"
-            />
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerRecommended"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:overScrollMode="never"/>
-
-        <!-- HOT 섹션 -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="HOT한 숙소"
-            android:textColor="#E91E63"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:layout_marginTop="20dp"
-            android:fontFamily="@font/pretendardvariable"
-            />
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerHot"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:nestedScrollingEnabled="false"
-            android:layout_marginTop="8dp"/>
-    </LinearLayout>
-    </ScrollView>
-
+    <!-- 채팅 버튼 (화면 오른쪽 아래 고정) -->
     <Button
         android:id="@+id/chattingButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:text="채팅"
+        android:background="@drawable/btn_mainbtn"
+        android:fontFamily="@font/cafe24ssurroundotf"
+        app:backgroundTint="@null"
+        android:textColor="@color/basic1"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        android:text="채팅"/>
+        app:layout_constraintEnd_toEndOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -23,7 +23,7 @@ public class ReserveConfirmActivity extends AppCompatActivity {
         MaterialToolbar toolbar = findViewById(R.id.toolbar);
         if (toolbar != null) toolbar.setNavigationOnClickListener(v -> finish());
 
-        // 진행 바(2단계까지 채움) — 레이아웃에 seg1~seg4 가 없으면 그냥 넘어감
+        // 진행 바(2단계까지 채움) — 레이아웃에 seg1~seg4 가 없으면 그냥 넘어감 그리고 이거 오류 뜨는거 아무 문제 없음 실행 오류랑 상관 없으니까 걍 하셈
         View seg1 = findViewById(R.id.seg1);
         View seg2 = findViewById(R.id.seg2);
         View seg3 = findViewById(R.id.seg3);
@@ -37,9 +37,16 @@ public class ReserveConfirmActivity extends AppCompatActivity {
         if (seg4 != null) seg4.setBackgroundColor(GRAY);
 
         // 이전 화면에서 전달된 값 반영
-        String date   = getIntent().getStringExtra(RentHouseDetailActivity.EXTRA_DATE);
-        String guests = getIntent().getStringExtra(RentHouseDetailActivity.EXTRA_GUESTS);
-        String price  = getIntent().getStringExtra(RentHouseDetailActivity.EXTRA_PRICE);
+        Intent in   = getIntent();
+        String date   = in.getStringExtra(RentHouseDetailActivity.EXTRA_DATE);
+        String guests = in.getStringExtra(RentHouseDetailActivity.EXTRA_GUESTS);
+        String price  = in.getStringExtra(RentHouseDetailActivity.EXTRA_PRICE);
+        String name    = in.getStringExtra(RentHouseDetailActivity.EXTRA_HOUSE_NAME);
+        String address = in.getStringExtra(RentHouseDetailActivity.EXTRA_HOUSE_ADDR);
+        String image   = in.getStringExtra(RentHouseDetailActivity.EXTRA_HOUSE_IMAGE);
+        long houseId      = in.getLongExtra("houseId", -1L);
+        String checkinRaw = in.getStringExtra("checkinDate");
+        String checkoutRaw= in.getStringExtra("checkoutDate");
 
         TextView tvDate   = findViewById(R.id.textDate);
         TextView tvGuest  = findViewById(R.id.textGuest);
@@ -49,11 +56,25 @@ public class ReserveConfirmActivity extends AppCompatActivity {
         if (tvGuest != null && guests!= null) tvGuest.setText(guests);
         if (tvPrice != null && price != null) tvPrice.setText(price);
 
-        // 결제 페이지로 이동 (PaymentActivity 만들기 전까지 임시 Toast)
-        findViewById(R.id.btnNext).setOnClickListener(v ->
-                startActivity(new Intent(this, PaymentActivity.class))
-        );
-        // 나중에 PaymentActivity 만들면 아래로 교체:
-        // startActivity(new Intent(this, PaymentActivity.class));
+
+        // 결제 페이지로 이동
+        findViewById(R.id.btnNext).setOnClickListener(v -> {
+            Intent intent = new Intent(this, PaymentActivity.class);
+
+            intent.putExtra(RentHouseDetailActivity.EXTRA_DATE,   date);
+            intent.putExtra(RentHouseDetailActivity.EXTRA_GUESTS, guests);
+            intent.putExtra(RentHouseDetailActivity.EXTRA_PRICE,  price);
+            intent.putExtra(RentHouseDetailActivity.EXTRA_HOUSE_NAME,  name);
+            intent.putExtra(RentHouseDetailActivity.EXTRA_HOUSE_ADDR,  address);
+            intent.putExtra(RentHouseDetailActivity.EXTRA_HOUSE_IMAGE, image);
+
+            intent.putExtra("houseId", houseId);
+            intent.putExtra("checkinDate", checkinRaw);
+            intent.putExtra("checkoutDate", checkoutRaw);
+
+
+            startActivity(intent);
+        });
+
     }
 }

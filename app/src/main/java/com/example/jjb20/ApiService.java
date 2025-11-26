@@ -1,35 +1,51 @@
 package com.example.jjb20;
 
+import android.app.DownloadManager;
+
 import com.example.jjb20.dto.FirebaseLoginRequestDto;
+import com.example.jjb20.dto.HostProfileDto;
+import com.example.jjb20.dto.HostRegisterRequestDto;
 import com.example.jjb20.dto.HouseAmenitiesCreateRequestDto;
+import com.example.jjb20.dto.HouseDetailResponseDto;
+import com.example.jjb20.dto.HouseDto;
+import com.example.jjb20.dto.HouseUpdateRequestDto;
 import com.example.jjb20.dto.HousesCreateRequestDto;
 import com.example.jjb20.dto.HousesResponseDto;
+import com.example.jjb20.dto.MyPageSummaryDto;
+import com.example.jjb20.dto.ProfileStatsResponseDto;
 import com.example.jjb20.dto.RegisterRequestDto;
+import com.example.jjb20.dto.ReservationCreateRequestDto;
+import com.example.jjb20.dto.ReservationDTO;
+import com.example.jjb20.dto.ReviewRequestDto;
 import com.example.jjb20.dto.UserResponseDto;
+import com.example.jjb20.dto.UserUpdateRequestDto;
 import com.example.jjb20.entity.User;
 
 import java.util.List;
+import java.util.Objects;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
+import retrofit2.http.PATCH;
 import retrofit2.http.POST;
+import retrofit2.http.PUT;
+import retrofit2.http.Path;
+import retrofit2.http.Query;
 
 public interface ApiService {
 
-    // 1) 로그인 (Firebase ID 토큰을 서버로 전달)
-    //    결과: UserResponseDto(우리 DB 기준의 유저 정보)
+    //로그인 (Firebase ID 토큰을 서버로 전달)
     @POST("api/auth/login")
     Call<UserResponseDto> login(@Body FirebaseLoginRequestDto body);
 
-    // 2) 회원가입(DB 등록)
-    //    Firebase 계정은 이미 만들어져 있고, idToken + name + phone 으로 DB에 저장
+    //회원가입(DB 등록)
     @POST("api/auth/register")
     Call<UserResponseDto> register(@Body RegisterRequestDto body);
 
-    // 3) 보호된 API – Authorization 헤더 필요
-    //    예: 유저 목록 조회
+    // 보호된 API – Authorization 헤더 필요 함
+
     @GET("api/users")
     Call<List<User>> getUsers(@Header("Authorization") String bearerToken);
 
@@ -40,6 +56,21 @@ public interface ApiService {
             @Body User user
     );
 
+    //유저 수정
+    @PATCH("api/users/me")
+    Call<UserUpdateRequestDto> updateMe(@Body UserUpdateRequestDto updateRequestDto, @Header("Authorization") String bearerToken);
+
+    @GET("/api/profile/stats")
+    Call<ProfileStatsResponseDto> getProfileStats(
+            @Header("Authorization") String bearerToken
+    );
+
+    @POST("/api/hosts/me")
+    Call<Void> registerHostProfile(@Body HostRegisterRequestDto req);
+
+    @GET("/api/hosts/me")
+    Call<HostProfileDto> getMyHostProfile();
+
     //  집 생성
     @POST("api/houses")
     Call<HousesResponseDto> createHouse(@Header("Authorization") String bearerToken,
@@ -49,4 +80,48 @@ public interface ApiService {
     @POST("api/houses/amenities")
     Call<Void> saveHouseAmenities(@Header("Authorization") String bearerToken,
                                   @Body HouseAmenitiesCreateRequestDto requestDto);
+
+    // 하우스 목록
+    @GET("api/houses")
+    Call<List<HouseDto>> getHouses(@Header("Authorization") String bearerToken);
+
+    //내 집 불러 오기
+    @GET("/api/houses/my/{userId}")
+    Call<List<HouseDto>> getMyHouses(@Path("userId") int userId);
+
+    //내 예약 불러 오기
+    @GET("/api/reservations/my")
+    Call<List<ReservationDTO>> getReservations(@Query("userId") long userId);
+
+    @GET("/api/houses/summary")
+    Call<MyPageSummaryDto> getSummary(
+            @Query("userId") long userId
+    );
+
+    @GET("api/houses/{id}/detail")
+    Call<HouseDetailResponseDto> getHouseDetail(
+            @Path("id") long id
+    );
+
+    //리뷰 업로드
+    @POST("api/reviews/houses")
+    Call<Object> createHouseReview(@Body ReviewRequestDto dto);
+
+    //예약 생성
+    @POST("/api/reservations")
+    Call<ReservationDTO> createReservation(@Body ReservationCreateRequestDto req);
+
+    // 어메니티 포함 전체 상세
+    @GET("api/houses/{id}/full-detail")
+    Call<HouseDetailResponseDto> getHouseFullDetail(@Path("id") Long id);
+
+    //혜민 : 집 개수 불러오기
+    @PUT("api/houses/{id}")
+    Call<Void> updateHouseBasicInfo(@Path("id") long id, @Body HouseUpdateRequestDto requestDto);
+
+    @GET("/api/hosts/{hostId}/profile")
+    Call<HostProfileDto> getHostProfile(
+            @Header("Authorization") String bearerToken,
+            @Path("hostId") long hostId
+    );
 }

@@ -4,13 +4,16 @@ import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.jjb20.dto.HouseUpdateRequestDto;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
@@ -28,6 +31,9 @@ import java.time.format.DateTimeFormatter;
 
 import kotlin.Unit;
 import kotlin.jvm.functions.Function1;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class RegisterCalendarActivity extends AppCompatActivity {
 
@@ -55,16 +61,50 @@ public class RegisterCalendarActivity extends AppCompatActivity {
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy년 MM월 dd일");
     private final DateTimeFormatter monthTitleFormatter = DateTimeFormatter.ofPattern("yyyy.MM");
 
+    private boolean isEditMode = false;
+    private long houseId = -1L;
+    private ApiService apiService;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register_calendar);
 
+        if (!readIntentData()) {
+            return;
+        }
+
         initViews();
         setupListeners();
         setupCalendar();
         updateUi(); // 초기 UI 상태 설정
+    }
+
+    private boolean readIntentData() {
+        String mode = getIntent().getStringExtra("mode");
+        isEditMode = "edit".equalsIgnoreCase(mode);
+        houseId = getIntent().getLongExtra("houseId", -1L);
+
+        if (isEditMode) {
+            if (houseId == -1L) {
+                Toast.makeText(this, "집 정보를 불러올 수 없습니다.", Toast.LENGTH_SHORT).show();
+                finish();
+                return false;
+            }
+
+            String startDayStr = getIntent().getStringExtra("startDay");
+            String endDayStr = getIntent().getStringExtra("endDay");
+            if (!TextUtils.isEmpty(startDayStr)) {
+                startDate = LocalDate.parse(startDayStr);
+            }
+            if (!TextUtils.isEmpty(endDayStr)) {
+                endDate = LocalDate.parse(endDayStr);
+            }
+
+            apiService = RetrofitClient.getInstance().create(ApiService.class);
+        }
+        return true;
     }
 
     private void initViews() {
@@ -76,6 +116,11 @@ public class RegisterCalendarActivity extends AppCompatActivity {
         btnPrev = findViewById(R.id.btnPrev);
         btnNext = findViewById(R.id.btnNext);
         tvMonth = findViewById(R.id.tvMonth);
+
+        if (isEditMode) {
+            nextButton.setText("완료");
+            toolbar.setTitle("집 정보 수정");
+        }
     }
 
     private void setupListeners() {
@@ -102,13 +147,17 @@ public class RegisterCalendarActivity extends AppCompatActivity {
         });
 
         nextButton.setOnClickListener(v -> {
-            if (nextButton.isEnabled()) {
-                if (startDate != null && endDate != null) {
-                    PrefManager.put("house_available_start", startDate.toString());
-                    PrefManager.put("house_available_end", endDate.toString());
+            if (!nextButton.isEnabled()) return;
+
+            if (startDate != null && endDate != null) {
+                if (isEditMode) {
+                    submitEdit();
+                } else {
+                    PrefManager.put("start_day", startDate.toString());
+                    PrefManager.put("end_day", endDate.toString());
+                    Intent intent = new Intent(RegisterCalendarActivity.this, RegisterFinalActivity.class);
+                    startActivity(intent);
                 }
-                Intent intent = new Intent(RegisterCalendarActivity.this, RegisterFinalActivity.class);
-                startActivity(intent);
             }
         });
     }
@@ -185,7 +234,13 @@ public class RegisterCalendarActivity extends AppCompatActivity {
         DayOfWeek firstDayOfWeek = DayOfWeek.SUNDAY;
 
         calendarView.setup(startMonth, endMonth, firstDayOfWeek);
-        calendarView.scrollToMonth(startMonth);
+        YearMonth initialMonth = startDate != null ? YearMonth.from(startDate) : startMonth;
+        if (initialMonth.isBefore(startMonth)) {
+            initialMonth = startMonth;
+        } else if (initialMonth.isAfter(endMonth)) {
+            initialMonth = endMonth;
+        }
+        calendarView.scrollToMonth(initialMonth);
 
         // --- 4. 월 스크롤 리스너 (XML 헤더 제어) ---
         calendarView.setMonthScrollListener(new Function1<CalendarMonth, Unit>() {
@@ -205,6 +260,7 @@ public class RegisterCalendarActivity extends AppCompatActivity {
             }
         });
 
+        calendarView.post(calendarView::notifyCalendarChanged);
     }
 
     private void onDayClicked(CalendarDay day) {
@@ -251,5 +307,38 @@ public class RegisterCalendarActivity extends AppCompatActivity {
         }
     }
 
+    private void submitEdit() {
+        nextButton.setEnabled(false);
+        nextButton.setText("저장 중...");
 
+        HouseUpdateRequestDto dto = new HouseUpdateRequestDto();
+        dto.setStartDay(startDate.toString());
+        dto.setEndDay(endDate.toString());
+
+        apiService.updateHouseBasicInfo(houseId, dto).enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                if (response.isSuccessful()) {
+                    Toast.makeText(RegisterCalendarActivity.this, "임대 기간을 수정했습니다.", Toast.LENGTH_SHORT).show();
+                    finish();
+                } else {
+                    restoreButtonState();
+                    Toast.makeText(RegisterCalendarActivity.this,
+                            "수정에 실패했습니다. (" + response.code() + ")", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                restoreButtonState();
+                Toast.makeText(RegisterCalendarActivity.this,
+                        "네트워크 오류: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void restoreButtonState() {
+        nextButton.setEnabled(true);
+        nextButton.setText(isEditMode ? "완료" : "다음");
+    }
 }

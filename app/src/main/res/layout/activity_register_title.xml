@@ -21,6 +21,7 @@
             android:layout_height="?attr/actionBarSize"
             app:navigationIcon="@drawable/arrow_left"
             app:title="집 등록하기"
+            app:titleTextAppearance="@style/ToolbarTitleTextStyle"
             app:titleTextColor="#212121" />
 
     </com.google.android.material.appbar.AppBarLayout>
@@ -46,9 +47,9 @@
         android:enabled="false"
         android:text="다음"
         android:textColor="#FFFFFF"
-        android:textSize="16sp"
+        android:textSize="18sp"
         android:textStyle="bold"
-        app:backgroundTint="#BDBDBD"
+        app:backgroundTint="#00CBA8"
         app:cornerRadius="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -71,6 +72,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
         android:text="집 제목을\n입력해주세요"
+        android:fontFamily="@font/cafe24ssurroundotf"
         android:textColor="#1ABC9C"
         android:textSize="20sp"
         android:textStyle="bold"
@@ -88,16 +90,25 @@
         android:layout_marginStart="24dp"
         android:layout_marginTop="24dp"
         android:layout_marginEnd="24dp"
-        android:hint="길동이네 하우스"
+        android:hint=""
+        app:hintEnabled="false"
+        app:buttonTint="@color/teal_00cba8"
+        app:hintTextAppearance="@style/TextInputHintCafe24"
+
+        app:boxStrokeColor="@color/textinput_stroke_color"
+
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/subtitle_text">
+        app:layout_constraintTop_toBottomOf="@id/subtitle_text"
+        app:hintTextColor="@color/textinput_hint_color">
 
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="text"
-            android:maxLines="1" />
+            android:maxLines="1"
+            android:hint="길동이네 하우스"
+            android:fontFamily="@font/cafe24ssurroundotf" />
 
     </com.google.android.material.textfield.TextInputLayout>
 

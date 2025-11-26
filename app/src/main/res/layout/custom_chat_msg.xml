@@ -22,11 +22,11 @@
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
             android:text="userid_tv"
+            android:fontFamily="@font/cafe24ssurround_v2"
             android:textSize="16sp"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            android:fontFamily="@font/pretendardvariable"
             />
 
         <TextView
@@ -37,7 +37,7 @@
             android:textSize="10sp"
             app:layout_constraintStart_toStartOf="@+id/userid_tv"
             app:layout_constraintTop_toBottomOf="@+id/userid_tv"
-            android:fontFamily="@font/pretendardvariable"
+            android:fontFamily="@font/cafe24ssurround_v2"
             />
 
         <TextView
@@ -45,14 +45,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:background="@drawable/edittext_border"
+            android:background="@drawable/chatleft_bg"
             android:padding="8dp"
             android:text="content_tv"
             android:textSize="12sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="@+id/date_tv"
             app:layout_constraintTop_toBottomOf="@+id/date_tv"
-            android:fontFamily="@font/pretendardvariable"
+            android:fontFamily="@font/cafe24ssurround_v2"
             />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -75,7 +75,7 @@
             android:textSize="10sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            android:fontFamily="@font/pretendardvariable"
+            android:fontFamily="@font/cafe24ssurround_v2"
             />
 
         <TextView
@@ -84,14 +84,15 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp"
-            android:background="@drawable/edittext_border"
+            android:background="@drawable/chatright_bg"
+            android:textColor="@color/white"
             android:padding="8dp"
             android:text="content_tv2"
             android:textSize="12sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@+id/date_tv2"
             app:layout_constraintTop_toBottomOf="@+id/date_tv2"
-            android:fontFamily="@font/pretendardvariable"
+            android:fontFamily="@font/cafe24ssurround_v2"
             />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -21,7 +21,9 @@
             android:layout_height="?attr/actionBarSize"
             app:navigationIcon="@drawable/arrow_left"
             app:title="집 등록하기"
-            app:titleTextColor="#212121" />
+            android:textStyle="bold"
+            app:titleTextColor="#212121"
+            app:titleTextAppearance="@style/ToolbarTitleTextStyle" />
 
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -46,9 +48,11 @@
         android:enabled="false"
         android:text="다음"
         android:textColor="#FFFFFF"
-        android:textSize="16sp"
+        android:fontFamily="@font/cafe24ssurroundotf"
+        android:textSize="16.5sp"
         android:textStyle="bold"
-        app:backgroundTint="#BDBDBD"
+        android:background="@drawable/btn_mainbtn"
+        app:backgroundTint="@null"
         app:cornerRadius="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -79,6 +83,7 @@
                 android:layout_marginBottom="24dp"
                 android:layout_gravity="center"
                 android:text="집에 대해\n자세히 알려주세요"
+                android:fontFamily="@font/cafe24ssurroundotf"
                 android:textAlignment="center"
                 android:textColor="#1ABC9C"
                 android:textSize="20sp"
@@ -89,6 +94,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="주소"
+                android:fontFamily="@font/cafe24ssurroundotf"
                 android:textColor="#212121"
                 android:textSize="14sp"
                 android:textStyle="bold" />
@@ -103,7 +109,11 @@
                 app:boxCornerRadiusBottomEnd="8dp"
                 app:boxCornerRadiusBottomStart="8dp"
                 app:boxCornerRadiusTopEnd="8dp"
-                app:boxCornerRadiusTopStart="8dp">
+                app:boxCornerRadiusTopStart="8dp"
+                app:hintTextColor="@color/textinput_hint_color"
+                app:boxStrokeColor="@color/textinput_stroke_color"
+
+                >
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/address_edit_text"
@@ -111,6 +121,7 @@
                     android:layout_height="wrap_content"
                     android:inputType="none"
                     android:maxLines="1"
+                    android:fontFamily="@font/cafe24ssurroundotf"
                     android:focusable="false"
                     android:clickable="true"/>
             </com.google.android.material.textfield.TextInputLayout>
@@ -120,6 +131,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:text="상세 주소"
+                android:fontFamily="@font/cafe24ssurroundotf"
                 android:textColor="#212121"
                 android:textSize="14sp"
                 android:textStyle="bold" />
@@ -134,12 +146,15 @@
                 app:boxCornerRadiusBottomEnd="8dp"
                 app:boxCornerRadiusBottomStart="8dp"
                 app:boxCornerRadiusTopEnd="8dp"
-                app:boxCornerRadiusTopStart="8dp">
+                app:boxCornerRadiusTopStart="8dp"
+                app:hintTextColor="@color/textinput_hint_color"
+                app:boxStrokeColor="@color/textinput_stroke_color">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/address_detail_edit_text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:fontFamily="@font/cafe24ssurroundotf"
                     android:inputType="text"
                     android:maxLines="1" />
             </com.google.android.material.textfield.TextInputLayout>
@@ -151,6 +166,7 @@
                 android:text="설명"
                 android:textColor="#212121"
                 android:textSize="14sp"
+                android:fontFamily="@font/cafe24ssurroundotf"
                 android:textStyle="bold" />
 
             <com.google.android.material.textfield.TextInputLayout
@@ -163,12 +179,15 @@
                 app:boxCornerRadiusBottomEnd="8dp"
                 app:boxCornerRadiusBottomStart="8dp"
                 app:boxCornerRadiusTopEnd="8dp"
-                app:boxCornerRadiusTopStart="8dp">
+                app:boxCornerRadiusTopStart="8dp"
+                app:hintTextColor="@color/textinput_hint_color"
+                app:boxStrokeColor="@color/textinput_stroke_color">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/description_edit_text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:fontFamily="@font/cafe24ssurroundotf"
                     android:gravity="top"
                     android:inputType="textMultiLine"
                     android:minLines="4" />
@@ -179,6 +198,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:text="한줄 설명"
+                android:fontFamily="@font/cafe24ssurroundotf"
                 android:textColor="#212121"
                 android:textSize="14sp"
                 android:textStyle="bold" />
@@ -193,12 +213,15 @@
                 app:boxCornerRadiusBottomEnd="8dp"
                 app:boxCornerRadiusBottomStart="8dp"
                 app:boxCornerRadiusTopEnd="8dp"
-                app:boxCornerRadiusTopStart="8dp">
+                app:boxCornerRadiusTopStart="8dp"
+                app:hintTextColor="@color/textinput_hint_color"
+                app:boxStrokeColor="@color/textinput_stroke_color">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/summary_edit_text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:fontFamily="@font/cafe24ssurroundotf"
                     android:inputType="text"
                     android:maxLines="1" />
             </com.google.android.material.textfield.TextInputLayout>

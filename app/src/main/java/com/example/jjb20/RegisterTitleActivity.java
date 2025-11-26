@@ -7,13 +7,19 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.jjb20.dto.HouseUpdateRequestDto;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class RegisterTitleActivity extends AppCompatActivity {
 
@@ -24,11 +30,30 @@ public class RegisterTitleActivity extends AppCompatActivity {
     private TextInputLayout titleInputLayout;
     private TextInputEditText titleEditText;
 
+    private boolean isEditMode = false;
+    private long houseId = -1L;
+    private String currentTitle;
+    private ApiService apiService;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // 1. XML 레이아웃 파일 설정
         setContentView(R.layout.activity_register_title);
+
+        // edit 모드 여부 확인
+        String mode = getIntent().getStringExtra("mode");
+        isEditMode = "edit".equalsIgnoreCase(mode);
+        houseId = getIntent().getLongExtra("houseId", -1L);
+        currentTitle = getIntent().getStringExtra("currentTitle");
+
+        if (isEditMode && houseId == -1L) {
+            Toast.makeText(this, "집 정보를 불러올 수 없습니다.", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
+
+        apiService = RetrofitClient.getInstance().create(ApiService.class);
 
         // 2. 뷰 초기화
         initViews();
@@ -53,6 +78,15 @@ public class RegisterTitleActivity extends AppCompatActivity {
 
         // TextInputLayout에서 TextInputEditText를 가져옵니다.
         titleEditText = (TextInputEditText) titleInputLayout.getEditText();
+
+        if (isEditMode) {
+            nextButton.setText("완료");
+            toolbar.setTitle("집 정보 수정");
+            if (currentTitle != null && titleEditText != null) {
+                titleEditText.setText(currentTitle);
+                titleEditText.setSelection(currentTitle.length());
+            }
+        }
     }
 
     /**
@@ -74,9 +108,13 @@ public class RegisterTitleActivity extends AppCompatActivity {
                 // SharedPreferences에 제목 저장
                 PrefManager.put("house_title", houseTitle);
 
-                // 다음 등록 단계로 이동
-                Intent intent = new Intent(RegisterTitleActivity.this, RegisterBasicsActivity.class);
-                startActivity(intent);
+                if (isEditMode) {
+                    updateHouseTitle(houseTitle);
+                } else {
+                    // 다음 등록 단계로 이동
+                    Intent intent = new Intent(RegisterTitleActivity.this, RegisterBasicsActivity.class);
+                    startActivity(intent);
+                }
             }
         });
 
@@ -127,5 +165,39 @@ public class RegisterTitleActivity extends AppCompatActivity {
             nextButton.setBackgroundTintList(ColorStateList.valueOf(color));
         }
 
+    }
+
+    private void updateHouseTitle(String newTitle) {
+        nextButton.setEnabled(false);
+        nextButton.setText("저장 중...");
+
+        HouseUpdateRequestDto dto = new HouseUpdateRequestDto();
+        dto.setTitle(newTitle);
+
+        apiService.updateHouseBasicInfo(houseId, dto).enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                if (response.isSuccessful()) {
+                    Toast.makeText(RegisterTitleActivity.this, "집 제목이 수정되었습니다.", Toast.LENGTH_SHORT).show();
+                    finish();
+                } else {
+                    restoreButtonState();
+                    Toast.makeText(RegisterTitleActivity.this,
+                            "수정에 실패했습니다. (" + response.code() + ")", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                restoreButtonState();
+                Toast.makeText(RegisterTitleActivity.this,
+                        "네트워크 오류: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void restoreButtonState() {
+        nextButton.setEnabled(true);
+        nextButton.setText(isEditMode ? "완료" : "다음");
     }
 }

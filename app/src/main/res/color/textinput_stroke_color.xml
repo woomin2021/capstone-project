@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- 포커스됐을 때 -->
+    <item
+        android:color="@color/teal_00cba8"
+        android:state_focused="true" />
+
+    <!-- 호버됐을 때 -->
+    <item
+        android:color="@color/teal_00cba8"
+        android:state_hovered="true" />
+
+    <!-- 기본 -->
+    <item android:color="#BDBDBD" />
+</selector>
