@@ -8,6 +8,7 @@ import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -52,6 +53,9 @@ public class RegisterDetailsActivity extends AppCompatActivity {
     private String currentCity;
     private String currentCountry;
     private ApiService apiService;
+
+
+    private ProgressBar progressBarStep;
 
     // 모든 EditText의 변경을 감지할 공용 TextWatcher
     private final TextWatcher textWatcher = new TextWatcher() {
@@ -139,6 +143,10 @@ public class RegisterDetailsActivity extends AppCompatActivity {
         summaryInputLayout = findViewById(R.id.summary_input_layout);
         summaryEditText = findViewById(R.id.summary_edit_text);
 
+        // 진행바 추가
+        progressBarStep = findViewById(R.id.progressBarStep);
+        progressBarStep.setMax(6);
+        progressBarStep.setProgress(4);
         if (isEditMode) {
             nextButton.setText("완료");
             toolbar.setTitle("집 정보 수정");

@@ -5,6 +5,7 @@ import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.widget.ImageButton;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -30,6 +31,9 @@ public class RegisterBasicsActivity extends AppCompatActivity {
     private int intBedroom = 0;
     private int intBed = 0;
     private int intBathroom = 0;
+
+    //프로그레스바 2단게
+    private ProgressBar progressBarStep;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,6 +69,11 @@ public class RegisterBasicsActivity extends AppCompatActivity {
         bathroomMinus = findViewById(R.id.bathroom_minus);
         bathroomPlus = findViewById(R.id.bathroom_plus);
         bathroomCount = findViewById(R.id.bathroom_count);
+
+        //진행바
+        progressBarStep = findViewById(R.id.progressBarStep);
+        progressBarStep.setMax(6);
+        progressBarStep.setProgress(2);
     }
 
     private void setupListeners() {

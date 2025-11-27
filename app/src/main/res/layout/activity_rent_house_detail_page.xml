@@ -319,7 +319,49 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/textShortDescValue" />
 
-        <!-- 지도 -->
+        <!-- 편의시설 라벨 -->
+        <TextView
+            android:id="@+id/textAmenitiesLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp"
+            android:text="편의시설"
+            android:fontFamily="@font/cafe24ssurroundotf"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/divider3" />
+
+        <!-- 편의시설 내용 -->
+        <TextView
+            android:id="@+id/textAmenitiesValue"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:padding="12dp"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp"
+            android:fontFamily="@font/cafe24slim_light"
+            android:textColor="#333333"
+            android:textSize="13sp"
+            android:background="@drawable/edittext_border"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/textAmenitiesLabel" />
+
+        <!-- Divider ④  -->
+        <View
+            android:id="@+id/divider4"
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_marginTop="16dp"
+            android:background="#E0E0E0"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/textAmenitiesValue" />
+
+        <!-- 지도 라벨 -->
         <TextView
             android:id="@+id/textMapLabel"
             android:layout_width="wrap_content"
@@ -327,10 +369,13 @@
             android:layout_marginTop="16dp"
             android:paddingStart="20dp"
             android:paddingEnd="20dp"
+            android:text="위치"
             android:textStyle="bold"
+            android:fontFamily="@font/cafe24ssurroundotf"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/divider3" />
+            app:layout_constraintTop_toBottomOf="@id/divider4" />
 
+        <!-- 지도 -->
         <fragment
             android:id="@+id/map"
             android:name="com.google.android.gms.maps.SupportMapFragment"
@@ -343,51 +388,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/textMapLabel" />
 
-        <!-- Divider ④ -->
-        <View
-            android:id="@+id/divider4"
-            android:layout_width="0dp"
-            android:layout_height="1dp"
-            android:layout_marginTop="16dp"
-            android:background="#E0E0E0"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/map" />
-
-        <!-- 편의시설 라벨 -->
-        <TextView
-            android:id="@+id/textAmenitiesLabel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:paddingStart="20dp"
-            android:paddingEnd="20dp"
-            android:text="편의시설"
-            android:fontFamily="@font/cafe24ssurroundotf"
-
-            android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/divider4" />
-
-        <!-- 편의시설 내용 -->
-        <TextView
-            android:id="@+id/textAmenitiesValue"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:padding="12dp"
-            android:paddingStart="20dp"
-            android:paddingEnd="20dp"
-            android:fontFamily="@font/cafe24ssurroundotf"
-
-            android:textColor="#333333"
-            android:textSize="13sp"
-            android:background="@drawable/edittext_border"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/textAmenitiesLabel" />
-
-        <!-- 어매니티 테이블 정보들  -->
+        <!-- 리뷰 라벨 -->
         <TextView
             android:id="@+id/textReviewLabel"
             android:layout_width="wrap_content"
@@ -396,10 +397,9 @@
             android:paddingStart="20dp"
             android:paddingEnd="20dp"
             android:fontFamily="@font/cafe24ssurroundotf"
-
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/textAmenitiesValue" />
+            app:layout_constraintTop_toBottomOf="@id/map" />
 
         <!-- Divider ⑤ -->
         <View

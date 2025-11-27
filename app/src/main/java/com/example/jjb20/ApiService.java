@@ -99,10 +99,9 @@ public interface ApiService {
             @Query("userId") long userId
     );
 
-    @GET("api/houses/{id}/detail")
-    Call<HouseDetailResponseDto> getHouseDetail(
-            @Path("id") long id
-    );
+    // 2) full-detail 대신 detail 로 경로 수정
+    @GET("/api/houses/{id}/full-detail")
+    Call<HouseDetailResponseDto> getHouseFullDetail(@Path("id") long id);
 
     //리뷰 업로드
     @POST("api/reviews/houses")
