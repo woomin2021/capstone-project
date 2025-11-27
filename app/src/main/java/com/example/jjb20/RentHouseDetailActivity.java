@@ -90,6 +90,10 @@ public class RentHouseDetailActivity extends AppCompatActivity implements OnMapR
     // Retrofit
     private ApiService apiService;
 
+
+    private ImageSliderAdapter imageAdapter;
+    private final List<String> imageUrls = new ArrayList<>();
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -105,6 +109,14 @@ public class RentHouseDetailActivity extends AppCompatActivity implements OnMapR
         tvPrice    = findAnyTextView("textPrice", "textPriceDetail", "tvPrice");
         selectedDateEt = findViewById(R.id.selected_date_text);
         calendarView   = findViewById(R.id.calendarView);
+
+        // 이미지 슬라이더 어댑터 초기화 (전역 리스트 사용)
+        imageAdapter = new ImageSliderAdapter(imageUrls);
+        viewPagerImages.setOrientation(ViewPager2.ORIENTATION_HORIZONTAL);
+        viewPagerImages.setAdapter(imageAdapter);
+
+
+
 
         // 빌리는 사람  섹션
         tvHostLabel = findViewById(R.id.textHostLabel);
@@ -146,14 +158,13 @@ public class RentHouseDetailActivity extends AppCompatActivity implements OnMapR
                 tvPrice.setText(house.pricePerNight + "원 · 1박");
             }
 
-            // 이미지 슬라이더
-            List<String> images = new ArrayList<>();
+            // 이미지 슬라이더 - 전역 리스트(imageUrls) 사용
+            imageUrls.clear();
             if (house.coverPhotoUrl != null && !house.coverPhotoUrl.isEmpty()) {
-                images.add(house.coverPhotoUrl);
+                imageUrls.add(house.coverPhotoUrl);
             }
-            ImageSliderAdapter adapter = new ImageSliderAdapter(images);
-            viewPagerImages.setOrientation(ViewPager2.ORIENTATION_HORIZONTAL);
-            viewPagerImages.setAdapter(adapter);
+            // TODO: 나중에 여러 장 이미지를 서버에서 받으면 여기서 imageUrls.addAll(…) 해주면 됨.
+            imageAdapter.notifyDataSetChanged();
 
             // 기타 텍스트
             if (tvDate != null && house.createdAt != null) {
@@ -366,6 +377,18 @@ public class RentHouseDetailActivity extends AppCompatActivity implements OnMapR
 
                 showHostSection(hostName, ratingAvg, ratingCount);
 
+                // 사진 여러장 받아오기
+                List<String> photos = dto.getPhotoUrls();   // 스프링에서 내려준 리스트
+
+                imageUrls.clear();
+                if (photos != null && !photos.isEmpty()) {
+                    imageUrls.addAll(photos);
+                } else if (house != null && house.coverPhotoUrl != null
+                        && !house.coverPhotoUrl.isEmpty()) {
+                    // 혹시 서버에서 리스트 안 내려오면, 최소한 커버 하나는 보여주기
+                    imageUrls.add(house.coverPhotoUrl);
+                }
+                imageAdapter.notifyDataSetChanged();
                 // ===== 어메니티 UI 채우기 =====
                 TextView tvAmenitiesLabel = findViewById(R.id.textAmenitiesLabel);
                 TextView tvAmenitiesValue = findViewById(R.id.textAmenitiesValue);
