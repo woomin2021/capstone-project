@@ -161,13 +161,27 @@ public class HostReviewActivity extends AppCompatActivity {
 
 
                             // 후기
-                            if (tvReviewCountTop != null) {
-                                String countText = String.format(Locale.getDefault(), "+%,d개", body.ratingCount);
-                                tvReviewCountTop.setText(countText);
-                            }
-                            if (tvReviewCountSection != null) {
-                                String countText = String.format(Locale.getDefault(), "%,d개", body.ratingCount);
-                                tvReviewCountSection.setText(countText);
+                            if (tvReviewCountTop != null || tvReviewCountSection != null) {
+                                if (body.ratingCount > 0) {
+                                    // 리뷰가 1개 이상 있을 때만 숫자 표시
+                                    String topText = String.format(Locale.getDefault(), "+%,d개", body.ratingCount);
+                                    String sectionText = String.format(Locale.getDefault(), "%,d개", body.ratingCount);
+
+                                    if (tvReviewCountTop != null) {
+                                        tvReviewCountTop.setText(topText);
+                                    }
+                                    if (tvReviewCountSection != null) {
+                                        tvReviewCountSection.setText(sectionText);
+                                    }
+                                } else {
+                                    // 리뷰가 한 개도 없으면 "-" 로 표시
+                                    if (tvReviewCountTop != null) {
+                                        tvReviewCountTop.setText("-");
+                                    }
+                                    if (tvReviewCountSection != null) {
+                                        tvReviewCountSection.setText("-");
+                                    }
+                                }
                             }
 
                         } else {

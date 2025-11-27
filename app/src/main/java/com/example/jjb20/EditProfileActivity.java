@@ -98,6 +98,8 @@ public class EditProfileActivity extends AppCompatActivity {
 
     }
 
+    private AlertDialog progressDialog;
+
     private void uploadProfileImageToFirebase(Uri imageUri) {
 
         String userId = PrefManager.get("uid", "unknown");
@@ -109,10 +111,20 @@ public class EditProfileActivity extends AppCompatActivity {
         StorageReference ref = FirebaseStorage.getInstance()
                 .getReference("profile_image/" + filename);
 
+        // Show custom progress dialog
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setCancelable(false);
+        builder.setView(R.layout.dialog_progress);
+        progressDialog = builder.create();
+        progressDialog.show();
+
         // 업로드 시작
         ref.putFile(imageUri)
                 .continueWithTask(task -> ref.getDownloadUrl())
                 .addOnSuccessListener(downloadUri -> {
+                    if (progressDialog != null && progressDialog.isShowing()) {
+                        progressDialog.dismiss();
+                    }
 
                     String newImageUrl = downloadUri.toString();
 
@@ -124,6 +136,9 @@ public class EditProfileActivity extends AppCompatActivity {
 
                 })
                 .addOnFailureListener(e -> {
+                    if (progressDialog != null && progressDialog.isShowing()) {
+                        progressDialog.dismiss();
+                    }
                     Toast.makeText(this, "업로드 실패: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                 });
     }

@@ -99,10 +99,9 @@ public interface ApiService {
             @Query("userId") long userId
     );
 
-    @GET("api/houses/{id}/detail")
-    Call<HouseDetailResponseDto> getHouseDetail(
-            @Path("id") long id
-    );
+    // 2) full-detail 대신 detail 로 경로 수정
+    @GET("/api/houses/{id}/full-detail")
+    Call<HouseDetailResponseDto> getHouseFullDetail(@Path("id") long id);
 
     //리뷰 업로드
     @POST("api/reviews/houses")
@@ -134,5 +133,30 @@ public interface ApiService {
 
     @GET("/api/reservations/my/past")
     Call<List<ReservationDTO>> getPastReservations(@Query("userId") long userId);
+
+    // 게스트 리뷰 생성
+    @POST("/api/reviews/guests")
+    Call<Object> createGuestReview(@Body ReviewRequestDto dto);
+
+    // 호스트의 대기 중인 예약 목록 (IN_PROGRESS)
+    @GET("/api/host/reservations/in-progress")
+    Call<List<ReservationDTO>> getInProgressReservationsForHost(@Header("Authorization") String bearerToken);
+
+    // 호스트의 거래 완료된 예약 목록 (TRADE_DONE)
+    @GET("/api/host/reservations/trade-done")
+    Call<List<ReservationDTO>> getTradeDoneReservationsForHost(@Header("Authorization") String bearerToken);
+
+    // 호스트의 지난 예약 목록 (COMPLETED, UNCOMPLETED)
+    @GET("/api/host/reservations/past")
+    Call<List<ReservationDTO>> getPastReservationsForHost(@Header("Authorization") String bearerToken);
+
+    // 예약 승인
+    @POST("/api/host/reservations/{id}/approve")
+    Call<Void> approveReservation(@Path("id") Long reservationId, @Header("Authorization") String bearerToken);
+
+    // 예약 거절
+    @POST("/api/host/reservations/{id}/reject")
+    Call<Void> rejectReservation(@Path("id") Long reservationId, @Header("Authorization") String bearerToken);
+
 
 }

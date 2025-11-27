@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -44,6 +45,8 @@ public class RegisterAmenitiesActivity extends AppCompatActivity {
         put("냉장고", "REFRIGERATOR");
         put("TV", "TV");
     }};
+    //프로그레스바 2단게
+    private ProgressBar progressBarStep;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,6 +66,7 @@ public class RegisterAmenitiesActivity extends AppCompatActivity {
         toolbar = findViewById(R.id.toolbar);
         nextButton = findViewById(R.id.next_button);
         amenitiesContainer = findViewById(R.id.amenities_container);
+        progressBarStep = findViewById(R.id.progressBarStep);
 
         // 체크박스 리스트 초기화
         checkBoxes = new ArrayList<>();
@@ -78,6 +82,9 @@ public class RegisterAmenitiesActivity extends AppCompatActivity {
                 }
             }
         }
+        //진행바
+        progressBarStep.setMax(6);
+        progressBarStep.setProgress(3);
     }
 
     private void setupListeners() {

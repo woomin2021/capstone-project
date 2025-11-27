@@ -31,4 +31,7 @@
     <color name="gray">#777777</color>
     <color name="gray_light">#DDDDDD</color>
 
+
+    <color name="google_btn_bg">#F2F2F2</color>
+
 </resources>

@@ -1,6 +1,7 @@
 package com.example.jjb20.dto;
 
 import com.google.gson.annotations.SerializedName;
+import java.util.List;
 
 public class HouseDetailResponseDto {
 
@@ -40,6 +41,9 @@ public class HouseDetailResponseDto {
 
     @SerializedName("createdAt")
     private String createdAt;
+
+    @SerializedName("photoUrls")
+    private List<String> photoUrls;
 
     @SerializedName("latitude")
     private Double latitude;
@@ -89,7 +93,7 @@ public class HouseDetailResponseDto {
     public Double getLatitude() { return latitude; }
 
     public Double getLongitude() { return longitude; }
-
+    public List<String> getPhotoUrls() {return photoUrls;}
 
     public Double getHostRatingAvg() { return hostRatingAvg; }
 

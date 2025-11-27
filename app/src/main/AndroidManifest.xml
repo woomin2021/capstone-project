@@ -62,12 +62,14 @@
         <activity android:name=".ProfileReservationListActivity" />
         <activity android:name=".HostReviewActivity" />
         <activity android:name=".HouseReviewActivity"/>
+        <activity android:name=".GuestReviewActivity"/>
+        <activity android:name=".ProfileReservationRequestActivity"/>
         <activity android:name=".EditProfileActivity"/>
         <activity android:name=".RegisterHostActivity"/>
         <activity android:name=".EditHouseActivity"/>
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyB0gphitktaQL9MhzcbxPUOtAgo8EG-qao" />
+            android:value="AIzaSyAzP0nIdljWzH1V10R5rNpTAfAmA-yGf3s" />
     </application>
 
 </manifest>

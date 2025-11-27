@@ -116,7 +116,7 @@
 
                     <TextView
                         android:id="@+id/review_count1"
-                        android:text="+999 개"
+                        android:text="-개"
                         android:textStyle="bold"
                         android:textSize="18sp"
                         android:layout_height="wrap_content"
@@ -235,7 +235,7 @@
                     android:id="@+id/review_count2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="1,364개"
+                    android:text="-개"
                     android:textSize="16sp"
                     android:fontFamily="@font/cafe24ssurroundotf" />
             </LinearLayout>
