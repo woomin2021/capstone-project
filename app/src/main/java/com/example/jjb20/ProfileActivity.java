@@ -38,6 +38,7 @@ public class ProfileActivity extends AppCompatActivity {
     private TextView tvHouseCount, tvReserveCount;
     Button profileEditbtn;
     Button logoutBtn;
+    ImageView btnBack;
     CircleImageView profile_image;
     private FirebaseAuth mAuth;
     ApiService apiService;
@@ -54,6 +55,7 @@ public class ProfileActivity extends AppCompatActivity {
         houseListBtn = findViewById(R.id.houseList);
         reservationListBtn = findViewById(R.id.reservationList);
         profileEditbtn = findViewById(R.id.profileEditbtn);
+        btnBack = findViewById(R.id.btnBack);
 
         tvHouseCount = findViewById(R.id.tvHouseCount);
         tvReserveCount = findViewById(R.id.tvReserveCount);
@@ -112,6 +114,10 @@ public class ProfileActivity extends AppCompatActivity {
         profileEditbtn.setOnClickListener(v -> {
             Intent intent = new Intent(getApplicationContext(), EditProfileActivity.class);
             startActivity(intent);
+        });
+
+        btnBack.setOnClickListener(v -> {
+            finish();
         });
 
 
