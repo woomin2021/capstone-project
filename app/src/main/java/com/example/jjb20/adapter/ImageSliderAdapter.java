@@ -51,4 +51,5 @@ public class ImageSliderAdapter extends RecyclerView.Adapter<ImageSliderAdapter.
     public int getItemCount() {
         return imageUrls == null ? 0 : imageUrls.size();
     }
+
 }
