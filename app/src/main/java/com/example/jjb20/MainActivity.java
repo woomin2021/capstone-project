@@ -1,5 +1,6 @@
 package com.example.jjb20;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -19,6 +20,7 @@ import com.google.android.material.card.MaterialCardView;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import androidx.activity.OnBackPressedCallback;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -59,6 +61,18 @@ public class MainActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+        // 메인 화면에서 뒤로가기(버튼/제스처) 막기
+        OnBackPressedCallback callback = new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                // 아무 것도 안 하면 뒤로가기 동작 자체가 막힘
+                // 필요하면 여기서 "뒤로가기가 안됩니다" 토스트 띄워도 됨
+                // Toast.makeText(MainActivity.this, "메인 화면에서는 뒤로가기가 동작하지 않습니다.", Toast.LENGTH_SHORT).show();
+            }
+        };
+
+// 이 액티비티의 back dispatcher에 콜백 등록
+        getOnBackPressedDispatcher().addCallback(this, callback);
 
         btnRent = findViewById(R.id.btnRent); //집 빌리기
         btnRegister = findViewById(R.id.btnRegister); // 집 등록하기
@@ -91,6 +105,12 @@ public class MainActivity extends AppCompatActivity {
 
 
 
+    }
+    @SuppressLint("GestureBackNavigation")
+    @Override
+    public void onBackPressed() {
+        // 뒤로가기 막기
+        super.onBackPressed();
     }
 
     private void checkHostProfile() {

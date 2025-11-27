@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -65,6 +66,8 @@ public class RegisterCalendarActivity extends AppCompatActivity {
     private long houseId = -1L;
     private ApiService apiService;
 
+    // 진행바바바
+    private ProgressBar progressBarStep;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -116,6 +119,12 @@ public class RegisterCalendarActivity extends AppCompatActivity {
         btnPrev = findViewById(R.id.btnPrev);
         btnNext = findViewById(R.id.btnNext);
         tvMonth = findViewById(R.id.tvMonth);
+
+
+        // 진행바 추가
+        progressBarStep = findViewById(R.id.progressBarStep);
+        progressBarStep.setMax(6);
+        progressBarStep.setProgress(5);
 
         if (isEditMode) {
             nextButton.setText("완료");

@@ -57,6 +57,9 @@ public class RentHouseActivity extends AppCompatActivity {
     private Double userLat = null;
     private Double userLng = null;
 
+    // 반경 50km 안만 근처로 본다
+    private static final float NEARBY_RADIUS_METERS = 50_000f;
+    private static final int NEARBY_MAX_COUNT = 8;
 
 
     @Override
@@ -99,17 +102,20 @@ public class RentHouseActivity extends AppCompatActivity {
         // 프로필 버튼
         profileIcon.setOnClickListener(view -> {
             Intent i = new Intent(this, ProfileActivity.class);
+            Log.d("ClickTest", "프로필 버튼 클릭됨");
             startActivity(i);
         });
 
         // 집 등록하기 버튼
         btnRegisterHouse.setOnClickListener(view -> {
             Intent i = new Intent(this, RegisterTitleActivity.class);
+            Log.d("ClickTest", "집 등록하기 버튼 클릭됨");
             startActivity(i);
         });
         // 위치 클라이언트 초기화
         fusedClient = LocationServices.getFusedLocationProviderClient(this);
         requestLocationPermission();   // 위치 권한 요청 → 성공 시 userLat/userLng 셋팅됨
+
 
         // 채팅 버튼 → 프래그먼트 열기
         chattingButton.setOnClickListener(v -> {
@@ -161,7 +167,9 @@ public class RentHouseActivity extends AppCompatActivity {
 
         // "근처 추천 숙소" 버튼
         tvNearbyHouses.setOnClickListener(v -> {
+            Log.d("RentHouse", "근처 버튼 클릭, userLat=" + userLat + ", userLng=" + userLng);
             List<HouseDto> nearby = getNearbyHouses(allHouses);
+            Log.d("RentHouse", "nearby size=" + nearby.size());
             hotAdapter.updateData(nearby);
         });
     }
@@ -250,11 +258,18 @@ public class RentHouseActivity extends AppCompatActivity {
             return;
         }
 
+        Log.d("RentHouse", "테스트용 위치: " + userLat + ", " + userLng);
         fusedClient.getLastLocation()
                 .addOnSuccessListener(location -> {
                     if (location != null) {
                         userLat = location.getLatitude();
+
                         userLng = location.getLongitude();
+                        Log.d("RentHouse", "내 위치: " + userLat + ", " + userLng);
+                    }
+                    else {
+                        Log.d("RentHouse", "location null");
+                        Log.d("RentHouse", "기본 위치: " + userLat + ", " + userLng);
                     }
                 });
     }
@@ -262,13 +277,15 @@ public class RentHouseActivity extends AppCompatActivity {
     private List<HouseDto> getNearbyHouses(List<HouseDto> houses) {
 
         if (userLat == null || userLng == null) {
-            return houses;   // 위치 못 얻은 경우 전체 반환
+            // 위치 못 얻은 경우 그냥 전체 보여줄지,
+            // 아니면 빈 리스트로 할지는 선택
+            return houses;
         }
 
         List<HouseDistance> temp = new ArrayList<>();
 
         for (HouseDto h : houses) {
-            if (h.latitude == null || h.longitude == null) continue; // 위동 경도 없으면 안나옵니다 그 집은
+            if (h.latitude == null || h.longitude == null) continue;
 
             float[] dist = new float[1];
             Location.distanceBetween(
@@ -277,13 +294,25 @@ public class RentHouseActivity extends AppCompatActivity {
                     dist
             );
 
-            temp.add(new HouseDistance(h, dist[0]));
+            // 여기서 반경 안에 들어오는 것만 추가
+            if (dist[0] <= NEARBY_RADIUS_METERS) {
+                temp.add(new HouseDistance(h, dist[0]));
+            }
+        }
+
+        // 반경 안에 아무것도 없으면 어떻게 할지
+        if (temp.isEmpty()) {
+            // 근처 숙소 없을 때 전체 보여주고 싶으면:
+            return houses;
+
+            // 아무것도 안 보이게 하고 싶으면 위 대신:
+            // return new ArrayList<>();
         }
 
         Collections.sort(temp, (a, b) -> Float.compare(a.distance, b.distance));
 
         List<HouseDto> result = new ArrayList<>();
-        for (int i = 0; i < Math.min(8, temp.size()); i++) {
+        for (int i = 0; i < Math.min(NEARBY_MAX_COUNT, temp.size()); i++) {
             result.add(temp.get(i).house);
         }
 

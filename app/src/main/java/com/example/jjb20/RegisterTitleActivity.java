@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -25,7 +26,7 @@ public class RegisterTitleActivity extends AppCompatActivity {
 
     // 뷰 변수 선언
     private MaterialToolbar toolbar;
-    private ProgressBar progressBar;
+    private ProgressBar progressBarStep;
     private MaterialButton nextButton;
     private TextInputLayout titleInputLayout;
     private TextInputEditText titleEditText;
@@ -34,6 +35,13 @@ public class RegisterTitleActivity extends AppCompatActivity {
     private long houseId = -1L;
     private String currentTitle;
     private ApiService apiService;
+
+
+
+    //진행바
+
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,12 +80,17 @@ public class RegisterTitleActivity extends AppCompatActivity {
      */
     private void initViews() {
         toolbar = findViewById(R.id.toolbar);
-        progressBar = findViewById(R.id.progressBar);
+        progressBarStep = findViewById(R.id.progressBarStep);
         nextButton = findViewById(R.id.next_button);
         titleInputLayout = findViewById(R.id.title_input_layout);
 
         // TextInputLayout에서 TextInputEditText를 가져옵니다.
         titleEditText = (TextInputEditText) titleInputLayout.getEditText();
+
+
+        // 이 화면은 6단계 중 1단계
+        progressBarStep.setMax(6);
+        progressBarStep.setProgress(1);
 
         if (isEditMode) {
             nextButton.setText("완료");
@@ -195,6 +208,8 @@ public class RegisterTitleActivity extends AppCompatActivity {
             }
         });
     }
+
+
 
     private void restoreButtonState() {
         nextButton.setEnabled(true);
