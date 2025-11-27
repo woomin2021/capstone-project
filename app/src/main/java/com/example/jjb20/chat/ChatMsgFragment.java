@@ -147,7 +147,7 @@ public class ChatMsgFragment extends Fragment implements View.OnClickListener {
                 SimpleDateFormat df = new SimpleDateFormat("MM/dd HH:mm:ss");
                 String currentTime = df.format(new Date());
 
-                String username = PrefManager.get("email", "Unknown user");
+                String username = PrefManager.get("userName", "Unknown user");
 
                 ChatMsgVO msgVO = new ChatMsgVO(
                         currentUserId,

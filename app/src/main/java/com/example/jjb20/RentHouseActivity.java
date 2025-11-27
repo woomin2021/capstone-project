@@ -113,12 +113,22 @@ public class RentHouseActivity extends AppCompatActivity {
 
         // 채팅 버튼 → 프래그먼트 열기
         chattingButton.setOnClickListener(v -> {
+            chattingButton.setVisibility(android.view.View.GONE); // 버튼 숨기기
             ChatRoomFragment fragment = new ChatRoomFragment();
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-            transaction.setCustomAnimations(R.anim.slide_up, 0);
+            transaction.setCustomAnimations(R.anim.slide_up, 0, 0, R.anim.slide_out_left);
             transaction.replace(R.id.main, fragment);
             transaction.addToBackStack(null);
             transaction.commit();
+        });
+
+        // 프래그먼트 백스택 리스너
+        getSupportFragmentManager().addOnBackStackChangedListener(() -> {
+            int backStackEntryCount = getSupportFragmentManager().getBackStackEntryCount();
+            if (backStackEntryCount == 0) {
+                // 백스택에 프래그먼트가 없으면 버튼 다시 보이기
+                chattingButton.setVisibility(android.view.View.VISIBLE);
+            }
         });
 
         // 로그인한 사용자 이름 표시
@@ -134,6 +144,7 @@ public class RentHouseActivity extends AppCompatActivity {
 
         // HotAdapter 초기화
         hotAdapter = new HotAdapter(new ArrayList<>());
+
         recyclerHot.setAdapter(hotAdapter);
 
         // Retrofit API

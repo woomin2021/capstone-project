@@ -101,8 +101,10 @@ public class EditProfileActivity extends AppCompatActivity {
     private void uploadProfileImageToFirebase(Uri imageUri) {
 
         String userId = PrefManager.get("uid", "unknown");
+        String userEmail = PrefManager.get("email", "unknown_email");
+        String sanitizedEmail = userEmail.replace("@", "_").replace(".", "_");
 
-        String filename = "profile_" + userId + "_" + System.currentTimeMillis();
+        String filename = sanitizedEmail + "_profile_" + userId + "_" + System.currentTimeMillis();
 
         StorageReference ref = FirebaseStorage.getInstance()
                 .getReference("profile_image/" + filename);
@@ -307,6 +309,7 @@ public class EditProfileActivity extends AppCompatActivity {
     //firebase 비밀번호 수정
     private void showEditPasswordDialog() {
         View view = getLayoutInflater().inflate(R.layout.dialog_edit_password, null);
+        EditText currentPassword = view.findViewById(R.id.editPasswordCurrent);
         EditText newPassword = view.findViewById(R.id.editPasswordInput);
         EditText confirmPassword = view.findViewById(R.id.editPasswordConfirm);
 
@@ -319,28 +322,50 @@ public class EditProfileActivity extends AppCompatActivity {
 
         //확인 버튼
         view.findViewById(R.id.btnConfirmPassword).setOnClickListener(v -> {
-            String pass1 = newPassword.getText().toString();
-            String pass2 = confirmPassword.getText().toString();
+            String currentPass = currentPassword.getText().toString();
+            String newPass = newPassword.getText().toString();
+            String confirmPass = confirmPassword.getText().toString();
+
+            if (currentPass.isEmpty() || newPass.isEmpty() || confirmPass.isEmpty()) {
+                Toast.makeText(this, "모든 필드를 입력해주세요.", Toast.LENGTH_SHORT).show();
+                return;
+            }
 
             //비밀번호 유효성 검사
-            if (!pass1.equals(pass2)) {
-                Toast.makeText(this, "비밀번호 불일치", Toast.LENGTH_SHORT).show();
+            if (!newPass.equals(confirmPass)) {
+                Toast.makeText(this, "새 비밀번호가 일치하지 않습니다.", Toast.LENGTH_SHORT).show();
                 return;
             }
-            if (pass1.length() < 6) {
-                Toast.makeText(this, "6자 이상 입력", Toast.LENGTH_SHORT).show();
+            if (newPass.length() < 6) {
+                Toast.makeText(this, "새 비밀번호는 6자 이상 입력해주세요.", Toast.LENGTH_SHORT).show();
                 return;
             }
 
+            FirebaseUser user = mAuth.getCurrentUser();
+            if (user == null || user.getEmail() == null) {
+                Toast.makeText(this, "사용자 정보를 찾을 수 없습니다.", Toast.LENGTH_SHORT).show();
+                return;
+            }
 
-            //Firebase 비밀번호 수정
-            user.updatePassword(pass1)
-                    .addOnCompleteListener(task -> {
-                        if (task.isSuccessful()) {
-                            Toast.makeText(this, "비밀번호 변경 완료", Toast.LENGTH_SHORT).show();
-                            dialog.dismiss();
+            // 1. 재인증
+            com.google.firebase.auth.AuthCredential credential = com.google.firebase.auth.EmailAuthProvider
+                    .getCredential(user.getEmail(), currentPass);
+
+            user.reauthenticate(credential)
+                    .addOnCompleteListener(reauthTask -> {
+                        if (reauthTask.isSuccessful()) {
+                            // 2. 재인증 성공 시 비밀번호 변경
+                            user.updatePassword(newPass)
+                                    .addOnCompleteListener(updateTask -> {
+                                        if (updateTask.isSuccessful()) {
+                                            Toast.makeText(this, "비밀번호 변경 완료", Toast.LENGTH_SHORT).show();
+                                            dialog.dismiss();
+                                        } else {
+                                            Toast.makeText(this, "비밀번호 변경 실패: " + updateTask.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                                        }
+                                    });
                         } else {
-                            Toast.makeText(this, "실패: " + task.getException(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(this, "현재 비밀번호가 일치하지 않습니다.", Toast.LENGTH_SHORT).show();
                         }
                     });
         });
