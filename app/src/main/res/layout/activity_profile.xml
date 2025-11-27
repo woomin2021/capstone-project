@@ -134,7 +134,8 @@
             android:orientation="horizontal"
             android:gravity="center_vertical"
             android:paddingVertical="20dp"
-            android:paddingHorizontal="16dp">
+            android:paddingHorizontal="16dp"
+            android:layout_marginBottom="12dp">
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -151,6 +152,45 @@
                 android:textSize="16.5sp" />
             <TextView
                 android:id="@+id/tvReserveCount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0개"
+                android:textStyle="bold"
+                android:fontFamily="@font/pretendardvariable"
+                android:textSize="18sp" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/chevron_right"/>
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:id="@+id/reservationRequest"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/profile_bg"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:paddingVertical="20dp"
+            android:paddingHorizontal="16dp">
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_option2"
+                android:layout_marginRight="8dp"/>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="요청 내역"
+                android:textStyle="bold"
+                android:fontFamily="@font/cafe24ssurroundotf"
+                android:textSize="16.5sp" />
+            <TextView
+                android:id="@+id/tvReserveRequestCount"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="0개"

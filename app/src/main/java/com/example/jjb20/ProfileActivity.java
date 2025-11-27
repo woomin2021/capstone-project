@@ -33,7 +33,7 @@ import retrofit2.Response;
 
 public class ProfileActivity extends AppCompatActivity {
 
-    private LinearLayout houseListBtn, reservationListBtn;
+    private LinearLayout houseListBtn, reservationListBtn, reservationRequestBtn;
     TextView name;
     private TextView tvHouseCount, tvReserveCount;
     Button profileEditbtn;
@@ -54,6 +54,7 @@ public class ProfileActivity extends AppCompatActivity {
         // 각종 버튼
         houseListBtn = findViewById(R.id.houseList);
         reservationListBtn = findViewById(R.id.reservationList);
+        reservationRequestBtn = findViewById(R.id.reservationRequest);
         profileEditbtn = findViewById(R.id.profileEditbtn);
         btnBack = findViewById(R.id.btnBack);
 
@@ -108,6 +109,13 @@ public class ProfileActivity extends AppCompatActivity {
 
         reservationListBtn.setOnClickListener(v -> {
             Intent intent = new Intent(getApplicationContext(), ProfileReservationListActivity.class);
+            startActivity(intent);
+        });
+
+        // TODO: Implement logic to show/hide this button based on whether the user is a host.
+        // E.g., if (PrefManager.getBoolean("isHost", false)) { reservationRequestBtn.setVisibility(View.VISIBLE); } else { reservationRequestBtn.setVisibility(View.GONE); }
+        reservationRequestBtn.setOnClickListener(v -> {
+            Intent intent = new Intent(getApplicationContext(), ProfileReservationRequestActivity.class);
             startActivity(intent);
         });
 

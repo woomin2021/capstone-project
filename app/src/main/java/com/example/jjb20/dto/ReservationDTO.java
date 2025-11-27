@@ -35,5 +35,8 @@ public class ReservationDTO implements Serializable {
     @SerializedName("updatedAt")
     public String updatedAt;
 
-    public boolean hasReview;
+    public String guestName;
+    public String guestProfileImageUrl;
+    public boolean hasGuestReview;
+    public boolean hasHouseReview;
 }

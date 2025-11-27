@@ -75,7 +75,7 @@ public class ProfileReservationListActivity extends AppCompatActivity {
             }
 
             // 2) 상태는 COMPLETED인데 이미 리뷰 있다면 막기
-            if (item.hasReview) {
+            if (item.hasHouseReview) {
                 Toast.makeText(ProfileReservationListActivity.this,
                         "이미 후기를 작성한 예약입니다.", Toast.LENGTH_SHORT).show();
                 return;
