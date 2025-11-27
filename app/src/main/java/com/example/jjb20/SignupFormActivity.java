@@ -294,13 +294,19 @@ public class SignupFormActivity extends AppCompatActivity {
             return;
         }
 
+        String email = safeText(etEmail);
+        if (TextUtils.isEmpty(email)) {
+            Toast.makeText(this, "사진을 업로드하려면 이메일을 먼저 입력해야 합니다.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         ProgressDialog pd = new ProgressDialog(this);
         pd.setTitle("Uploading...");
         pd.show();
 
-        String uid = PrefManager.get("uid", "unknown");
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss", Locale.KOREA);
-        String filename = uid + "_Profile_" + sdf.format(new Date());
+        String sanitizedEmail = email.replace("@", "_").replace(".", "_");
+        String filename = sanitizedEmail + "_profile_" + System.currentTimeMillis();
+
 
         storageReference = FirebaseStorage.getInstance()
                 .getReference("profile_image/" + filename);
