@@ -163,7 +163,7 @@
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:layout_marginTop="12dp"
-            android:backgroundTint="@android:color/white"
+            android:backgroundTint="@color/google_btn_bg"
             android:text="구글 로그인"
             android:textSize="16sp"
             android:textColor="@color/signup_text_333"
