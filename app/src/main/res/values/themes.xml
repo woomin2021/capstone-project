@@ -4,8 +4,6 @@
     <style name="Base.Theme.JJB20" parent="Theme.MaterialComponents.Light.NoActionBar">
         <!-- 전체 앱 공통 폰트 -->
 
-        npm install -g @google/gemini-cli
-
         <!-- 상태바 밝기: 밝은 배경 → 아이콘/글씨는 검정색 -->
         <item name="android:windowLightStatusBar">true</item>
 
