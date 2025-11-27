@@ -16,6 +16,7 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
+import androidx.appcompat.app.AlertDialog;
 
 import com.example.jjb20.dto.RegisterRequestDto;
 import com.example.jjb20.dto.UserResponseDto;
@@ -285,6 +286,7 @@ public class SignupFormActivity extends AppCompatActivity {
                 });
     }
 
+    private AlertDialog progressDialog;
     // -------------------------
     // 프로필 사진 업로드
     // -------------------------
@@ -300,9 +302,13 @@ public class SignupFormActivity extends AppCompatActivity {
             return;
         }
 
-        ProgressDialog pd = new ProgressDialog(this);
-        pd.setTitle("Uploading...");
-        pd.show();
+        // Show custom progress dialog
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setCancelable(false);
+        builder.setView(R.layout.dialog_progress);
+        progressDialog = builder.create();
+        progressDialog.show();
+
 
         String sanitizedEmail = email.replace("@", "_").replace(".", "_");
         String filename = sanitizedEmail + "_profile_" + System.currentTimeMillis();
@@ -314,13 +320,17 @@ public class SignupFormActivity extends AppCompatActivity {
         storageReference.putFile(selectedImageUri)
                 .continueWithTask(task -> storageReference.getDownloadUrl())
                 .addOnSuccessListener(uri -> {
+                    if (progressDialog != null && progressDialog.isShowing()) {
+                        progressDialog.dismiss();
+                    }
                     PrefManager.put("profile_image_url", uri.toString());
                     Toast.makeText(this, "사진 업로드 완료", Toast.LENGTH_SHORT).show();
-                    pd.dismiss();
                 })
                 .addOnFailureListener(e -> {
+                    if (progressDialog != null && progressDialog.isShowing()) {
+                        progressDialog.dismiss();
+                    }
                     Toast.makeText(this, "업로드 실패: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                    pd.dismiss();
                 });
     }
 
@@ -336,3 +346,4 @@ public class SignupFormActivity extends AppCompatActivity {
         );
     }
 }
+

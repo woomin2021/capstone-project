@@ -1,47 +1,60 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:orientation="vertical"
-              android:padding="24dp"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              >
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:padding="24dp"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
 
     <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="이메일 수정"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:layout_gravity="center_horizontal" />
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="이메일 수정"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:layout_gravity="center_horizontal"
+        android:textColor="#333333"
+        android:fontFamily="@font/cafe24ssurround_v2" />
 
-    <EditText
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+
+        <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/editEmailInput"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="새 이메일 입력"
             android:inputType="textEmailAddress"
-            android:layout_marginTop="16dp" />
+            android:textColor="@color/basic4"
+            android:textColorHint="@color/basic3" />
+    </com.google.android.material.textfield.TextInputLayout>
 
     <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="end"
+        android:layout_marginTop="20dp">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnCancelEmail"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="end"
-            android:layout_marginTop="20dp">
+            android:text="취소"
+            android:textColor="@color/basic4" />
 
-        <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/btnCancelEmail"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/edittext_border"
-                android:text="취소" />
-
-        <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/btnConfirmEmail"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="확인"
-                android:background="@color/mainColor1"
-                android:layout_marginStart="10dp" />
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnConfirmEmail"
+            style="@style/Widget.MaterialComponents.Button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="확인"
+            app:backgroundTint="@color/mainColor1"
+            android:textColor="@color/white"
+            android:layout_marginStart="10dp" />
     </LinearLayout>
 </LinearLayout>
