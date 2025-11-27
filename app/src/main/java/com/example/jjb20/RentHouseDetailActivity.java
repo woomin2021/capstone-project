@@ -353,12 +353,17 @@ public class RentHouseDetailActivity extends AppCompatActivity implements OnMapR
         if (divider2 != null) divider2.setVisibility(View.VISIBLE);
     }
 
-    //서버에서 상세 정보(호스트 이름/평점 /어매니티까지) 를 다시 받아오기
+    // 서버에서 상세 정보(호스트 이름/평점 /어매니티까지) 를 다시 받아오기
     private void loadHouseDetailFromServer(long houseId) {
         apiService.getHouseFullDetail(houseId).enqueue(new Callback<HouseDetailResponseDto>() {
             @Override
             public void onResponse(@NonNull Call<HouseDetailResponseDto> call,
-                                   @NonNull Response<HouseDetailResponseDto> response) {
+                                   @NonNull Response<HouseDetailResponseDto> response)
+
+            {
+
+                Log.d("RentDetail", "request url = " + response.raw().request().url());
+
                 if (!response.isSuccessful() || response.body() == null) {
                     Log.e("RentDetail", "detail fail: " + response.code());
                     return;
@@ -366,6 +371,12 @@ public class RentHouseDetailActivity extends AppCompatActivity implements OnMapR
 
                 HouseDetailResponseDto dto = response.body();
 
+                // 1) 서버에서 온 사진 리스트 확인
+                List<String> photos = dto.getPhotoUrls();
+                Log.d("RentDetail", "photoUrls size = " +
+                        (photos == null ? 0 : photos.size()));
+
+                // ---- 호스트 정보 ----
                 String hostName     = dto.getHostName();
                 Double ratingAvg    = dto.getHostRatingAvg();
                 Integer ratingCount = dto.getHostRatingCount();
@@ -377,18 +388,18 @@ public class RentHouseDetailActivity extends AppCompatActivity implements OnMapR
 
                 showHostSection(hostName, ratingAvg, ratingCount);
 
-                // 사진 여러장 받아오기
-                List<String> photos = dto.getPhotoUrls();   // 스프링에서 내려준 리스트
-
+                // ---- 이미지 슬라이더에 반영 ----
+                Log.d("RentDetail", "before clear imageUrls size = " + imageUrls.size());
                 imageUrls.clear();
                 if (photos != null && !photos.isEmpty()) {
                     imageUrls.addAll(photos);
                 } else if (house != null && house.coverPhotoUrl != null
                         && !house.coverPhotoUrl.isEmpty()) {
-                    // 혹시 서버에서 리스트 안 내려오면, 최소한 커버 하나는 보여주기
                     imageUrls.add(house.coverPhotoUrl);
                 }
+                Log.d("RentDetail", "after set imageUrls size = " + imageUrls.size());
                 imageAdapter.notifyDataSetChanged();
+
                 // ===== 어메니티 UI 채우기 =====
                 TextView tvAmenitiesLabel = findViewById(R.id.textAmenitiesLabel);
                 TextView tvAmenitiesValue = findViewById(R.id.textAmenitiesValue);
@@ -430,7 +441,6 @@ public class RentHouseDetailActivity extends AppCompatActivity implements OnMapR
             }
         });
     }
-
     // 인원 / 캘린더 / 지도
 
     private void updateGuestUi() {
