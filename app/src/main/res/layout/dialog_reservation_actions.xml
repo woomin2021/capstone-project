@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:padding="20dp"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <!-- 프로필 영역 -->
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical">
+
+        <ImageView
+            android:id="@+id/imgGuestProfile"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/profile_image"
+            android:layout_marginEnd="12dp" />
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
+
+            <TextView
+                android:id="@+id/txtGuestName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="게스트 이름"
+                android:textStyle="bold"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/txtDateRange"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="2025-01-01 ~ 2025-01-03"
+                android:textSize="13sp"
+                android:textColor="#666666" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- 구분선 -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="12dp"
+        android:background="#DDDDDD" />
+
+    <!-- 버튼 영역 -->
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="end">
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnReject"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/cafe24ssurround_v2"
+            android:background="@drawable/rounded_button_green"
+            android:textColor="@color/white"
+            android:text="거절" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnApprove"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="승인"
+            android:fontFamily="@font/cafe24ssurround_v2"
+            android:background="@drawable/rounded_button_green"
+            android:textColor="@color/white"
+            android:layout_marginStart="8dp" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnChat"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="채팅"
+            android:textColor="@color/white"
+            android:fontFamily="@font/cafe24ssurround_v2"
+            android:background="@drawable/rounded_button_green"
+
+            android:layout_marginStart="8dp" />
+    </LinearLayout>
+
+</LinearLayout>
