@@ -79,7 +79,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:text="결제 수단을 선택하고 결제를 진행하세요."
+        android:text="결제 수단을 주의사항을 보고 넘어가세요."
         android:fontFamily="@font/cafe24ssurround_v2"
 
         android:textStyle="bold"
@@ -90,41 +90,80 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <!-- 결제 버튼 3종 -->
+    <!-- 결제 버튼과 주의사항 -->
     <LinearLayout
         android:id="@+id/paymentButtonsLayout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:layout_marginTop="175dp"
         android:padding="8dp"
         app:layout_constraintTop_toBottomOf="@id/textPaymentInfo"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
-        <!-- 1. 토스페이 결제하기 -->
-        <com.google.android.material.checkbox.MaterialCheckBox
+        <!-- 현장 결제 안내 제목 -->
+        <TextView
+            android:id="@+id/tvOnsitePaymentTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="토스페이"
-            android:textSize="16sp"
-            android:checked="false"
+            android:text="현장 결제 안내"
+            android:textSize="17sp"
+            android:textStyle="bold"
+            android:textColor="#2C2C2C"
             android:fontFamily="@font/cafe24ssurround_v2"
-            app:buttonTint="@color/teal_00cba8"
-            android:drawablePadding="16dp"/>
+            android:paddingVertical="8dp"/>
 
-        <!-- 2. 일반 결제하기 -->
-        <com.google.android.material.checkbox.MaterialCheckBox
+        <!-- 현장 결제 주의사항 박스 -->
+        <LinearLayout
+            android:id="@+id/layoutOnsiteWarning"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="현장결제"
-            android:textSize="16sp"
-            android:checked="false"
-            android:fontFamily="@font/cafe24ssurround_v2"
-            app:buttonTint="@color/teal_00cba8"
-            android:drawablePadding="16dp"/>
+            android:orientation="vertical"
 
+            android:padding="14dp">
 
+            <TextView
+                android:id="@+id/tvWarning1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="• 현장 결제는 사전에 호스트와 반드시 결제 방법을 확인해주세요."
+                android:textSize="15sp"
+                android:textColor="#555555"
+                android:fontFamily="@font/cafe24ssurround_v2"
+                android:lineSpacingExtra="4dp"/>
+
+            <TextView
+                android:id="@+id/tvWarning2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="• 계좌이체 또는 현금 결제 시 영수증 요청이 불가능해요."
+                android:textSize="15sp"
+                android:textColor="#555555"
+                android:fontFamily="@font/cafe24ssurround_v2"
+                android:layout_marginTop="6dp"
+                android:lineSpacingExtra="4dp"/>
+
+            <TextView
+                android:id="@+id/tvWarning3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="• 사기거래 방지를 위해 결제 완료 전 송금하지 않도록 주의해주세요."
+                android:textSize="15sp"
+                android:textColor="#D9534F"
+                android:fontFamily="@font/cafe24ssurround_v2"
+                android:layout_marginTop="6dp"
+                android:lineSpacingExtra="4dp"/>
+
+            <TextView
+                android:id="@+id/tvWarning4"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="• 결제 완료 후 호스트의 채팅을 기다려 주세요."
+                android:textSize="15sp"
+                android:fontFamily="@font/cafe24ssurround_v2"
+                android:layout_marginTop="6dp"
+                android:lineSpacingExtra="4dp"/>
+        </LinearLayout>
 
     </LinearLayout>
 

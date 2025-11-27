@@ -117,8 +117,7 @@ dependencies {
     // coreLibraryDesugaring
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.4")
 
-    // 토스 결제위젯 SDK (GitHub 버전)
-    implementation("com.github.tosspayments:payment-sdk-android:0.1.21")
+
 
     //이미지 둥글게
 

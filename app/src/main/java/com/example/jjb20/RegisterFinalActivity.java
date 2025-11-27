@@ -43,7 +43,7 @@ public class RegisterFinalActivity extends AppCompatActivity {
 
     // 뷰 변수 선언
     private MaterialToolbar toolbar;
-    private ProgressBar progressBar;
+
     private TextView subtitleText;
     private MaterialButton registerButton;
     private MaterialCardView addPhotoButton;
@@ -68,6 +68,11 @@ public class RegisterFinalActivity extends AppCompatActivity {
 
     // 갤러리에서 이미지를 선택하기 위한 최신 방식 (ActivityResultLauncher)
     private ActivityResultLauncher<PickVisualMediaRequest> pickMedia;
+
+
+
+    //
+    private ProgressBar progressBarStep;
 
     private void uploadImageToFirebase() {
         if (selectedImageUri == null) {
@@ -210,13 +215,14 @@ public class RegisterFinalActivity extends AppCompatActivity {
 
     private void initViews() {
         toolbar = findViewById(R.id.toolbar);
-        progressBar = findViewById(R.id.progressBar);
+        progressBarStep = findViewById(R.id.progressBarStep);
         subtitleText = findViewById(R.id.subtitle_text);
         registerButton = findViewById(R.id.register_button);
         addPhotoButton = findViewById(R.id.add_photo_button);
         priceEditText = findViewById(R.id.price_edit_text);
         photoCounterText = findViewById(R.id.photoCounterText);
-
+        progressBarStep.setMax(6);
+        progressBarStep.setProgress(6);
         if (isEditMode) {
             registerButton.setText("완료");
             toolbar.setTitle("집 정보 수정");
@@ -238,6 +244,7 @@ public class RegisterFinalActivity extends AppCompatActivity {
                 photoCounterText.setText("1/5");
             }
         }
+
     }
 
     private void setupListeners() {

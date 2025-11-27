@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFFFFF">
+    android:background="#FFFFFF"
+    android:paddingTop="16dp">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -12,22 +13,20 @@
         android:padding="10dp"
         android:gravity="top|center_horizontal">
 
-        <!-- 텍스트 로고  -->
         <TextView
             android:id="@+id/logoText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="8dp"
             android:layout_gravity="start"
             android:gravity="start"
-            android:includeFontPadding="false"
-            android:text="집잠빌"
-            android:textColor="#333333"
-            android:textSize="13sp"
+            android:includeFontPadding="true"
+            android:text="집잡빌"
+            android:textColor="#000000"
+            android:textSize="20sp"
             android:textStyle="bold"
-            android:fontFamily="@font/cafe24ssurround_v2" />
+            android:fontFamily="@font/cafe24ssurroundotf" />
 
-        <!-- 상단 로고 이미지 -->
         <ImageView
             android:id="@+id/mainImage"
             android:layout_width="280dp"
@@ -39,14 +38,12 @@
             android:scaleType="fitCenter"
             android:src="@drawable/main_1" />
 
-        <!-- 타이틀 -->
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:layout_marginTop="20dp">
 
-            <!-- 집 잠 -->
             <TextView
                 android:id="@+id/title1_part1"
                 android:layout_width="wrap_content"
@@ -56,9 +53,8 @@
                 android:textStyle="bold"
                 android:textSize="28sp"
                 android:fontFamily="@font/cafe24ssurround_v2"
-                android:includeFontPadding="false"/>
+                android:includeFontPadding="false" />
 
-            <!-- 시 → 일반 색 -->
             <TextView
                 android:id="@+id/title1_part2"
                 android:layout_width="wrap_content"
@@ -68,10 +64,9 @@
                 android:textStyle="bold"
                 android:textSize="28sp"
                 android:fontFamily="@font/cafe24ssurround_v2"
-                android:includeFontPadding="false"/>
+                android:includeFontPadding="false" />
         </LinearLayout>
 
-        <!-- 빌려드립니다 -->
         <LinearLayout
             android:id="@+id/title2_row"
             android:layout_width="wrap_content"
@@ -89,7 +84,7 @@
                 android:textStyle="bold"
                 android:textSize="28sp"
                 android:fontFamily="@font/cafe24ssurround_v2"
-                android:includeFontPadding="false"/>
+                android:includeFontPadding="false" />
 
             <TextView
                 android:id="@+id/title2_part2"
@@ -100,10 +95,9 @@
                 android:textStyle="bold"
                 android:textSize="28sp"
                 android:fontFamily="@font/cafe24ssurround_v2"
-                android:includeFontPadding="false"/>
+                android:includeFontPadding="false" />
         </LinearLayout>
 
-        <!-- 이메일 -->
         <EditText
             android:id="@+id/etUserID"
             android:layout_width="match_parent"
@@ -119,10 +113,8 @@
             android:paddingVertical="10dp"
             android:gravity="center_vertical"
             android:background="@drawable/rounded_edittext_strong"
-
             android:drawablePadding="12dp" />
 
-        <!-- 비밀번호 -->
         <EditText
             android:id="@+id/etPassword"
             android:layout_width="match_parent"
@@ -140,7 +132,6 @@
             android:fontFamily="@font/cafe24ssurround_v2"
             android:drawablePadding="12dp" />
 
-        <!-- 로그인 버튼  -->
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnLogin"
             android:layout_width="match_parent"
@@ -152,7 +143,6 @@
             app:cornerRadius="28dp"
             app:backgroundTint="@color/teal_00cba8" />
 
-        <!-- 회원가입 버튼  -->
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnSignup"
             android:layout_width="match_parent"
@@ -167,7 +157,6 @@
             app:backgroundTint="@color/signup_bg_f3f7f7"
             app:strokeColor="@color/signup_stroke"
             app:strokeWidth="1dp" />
-
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnGoogleLogin"
@@ -188,15 +177,11 @@
             app:iconTint="@null"
             app:iconSize="33dp"
             android:paddingStart="0dp"
-            android:paddingEnd="16dp"/>
+            android:paddingEnd="16dp" />
 
-
-
-
-
-        <!-- 하단 여백 -->
         <Space
             android:layout_width="match_parent"
             android:layout_height="31dp" />
+
     </LinearLayout>
 </ScrollView>

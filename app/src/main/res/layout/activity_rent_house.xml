@@ -28,7 +28,8 @@
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center_vertical">
+                android:gravity="center_vertical"
+                android:layout_marginTop="12dp">
 
                 <TextView
                     android:text="집잡빌"
@@ -82,9 +83,13 @@
 
                 <ImageView
                     android:id="@+id/searchButton"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:src="@drawable/ic_search" />
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_search"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:padding="3dp"
+                    android:clickable="true"
+                    android:focusable="true" />
             </LinearLayout>
 
             <TextView
@@ -115,7 +120,7 @@
                 android:gravity="center_vertical"
                 android:layout_marginTop="20dp">
 
-                <!-- 왼쪽: 모든 숙소 (그냥 기본 전체 보여주는 역할) -->
+                <!-- 왼쪽: 모든 숙소 -->
                 <TextView
                     android:id="@+id/tvAllHouses"
                     android:layout_width="0dp"
@@ -123,22 +128,46 @@
                     android:layout_weight="1"
                     android:gravity="start"
                     android:text="모든 숙소"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:background="?attr/selectableItemBackgroundBorderless"
                     android:textColor="#E91E63"
                     android:textSize="16sp"
                     android:textStyle="bold"
                     android:fontFamily="@font/cafe24ssurroundotf" />
 
-                <!-- 오른쪽: 근처 추천 숙소 (필터 버튼) -->
-                <TextView
-                    android:id="@+id/tvNearbyHouses"
+                <!-- 오른쪽: 근처 추천 숙소 (아이콘 + 텍스트) -->
+                <LinearLayout
+                    android:id="@+id/layoutNearby"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="근처 추천 숙소"
-                    android:textColor="#555555"
-                    android:textSize="14sp"
-                    android:fontFamily="@font/cafe24ssurroundotf" />
-            </LinearLayout>
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
 
+                    <ImageView
+                        android:id="@+id/iconNearby"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:src="@drawable/outline_add_location_24"
+                        app:tint="#555555"
+                        android:layout_marginEnd="6dp" />
+
+                    <TextView
+                        android:id="@+id/tvNearbyHouses"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="근처 추천 숙소"
+                        android:textColor="#555555"
+                        android:textSize="14sp"
+                        android:fontFamily="@font/cafe24ssurroundotf"
+
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        />
+                </LinearLayout>
+
+            </LinearLayout>
 
             <!-- 전체 숙소 그리드 -->
             <androidx.recyclerview.widget.RecyclerView
