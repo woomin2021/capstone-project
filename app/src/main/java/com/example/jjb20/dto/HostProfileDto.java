@@ -28,6 +28,9 @@ public class HostProfileDto {
     @SerializedName("profileImageUrl")
     public String profileImageUrl;
 
+    @SerializedName("receivedRequestCount")
+    public long receivedRequestCount;
+
     public HostProfileDto(String realName, String businessNo, String hostingPolicy) {
         this.realName = realName;
         this.businessNo = businessNo;

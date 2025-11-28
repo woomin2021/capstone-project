@@ -32,7 +32,7 @@ public class ProfileActivity extends AppCompatActivity {
 
     private LinearLayout houseListBtn, reservationListBtn, reservationRequestBtn;
     TextView name;
-    private TextView tvHouseCount, tvReserveCount;
+    private TextView tvHouseCount, tvReserveCount, tvReserveReqeustCount;
     Button profileEditbtn;
     Button logoutBtn;
     ImageView btnBack;
@@ -62,6 +62,7 @@ public class ProfileActivity extends AppCompatActivity {
 
         tvHouseCount = findViewById(R.id.tvHouseCount);
         tvReserveCount = findViewById(R.id.tvReserveCount);
+        tvReserveReqeustCount = findViewById(R.id.tvReserveRequestCount);
 
         // Find new views
         userTemperature = findViewById(R.id.user_temperature);
@@ -84,8 +85,13 @@ public class ProfileActivity extends AppCompatActivity {
 
                     String fullHouseCount = String.valueOf(dto.getHouseCount()) + "개";
                     String fullReserveCount = String.valueOf(dto.getReservationCount()) + "개";
+
+                    long receivedRequestCount = dto.getReceivedRequestCount();
+                    String requestText = String.format(Locale.getDefault(), "%,d건", receivedRequestCount);
+
                     tvHouseCount.setText(fullHouseCount);
                     tvReserveCount.setText(fullReserveCount);
+                    tvReserveReqeustCount.setText(requestText);
 
                 } else {
                     Toast.makeText(ProfileActivity.this, "요약 정보 불러오기 실패", Toast.LENGTH_SHORT).show();
