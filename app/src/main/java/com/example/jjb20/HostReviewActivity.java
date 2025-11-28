@@ -14,6 +14,7 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.jjb20.adapter.ReviewAdapter;
 import com.example.jjb20.chat.ChatMsgFragment;
 import com.example.jjb20.dto.HostProfileDto;
@@ -32,6 +33,7 @@ public class HostReviewActivity extends AppCompatActivity {
     private AppCompatButton chatBtn;
     private TextView tempTextView, hostName, rating;   // 온도 표시용
     private TextView tvReviewCountTop, tvReviewCountSection;
+    private ImageView profileImageView;
 
     private long hostId;             // 이 화면에 들어온 호스트의 id
     private long myUserId;
@@ -54,6 +56,7 @@ public class HostReviewActivity extends AppCompatActivity {
         rating       = findViewById(R.id.rating);
         tvReviewCountTop = findViewById(R.id.review_count1);
         tvReviewCountSection = findViewById(R.id.review_count2);
+        profileImageView = findViewById(R.id.profile_img);
 
         hostId = getIntent().getLongExtra("hostId", -1L);
         myUserId = PrefManager.getInt("userId", -1);
@@ -130,6 +133,13 @@ public class HostReviewActivity extends AppCompatActivity {
 
                         if (response.isSuccessful() && response.body() != null) {
                             HostProfileDto body = response.body();
+
+                            // 프로필 이미지
+                            if (body.profileImageUrl != null && !body.profileImageUrl.isEmpty()) {
+                                Glide.with(HostReviewActivity.this)
+                                        .load(body.profileImageUrl)
+                                        .into(profileImageView);
+                            }
 
                             // 온도
                             String temp = String.format(

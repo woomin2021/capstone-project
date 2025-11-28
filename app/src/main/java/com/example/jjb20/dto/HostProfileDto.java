@@ -25,6 +25,9 @@ public class HostProfileDto {
     @SerializedName("temperature")
     public double temperature;   // 온도 추가
 
+    @SerializedName("profileImageUrl")
+    public String profileImageUrl;
+
     public HostProfileDto(String realName, String businessNo, String hostingPolicy) {
         this.realName = realName;
         this.businessNo = businessNo;
