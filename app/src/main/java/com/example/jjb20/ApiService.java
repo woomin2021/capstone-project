@@ -129,9 +129,16 @@ public interface ApiService {
     @POST("api/reviews/houses")
     Call<Object> createHouseReview(@Body ReviewRequestDto dto);
 
-    //예약 생성
+    //예약생성
     @POST("/api/reservations")
-    Call<ReservationDTO> createReservation(@Body ReservationCreateRequestDto req);
+    Call<ReservationDTO> createReservation(
+            @Header("Authorization") String bearerToken,
+            @Body ReservationCreateRequestDto req
+    );
+
+    // 예약된 날짜 리스트 (yyyy-MM-dd 문자열 목록)
+    @GET("/api/reservations/house/{houseId}/booked-dates")
+    Call<List<String>> getHouseBookedDates(@Path("houseId") long houseId);
 
     // 어메니티 포함 전체 상세
     @GET("api/houses/{id}/full-detail")

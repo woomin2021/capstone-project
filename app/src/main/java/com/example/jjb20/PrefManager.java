@@ -126,6 +126,8 @@ public class PrefManager {
         editor.apply();
     }
 
+
+
     // 집 등록 관련 데이터 삭제
     public static void clearHouseRegistrationData() {
         remove("house_title");
@@ -143,5 +145,17 @@ public class PrefManager {
         remove("house_image_url");
         remove("house_image_urls");
         remove("houseId");  // houseId도 함께 정리
+    }
+    // String 전용 저장 (편의 메서드)
+    public static void putString(String key, String value) {
+        if (editor == null) return;  // 혹시 init() 안됐을 때 방어
+        editor.putString(key, value);
+        editor.apply();
+    }
+
+    // String 전용 불러오기 (편의 메서드)
+    public static String getString(String key) {
+        if (sharedPreferences == null) return null;
+        return sharedPreferences.getString(key, null);
     }
 }
