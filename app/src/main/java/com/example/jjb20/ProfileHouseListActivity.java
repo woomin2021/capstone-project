@@ -1,5 +1,6 @@
 package com.example.jjb20;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -87,6 +88,7 @@ public class ProfileHouseListActivity extends AppCompatActivity {
         Log.d(TAG, " 서버에 요청 시작: GET /api/houses/my/" + myUserId);
 
         apiService.getMyHouses(myUserId).enqueue(new Callback<List<HouseDto>>() {
+            @SuppressLint("NotifyDataSetChanged")
             @Override
             public void onResponse(Call<List<HouseDto>> call, Response<List<HouseDto>> response) {
 
