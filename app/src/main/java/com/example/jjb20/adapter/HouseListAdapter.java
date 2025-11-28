@@ -58,6 +58,7 @@ public class HouseListAdapter extends RecyclerView.Adapter<HouseListAdapter.Hous
         holder.txtTitle.setText(item.title);
         holder.txtAddress.setText(item.addressLine1);
         holder.txtPrice.setText(item.pricePerNight + " / 박");
+        Glide.with(context).load(item.coverPhotoUrl).into(holder.imgHouse);
 
 
         if (listener != null) {

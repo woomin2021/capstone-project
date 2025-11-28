@@ -1,7 +1,9 @@
 package com.example.jjb20;
 
+import android.media.Image;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -16,6 +18,7 @@ import com.example.jjb20.adapter.ReviewAdapter;
 import com.example.jjb20.chat.ChatMsgFragment;
 import com.example.jjb20.dto.HostProfileDto;
 import com.example.jjb20.dto.HouseReviewDTO;
+import com.google.android.material.appbar.MaterialToolbar;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,6 +48,7 @@ public class HostReviewActivity extends AppCompatActivity {
 
         chatBtn = findViewById(R.id.chatBtn);
 
+
         tempTextView = findViewById(R.id.host_temperature);
         hostName     = findViewById(R.id.user_name);
         rating       = findViewById(R.id.rating);
@@ -68,6 +72,9 @@ public class HostReviewActivity extends AppCompatActivity {
         loadHostReviews();
 
         chatBtn.setOnClickListener(v -> openChatFragment());
+        // 툴바
+        MaterialToolbar toolbar = findViewById(R.id.toolbar);
+        if (toolbar != null) toolbar.setNavigationOnClickListener(v -> finish());
     }
 
     private void openChatFragment() {
