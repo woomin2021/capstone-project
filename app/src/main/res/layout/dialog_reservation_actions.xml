@@ -31,11 +31,13 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="게스트 이름"
+                android:fontFamily="@font/cafe24ssurround_v2"
                 android:textStyle="bold"
                 android:textSize="16sp" />
 
             <TextView
                 android:id="@+id/txtDateRange"
+                android:fontFamily="@font/cafe24slim_light"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="2025-01-01 ~ 2025-01-03"
@@ -64,7 +66,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/cafe24ssurround_v2"
-            android:background="@drawable/rounded_button_green"
+            android:background="@drawable/btn_mainbtn2"
             android:textColor="@color/white"
             android:text="거절" />
 
@@ -74,7 +76,7 @@
             android:layout_height="wrap_content"
             android:text="승인"
             android:fontFamily="@font/cafe24ssurround_v2"
-            android:background="@drawable/rounded_button_green"
+            android:background="@drawable/btn_mainbtn"
             android:textColor="@color/white"
             android:layout_marginStart="8dp" />
 
@@ -85,7 +87,7 @@
             android:text="채팅"
             android:textColor="@color/white"
             android:fontFamily="@font/cafe24ssurround_v2"
-            android:background="@drawable/rounded_button_green"
+            android:background="@drawable/btn_mainbtn"
 
             android:layout_marginStart="8dp" />
     </LinearLayout>
