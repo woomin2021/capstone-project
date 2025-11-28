@@ -57,7 +57,7 @@
                 android:textSize="14sp"
                 android:textColor="@color/white"
                 android:fontFamily="@font/cafe24ssurround_v2"
-                android:background="@drawable/rounded_button_green"
+                android:background="@drawable/btn_mainbtn"
                 android:paddingVertical="10dp"
                 android:layout_marginEnd="8dp"/>
 
@@ -70,7 +70,7 @@
                 android:textSize="14sp"
                 android:textColor="@color/white"
                 android:fontFamily="@font/cafe24ssurround_v2"
-                android:background="@drawable/rounded_button_green"
+                android:background="@drawable/btn_mainbtn"
                 android:paddingVertical="10dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginEnd="8dp"/>
@@ -84,7 +84,7 @@
                 android:textSize="14sp"
                 android:textColor="@color/white"
                 android:fontFamily="@font/cafe24ssurround_v2"
-                android:background="@drawable/rounded_button_green"
+                android:background="@drawable/btn_mainbtn"
                 android:paddingVertical="10dp"
                 android:layout_marginStart="8dp"/>
         </LinearLayout>
