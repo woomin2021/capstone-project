@@ -43,10 +43,10 @@ public class ProfileHouseListActivity extends AppCompatActivity {
         adapter = new HouseListAdapter(this, houseList, new HouseListAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(HouseDto item) {
-                // TODO: 집 정보 상세 화면이 완성되면 아래 Intent를 연결합니다.
-//                Intent intent = new Intent(ProfileHouseListActivity.this, HouseDetailActivity.class);
-//                intent.putExtra("houseId", item.id);
-//                startActivity(intent);
+                // 집 정보 상세 화면으로 이동
+                Intent intent = new Intent(ProfileHouseListActivity.this, RentHouseDetailActivity.class);
+                intent.putExtra(RentHouseDetailActivity.EXTRA_HOUSE, item);
+                startActivity(intent);
             }
 
             @Override

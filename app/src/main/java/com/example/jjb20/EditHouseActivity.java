@@ -168,7 +168,9 @@ public class EditHouseActivity extends AppCompatActivity {
 
                 houseTitle = detail.getTitle();
                 houseAddress = detail.getAddressLine1();
+                houseAddressDetail = detail.getAddressLine2();
                 houseDescription = detail.getDescription();
+                houseSummary = detail.getShortDescription();
                 housePrice = detail.getPricePerNight();
                 houseCoverPhoto = detail.getCoverPhotoUrl();
                 houseStartDay = detail.getStartDay();
@@ -186,7 +188,7 @@ public class EditHouseActivity extends AppCompatActivity {
 
     private void updateDisplayTexts() {
         setTextOrDash(tvCurrentTitle, houseTitle);
-        setTextOrDash(tvCurrentAddress, houseAddress);
+        setTextOrDash(tvCurrentAddress, buildAddressDisplay());
         setTextOrDash(tvCurrentDescription, houseDescription);
         tvCurrentPeriod.setText(formatPeriodText());
         tvCurrentPrice.setText(formatPriceText());
@@ -195,6 +197,16 @@ public class EditHouseActivity extends AppCompatActivity {
     private void setTextOrDash(TextView view, String value) {
         if (view == null) return;
         view.setText(!TextUtils.isEmpty(value) ? value : "-");
+    }
+
+    private String buildAddressDisplay() {
+        if (TextUtils.isEmpty(houseAddressDetail)) {
+            return houseAddress;
+        }
+        if (TextUtils.isEmpty(houseAddress)) {
+            return houseAddressDetail;
+        }
+        return houseAddress + " " + houseAddressDetail;
     }
 
     private String formatPeriodText() {

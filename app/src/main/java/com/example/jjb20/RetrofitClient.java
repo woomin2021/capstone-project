@@ -1,5 +1,8 @@
 package com.example.jjb20;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -39,9 +42,17 @@ public class RetrofitClient {
                     })
                     .build();
 
+            // Gson 설정: 순환 참조 및 알 수 없는 필드 처리
+            // Gson은 기본적으로 알 수 없는 필드를 자동으로 무시하므로,
+            // DTO에 정의되지 않은 필드(photos, amenities 등)는 자동으로 스킵됩니다.
+            Gson gson = new GsonBuilder()
+                    .setLenient()  // JSON 파싱을 더 관대하게 처리
+                    .serializeNulls()  // null 값도 직렬화
+                    .create();
+
             retrofit = new Retrofit.Builder()
                     .baseUrl(BASE_URL)
-                    .addConverterFactory(GsonConverterFactory.create())
+                    .addConverterFactory(GsonConverterFactory.create(gson))
                     .client(client)
                     .build();
         }

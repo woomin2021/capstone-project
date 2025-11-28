@@ -3,10 +3,13 @@ package com.example.jjb20;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
+import android.location.Address;
+import android.location.Geocoder;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -19,6 +22,10 @@ import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
+
+import java.io.IOException;
+import java.util.List;
+import java.util.Locale;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -51,6 +58,8 @@ public class RegisterDetailsActivity extends AppCompatActivity {
     private String currentSummary;
     private String currentCity;
     private String currentCountry;
+    private Double selectedLatitude;
+    private Double selectedLongitude;
     private ApiService apiService;
 
     // 모든 EditText의 변경을 감지할 공용 TextWatcher
@@ -107,6 +116,7 @@ public class RegisterDetailsActivity extends AppCompatActivity {
                             if (addressDetailEditText != null) {
                                 addressDetailEditText.requestFocus();
                             }
+                            resolveAddressCoordinates(address);
                         }
                     }
                 }
@@ -172,6 +182,7 @@ public class RegisterDetailsActivity extends AppCompatActivity {
                 String address = (addressEditText != null) ? addressEditText.getText().toString().trim() : "";
                 String addressDetail = (addressDetailEditText != null) ? addressDetailEditText.getText().toString().trim() : "";
                 String description = (descriptionEditText != null) ? descriptionEditText.getText().toString().trim() : "";
+                String summary = (summaryEditText != null) ? summaryEditText.getText().toString().trim() : "";
                 
                 // 주소와 상세 주소를 합쳐서 저장
                 String fullAddress = address;
@@ -180,11 +191,25 @@ public class RegisterDetailsActivity extends AppCompatActivity {
                 }
                 
                 if (isEditMode) {
-                    submitEdit(fullAddress, description);
+                    submitEdit(address, addressDetail, description, summary);
                 } else {
                     // SharedPreferences에 저장
                     PrefManager.put("house_address", fullAddress);
                     PrefManager.put("house_description", description);
+                    PrefManager.put("house_summary", summary);
+                    PrefManager.put("house_address_line1", address);
+                    if (!TextUtils.isEmpty(addressDetail)) {
+                        PrefManager.put("house_address_line2", addressDetail);
+                    } else {
+                        PrefManager.remove("house_address_line2");
+                    }
+                    if (selectedLatitude != null && selectedLongitude != null) {
+                        PrefManager.put("house_latitude", String.valueOf(selectedLatitude));
+                        PrefManager.put("house_longitude", String.valueOf(selectedLongitude));
+                    } else {
+                        PrefManager.remove("house_latitude");
+                        PrefManager.remove("house_longitude");
+                    }
                     // city와 country는 일단 기본값으로 설정 (나중에 주소에서 파싱하거나 별도 입력 가능)
                     PrefManager.put("house_city", "서울");
                     PrefManager.put("house_country", "한국");
@@ -228,6 +253,7 @@ public class RegisterDetailsActivity extends AppCompatActivity {
                     if(result.getData()!=null){
                         String data=result.getData().getStringExtra("address");
                         addressEditText.setText(data);
+                        resolveAddressCoordinates(data);
                     }
                 }
             }
@@ -248,7 +274,7 @@ public class RegisterDetailsActivity extends AppCompatActivity {
             if ("address".equalsIgnoreCase(editTarget)) {
                 allFieldsFilled = !address.isEmpty() && !detail.isEmpty();
             } else if ("description".equalsIgnoreCase(editTarget)) {
-                allFieldsFilled = !description.isEmpty();
+                allFieldsFilled = !description.isEmpty() && !summary.isEmpty();
             } else {
                 allFieldsFilled = !address.isEmpty() && !detail.isEmpty() && !description.isEmpty();
             }
@@ -275,7 +301,7 @@ public class RegisterDetailsActivity extends AppCompatActivity {
         }
     }
 
-    private void submitEdit(String fullAddress, String description) {
+    private void submitEdit(String addressLine1, String addressLine2, String description, String summary) {
         nextButton.setEnabled(false);
         nextButton.setText("저장 중...");
 
@@ -284,13 +310,15 @@ public class RegisterDetailsActivity extends AppCompatActivity {
         boolean wantsDescriptionUpdate = "description".equalsIgnoreCase(editTarget) || TextUtils.isEmpty(editTarget);
 
         if (wantsAddressUpdate) {
-            dto.setAddressLine1(fullAddress);
+            dto.setAddressLine1(addressLine1);
+            dto.setAddressLine2(!TextUtils.isEmpty(addressLine2) ? addressLine2 : "");
             dto.setCity(!TextUtils.isEmpty(currentCity) ? currentCity : "서울");
             dto.setCountry(!TextUtils.isEmpty(currentCountry) ? currentCountry : "한국");
         }
 
         if (wantsDescriptionUpdate) {
             dto.setDescription(description);
+            dto.setShortDescription(summary);
         }
 
         apiService.updateHouseBasicInfo(houseId, dto).enqueue(new Callback<Void>() {
@@ -318,5 +346,32 @@ public class RegisterDetailsActivity extends AppCompatActivity {
     private void restoreButtonState() {
         nextButton.setEnabled(true);
         nextButton.setText(isEditMode ? "완료" : "다음");
+    }
+
+    private void resolveAddressCoordinates(String address) {
+        if (TextUtils.isEmpty(address)) {
+            selectedLatitude = null;
+            selectedLongitude = null;
+            return;
+        }
+
+        Geocoder geocoder = new Geocoder(this, Locale.getDefault());
+        try {
+            List<Address> results = geocoder.getFromLocationName(address, 1);
+            if (results != null && !results.isEmpty()) {
+                Address resolved = results.get(0);
+                selectedLatitude = resolved.getLatitude();
+                selectedLongitude = resolved.getLongitude();
+                Log.d("RegisterDetails", "Resolved coords lat=" + selectedLatitude + ", lng=" + selectedLongitude);
+            } else {
+                selectedLatitude = null;
+                selectedLongitude = null;
+                Log.w("RegisterDetails", "No coordinates found for address: " + address);
+            }
+        } catch (IOException e) {
+            selectedLatitude = null;
+            selectedLongitude = null;
+            Log.e("RegisterDetails", "Failed to resolve coordinates", e);
+        }
     }
 }

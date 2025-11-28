@@ -4,6 +4,7 @@ import com.example.jjb20.dto.FirebaseLoginRequestDto;
 import com.example.jjb20.dto.HouseAmenitiesCreateRequestDto;
 import com.example.jjb20.dto.HouseDetailResponseDto;
 import com.example.jjb20.dto.HouseDto;
+import com.example.jjb20.dto.HousePhotoDto;
 import com.example.jjb20.dto.HouseUpdateRequestDto;
 import com.example.jjb20.dto.HousesCreateRequestDto;
 import com.example.jjb20.dto.HousesResponseDto;
@@ -19,6 +20,7 @@ import java.util.Objects;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
+import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.POST;
@@ -79,6 +81,14 @@ public interface ApiService {
     Call<HouseDetailResponseDto> getHouseDetail(
             @Path("id") long id
     );
+
+    @GET("api/houses/{id}/photos")
+    Call<List<HousePhotoDto>> getHousePhotos(@Path("id") long id);
+
+    // 사진 삭제
+    @DELETE("api/houses/photos/{photoId}")
+    Call<Void> deleteHousePhoto(@Header("Authorization") String bearerToken,
+                                @Path("photoId") long photoId);
 
     //리뷰 업로드
     @POST("api/reviews/houses")

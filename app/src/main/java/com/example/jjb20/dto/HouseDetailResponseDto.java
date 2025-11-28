@@ -13,8 +13,14 @@ public class HouseDetailResponseDto {
     @SerializedName("description")
     private String description;
 
+    @SerializedName("shortDescription")
+    private String shortDescription;
+
     @SerializedName("addressLine1")
     private String addressLine1;
+
+    @SerializedName("addressLine2")
+    private String addressLine2;
 
     @SerializedName("city")
     private String city;
@@ -66,7 +72,11 @@ public class HouseDetailResponseDto {
 
     public String getDescription() { return description; }
 
+    public String getShortDescription() { return shortDescription; }
+
     public String getAddressLine1() { return addressLine1; }
+
+    public String getAddressLine2() { return addressLine2; }
 
     public String getCity() { return city; }
 
