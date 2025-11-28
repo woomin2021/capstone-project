@@ -5,28 +5,25 @@ import android.os.Bundle;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import com.bumptech.glide.Glide;
 import com.example.jjb20.dto.MyPageSummaryDto;
-import com.example.jjb20.dto.ProfileStatsResponseDto;
+import com.example.jjb20.dto.UserProfileDto; // Import the new DTO
 import com.google.firebase.Firebase;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-import de.hdodenhof.circleimageview.CircleImageView;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-
-import com.example.jjb20.dto.HouseDto;
-
 import java.util.List;
+import java.util.Locale; // Import Locale
 
+import de.hdodenhof.circleimageview.CircleImageView;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -44,6 +41,11 @@ public class ProfileActivity extends AppCompatActivity {
     ApiService apiService;
     private MyPageSummaryDto myPageSummaryDto;
 
+    // New UI elements for user profile stats
+    private TextView userTemperature;
+    private RatingBar guestRatingBar;
+    private TextView guestRatingText;
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,6 +62,12 @@ public class ProfileActivity extends AppCompatActivity {
 
         tvHouseCount = findViewById(R.id.tvHouseCount);
         tvReserveCount = findViewById(R.id.tvReserveCount);
+
+        // Find new views
+        userTemperature = findViewById(R.id.user_temperature);
+        guestRatingBar = findViewById(R.id.guest_rating_bar);
+        guestRatingText = findViewById(R.id.guest_rating_text);
+
 
         int myUserId = PrefManager.getInt("userId", -1);
         if (myUserId == -1) {
@@ -139,6 +147,9 @@ public class ProfileActivity extends AppCompatActivity {
             Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
             startActivity(intent);
         });
+
+        // Fetch and display user profile stats
+        fetchUserProfileStats();
     }
 
     @Override
@@ -151,6 +162,79 @@ public class ProfileActivity extends AppCompatActivity {
             Glide.with(this)
                     .load(newImageUrl)
                     .into(profile_image);
+        }
+    }
+
+    private void fetchUserProfileStats() {
+        String idToken = PrefManager.get("idToken");
+        if (idToken == null || idToken.isEmpty()) {
+            userTemperature.setText("--.-°C");
+            guestRatingText.setText("로그인이 필요합니다.");
+            guestRatingBar.setRating(0);
+            return;
+        }
+
+        String bearerToken = "Bearer " + idToken;
+
+        apiService.getUserProfile(bearerToken)
+                .enqueue(new Callback<UserProfileDto>() {
+                    @Override
+                    public void onResponse(Call<UserProfileDto> call, Response<UserProfileDto> response) {
+                        if (response.isSuccessful() && response.body() != null) {
+                            UserProfileDto dto = response.body();
+
+                            // 온도
+                            String temp = String.format(Locale.getDefault(), "%.1f°C", dto.getTemperature());
+                            userTemperature.setText(temp);
+                            userTemperature.setTextColor(
+                                    ContextCompat.getColor(
+                                            ProfileActivity.this,
+                                            getTemperatureColor(dto.getTemperature())
+                                    )
+                            );
+
+                            // 게스트 평점
+                            if (dto.getGuestReviewCount() > 0) {
+                                guestRatingBar.setRating((float) dto.getGuestRatingAvg());
+                                String ratingText = String.format(
+                                        Locale.getDefault(),
+                                        "%.1f / 5.0 (%d개)",
+                                        dto.getGuestRatingAvg(),
+                                        dto.getGuestReviewCount()
+                                );
+                                guestRatingText.setText(ratingText);
+                            } else {
+                                guestRatingBar.setRating(0);
+                                guestRatingText.setText("게스트 평점 없음");
+                            }
+
+                        } else {
+                            userTemperature.setText("--.-°C");
+                            guestRatingText.setText("정보를 불러올 수 없습니다.");
+                            guestRatingBar.setRating(0);
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<UserProfileDto> call, Throwable t) {
+                        userTemperature.setText("--.-°C");
+                        guestRatingText.setText("서버 연결 실패");
+                        guestRatingBar.setRating(0);
+                    }
+                });
+    }
+
+    private int getTemperatureColor(double temp) {
+        if (temp >= 80) {
+            return R.color.temp_very_high;
+        } else if (temp >= 70) {
+            return R.color.temp_high;
+        } else if (temp < 30) {
+            return R.color.temp_very_low;
+        } else if (temp < 40) {
+            return R.color.temp_low;
+        } else {
+            return R.color.temp_normal;
         }
     }
 }

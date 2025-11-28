@@ -149,6 +149,10 @@ public class HostReviewActivity extends AppCompatActivity {
                             );
                             tempTextView.setText(temp);
 
+                            // 온도에 따라 색상 변경
+                            int colorRes = getTemperatureColor(body.temperature);
+                            tempTextView.setTextColor(androidx.core.content.ContextCompat.getColor(HostReviewActivity.this, colorRes));
+
                             // 호스트 이름
                             if (hostName != null) {
                                 if (body.realName != null && !body.realName.isEmpty()) {
@@ -215,6 +219,20 @@ public class HostReviewActivity extends AppCompatActivity {
                         if (rating != null) rating.setText("평점 없음");
                     }
                 });
+    }
+
+    private int getTemperatureColor(double temp) {
+        if (temp >= 80) {
+            return R.color.temp_very_high;
+        } else if (temp >= 70) {
+            return R.color.temp_high;
+        } else if (temp < 30) {
+            return R.color.temp_very_low;
+        } else if (temp < 40) {
+            return R.color.temp_low;
+        } else {
+            return R.color.temp_normal;
+        }
     }
 
 

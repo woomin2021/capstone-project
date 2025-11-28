@@ -19,6 +19,7 @@ import com.example.jjb20.dto.RegisterRequestDto;
 import com.example.jjb20.dto.ReservationCreateRequestDto;
 import com.example.jjb20.dto.ReservationDTO;
 import com.example.jjb20.dto.ReviewRequestDto;
+import com.example.jjb20.dto.UserProfileDto;
 import com.example.jjb20.dto.UserResponseDto;
 import com.example.jjb20.dto.UserUpdateRequestDto;
 import com.example.jjb20.entity.User;
@@ -65,6 +66,13 @@ public interface ApiService {
     @PATCH("api/users/me")
     Call<UserUpdateRequestDto> updateMe(@Body UserUpdateRequestDto updateRequestDto, @Header("Authorization") String bearerToken);
 
+    @GET("api/users/me/profile")
+    Call<UserProfileDto> getUserProfile();
+
+    @GET("/api/users/me/profile")
+    Call<UserProfileDto> getUserProfile(
+            @Header("Authorization") String bearerToken
+    );
     @GET("/api/profile/stats")
     Call<ProfileStatsResponseDto> getProfileStats(
             @Header("Authorization") String bearerToken
