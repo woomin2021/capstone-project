@@ -102,6 +102,11 @@ public class RentHouseDetailActivity extends AppCompatActivity implements OnMapR
     private ImageSliderAdapter imageAdapter;
     private final List<String> imageUrls = new ArrayList<>();
 
+
+    //예약 비활성화 다른 날짜 포함
+    private LocalDate houseStartDay;
+    private LocalDate houseEndDay;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -384,6 +389,7 @@ public class RentHouseDetailActivity extends AppCompatActivity implements OnMapR
     }
 
     // 서버에서 상세 정보(호스트 / 어메니티 / 사진 리스트)를 다시 받아오기
+    // 서버에서 상세 정보(호스트 / 어메니티 / 사진 리스트)를 다시 받아오기
     private void loadHouseDetailFromServer(long houseId) {
         apiService.getHouseFullDetail(houseId).enqueue(new Callback<HouseDetailResponseDto>() {
             @Override
@@ -398,13 +404,37 @@ public class RentHouseDetailActivity extends AppCompatActivity implements OnMapR
                 }
 
                 HouseDetailResponseDto dto = response.body();
+                Log.d("RentDetail", "raw startDay = " + dto.getStartDay()
+                        + ", raw endDay = " + dto.getEndDay());
+                String startStr = dto.getStartDay();   // 예: "2025-11-01"
+                String endStr   = dto.getEndDay();     // 예: "2025-11-30"
 
-                // 1) 서버에서 온 사진 리스트 확인
+                try {
+                    houseStartDay = (startStr != null && !startStr.isEmpty())
+                            ? LocalDate.parse(startStr)
+                            : null;
+                    houseEndDay   = (endStr != null && !endStr.isEmpty())
+                            ? LocalDate.parse(endStr)
+                            : null;
+                } catch (Exception e) {
+                    Log.e("RentDetail", "start/end parse error: " + startStr + ", " + endStr, e);
+                    houseStartDay = null;
+                    houseEndDay   = null;
+                }
+
+                Log.d("RentDetail", "houseStartDay = " + houseStartDay
+                        + ", houseEndDay = " + houseEndDay);
+
+// 달력 새로 그리기
+                if (calendarView != null) {
+                    calendarView.notifyCalendarChanged();
+                }
+
+                // ===== 아래는 기존 코드 그대로 =====
                 List<String> photos = dto.getPhotoUrls();
                 Log.d("RentDetail", "photoUrls size = " +
                         (photos == null ? 0 : photos.size()));
 
-                // ---- 호스트 정보 ----
                 String hostName     = dto.getHostName();
                 Double ratingAvg    = dto.getHostRatingAvg();
                 Integer ratingCount = dto.getHostRatingCount();
@@ -423,7 +453,6 @@ public class RentHouseDetailActivity extends AppCompatActivity implements OnMapR
 
                 showHostSection(hostName, ratingAvg, ratingCount);
 
-                // ---- 이미지 슬라이더에 반영 ----
                 Log.d("RentDetail", "before clear imageUrls size = " + imageUrls.size());
                 imageUrls.clear();
                 if (photos != null && !photos.isEmpty()) {
@@ -435,7 +464,6 @@ public class RentHouseDetailActivity extends AppCompatActivity implements OnMapR
                 Log.d("RentDetail", "after set imageUrls size = " + imageUrls.size());
                 imageAdapter.notifyDataSetChanged();
 
-                // ===== 어메니티 UI 채우기 =====
                 TextView tvAmenitiesLabel = findViewById(R.id.textAmenitiesLabel);
                 TextView tvAmenitiesValue = findViewById(R.id.textAmenitiesValue);
 
@@ -462,7 +490,7 @@ public class RentHouseDetailActivity extends AppCompatActivity implements OnMapR
                     if (sb.length() == 0) {
                         sb.append("등록된 편의시설이 없습니다.");
                     } else {
-                        sb.setLength(sb.length() - 3); // 마지막 " · " 제거
+                        sb.setLength(sb.length() - 3);
                     }
 
                     tvAmenitiesValue.setText(sb.toString());
@@ -518,24 +546,28 @@ public class RentHouseDetailActivity extends AppCompatActivity implements OnMapR
                 LocalDate date = d.getDate();
                 c.dayText.setText(String.valueOf(date.getDayOfMonth()));
 
-                // 이전 달/다음 달 이거나 오늘 이전이면 비활성
-                if (d.getPosition() != DayPosition.MonthDate || date.isBefore(today)) {
+                // 1) 이전달/다음달, 오늘 이전, 집 오픈기간 밖이면 비활성
+                if (d.getPosition() != DayPosition.MonthDate ||
+                        date.isBefore(today) ||
+                        (houseStartDay != null && date.isBefore(houseStartDay)) ||
+                        (houseEndDay   != null && date.isAfter(houseEndDay))) {
+
                     c.dayText.setTextColor(Color.parseColor("#BDBDBD"));
                     c.dayText.setBackground(null);
                     return;
                 }
 
-                // 이미 예약된 날짜면 비활성 처리
+                // 2) 이미 예약된 날짜면 비활성
                 if (bookedDates.contains(date)) {
                     c.dayText.setTextColor(Color.parseColor("#BDBDBD"));
                     c.dayText.setBackground(null);
                     return;
                 }
 
+                // 3) 그 외는 정상 표시 + 선택구간 하이라이트
                 c.dayText.setTextColor(Color.BLACK);
                 c.dayText.setBackground(null);
 
-                // 선택 구간 표시
                 if (startDate != null && endDate == null && date.equals(startDate)) {
                     c.dayText.setBackgroundColor(Color.parseColor("#14D8B4"));
                     c.dayText.setTextColor(Color.WHITE);
@@ -594,14 +626,17 @@ public class RentHouseDetailActivity extends AppCompatActivity implements OnMapR
                     calendarView.smoothScrollToMonth(cur.plusMonths(1));
             });
         }
+
     }
 
     private void onDayClicked(CalendarDay day) {
         LocalDate date = day.getDate();
 
-        // 다른 달, 과거 날짜, 이미 예약된 날짜는 클릭 무시
+        // 다른 달, 과거 날짜, 집 오픈기간 밖, 이미 예약된 날짜는 클릭 무시
         if (day.getPosition() != DayPosition.MonthDate ||
                 date.isBefore(today) ||
+                (houseStartDay != null && date.isBefore(houseStartDay)) ||
+                (houseEndDay   != null && date.isAfter(houseEndDay)) ||
                 bookedDates.contains(date)) {
             return;
         }
@@ -632,10 +667,12 @@ public class RentHouseDetailActivity extends AppCompatActivity implements OnMapR
                     endDate   = null;
                 }
             } else {
+                // 두 번째 클릭이 시작일보다 이전이면, 그 날을 새 시작일로
                 startDate = date;
                 endDate   = null;
             }
         } else {
+            // 이미 구간이 선택되어 있으면, 새로 시작
             startDate = date;
             endDate   = null;
         }

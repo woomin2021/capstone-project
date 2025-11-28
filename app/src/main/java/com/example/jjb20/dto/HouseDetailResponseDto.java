@@ -111,7 +111,8 @@ public class HouseDetailResponseDto {
 
     public String getStartDay() { return startDay; }
 
-    public String getEndDay() { return endDay; }
+    public String getEndDay()   { return endDay;   }
+
 
     // 게터 추가
     public Long getHostId() { return hostId; }
