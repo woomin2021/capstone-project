@@ -3,7 +3,9 @@ package com.example.jjb20.dto;
 public class HouseUpdateRequestDto {
     private String title;
     private String description;
+    private String shortDescription;
     private String addressLine1;
+    private String addressLine2;
     private String city;
     private String country;
     private Integer pricePerNight;
@@ -27,12 +29,28 @@ public class HouseUpdateRequestDto {
         this.description = description;
     }
 
+    public String getShortDescription() {
+        return shortDescription;
+    }
+
+    public void setShortDescription(String shortDescription) {
+        this.shortDescription = shortDescription;
+    }
+
     public String getAddressLine1() {
         return addressLine1;
     }
 
     public void setAddressLine1(String addressLine1) {
         this.addressLine1 = addressLine1;
+    }
+
+    public String getAddressLine2() {
+        return addressLine2;
+    }
+
+    public void setAddressLine2(String addressLine2) {
+        this.addressLine2 = addressLine2;
     }
 
     public String getCity() {

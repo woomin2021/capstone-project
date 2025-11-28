@@ -9,6 +9,7 @@ import com.example.jjb20.dto.HouseAmenitiesCreateRequestDto;
 import com.example.jjb20.dto.HouseDetailResponseDto;
 import com.example.jjb20.dto.HouseDto;
 import com.example.jjb20.dto.HouseReviewDTO;
+import com.example.jjb20.dto.HousePhotoDto;
 import com.example.jjb20.dto.HouseUpdateRequestDto;
 import com.example.jjb20.dto.HousesCreateRequestDto;
 import com.example.jjb20.dto.HousesResponseDto;
@@ -27,6 +28,7 @@ import java.util.Objects;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
+import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.PATCH;
@@ -38,10 +40,12 @@ import retrofit2.http.Query;
 public interface ApiService {
 
     //로그인 (Firebase ID 토큰을 서버로 전달)
+
     @POST("api/auth/login")
     Call<UserResponseDto> login(@Body FirebaseLoginRequestDto body);
 
     //회원가입(DB 등록)
+
     @POST("api/auth/register")
     Call<UserResponseDto> register(@Body RegisterRequestDto body);
 
@@ -82,6 +86,8 @@ public interface ApiService {
     Call<Void> saveHouseAmenities(@Header("Authorization") String bearerToken,
                                   @Body HouseAmenitiesCreateRequestDto requestDto);
 
+
+
     // 하우스 목록
     @GET("api/houses")
     Call<List<HouseDto>> getHouses(@Header("Authorization") String bearerToken);
@@ -102,6 +108,14 @@ public interface ApiService {
     // 2) full-detail 대신 detail 로 경로 수정
     @GET("/api/houses/{id}/full-detail")
     Call<HouseDetailResponseDto> getHouseFullDetail(@Path("id") long id);
+
+    @GET("api/houses/{id}/photos")
+    Call<List<HousePhotoDto>> getHousePhotos(@Path("id") long id);
+
+    // 사진 삭제
+    @DELETE("api/houses/photos/{photoId}")
+    Call<Void> deleteHousePhoto(@Header("Authorization") String bearerToken,
+                                @Path("photoId") long photoId);
 
     //리뷰 업로드
     @POST("api/reviews/houses")

@@ -131,10 +131,17 @@ public class PrefManager {
         remove("house_title");
         remove("house_description");
         remove("house_address");
+        remove("house_address_line1");
+        remove("house_address_line2");
+        remove("house_summary");
+        remove("house_latitude");
+        remove("house_longitude");
         remove("house_city");
         remove("house_country");
         remove("house_price");
         remove("house_amenity_codes");
+        remove("house_image_url");
+        remove("house_image_urls");
         remove("houseId");  // houseId도 함께 정리
     }
 }
