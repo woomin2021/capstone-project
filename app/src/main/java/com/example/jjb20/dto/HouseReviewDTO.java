@@ -1,5 +1,7 @@
 package com.example.jjb20.dto;
 
+import com.google.gson.annotations.SerializedName;
+
 public class HouseReviewDTO {
     public long id;
     public long reservation_id;
@@ -8,6 +10,10 @@ public class HouseReviewDTO {
     public int rating;
     public String comment;
     public String createdAt;
+
+    // 새로 추가
+    @SerializedName("reviewerName")
+    public String reviewerName;
 
     public HouseReviewDTO() {
     }

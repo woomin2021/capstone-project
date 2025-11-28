@@ -35,8 +35,11 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ViewHolder
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         HouseReviewDTO item = list.get(position);
 
-        // 사용자 이름 (현재 DTO에 없으므로 reviewer_guest_user_id 로 대체)
-        holder.userName.setText("사용자 " + item.getReviewer_guest_user_id());
+        // 작성자 이름
+        String name = (item.reviewerName != null && !item.reviewerName.isEmpty())
+                ? item.reviewerName
+                : "사용자";
+        holder.userName.setText(name);
 
         // 날짜
         holder.date.setText(item.getCreatedAt());

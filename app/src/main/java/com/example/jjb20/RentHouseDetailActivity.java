@@ -64,6 +64,9 @@ public class RentHouseDetailActivity extends AppCompatActivity implements OnMapR
     private TextView tvTitle, tvLocation, tvPrice;
     private HouseDto house;
 
+    // 추가: 이 숙소의 호스트 user_id 저장용
+    private long hostUserId = -1L;
+
     // 빌리는 사람  관련
     private int adultCount = 1;
     private TextView tvGuestCount;
@@ -343,8 +346,8 @@ public class RentHouseDetailActivity extends AppCompatActivity implements OnMapR
             tvHostName.setOnClickListener(v -> {
                 Intent intent = new Intent(RentHouseDetailActivity.this, HostReviewActivity.class);
 
-                // 필요하면 호스트 ID 같은 것도 같이 넘길 수 있음
-                // intent.putExtra("hostId", dto.getHostId());
+                //필요하면 호스트 ID 같은 것도 같이 넘길 수 있음
+                intent.putExtra("hostId", hostUserId);
 
                 startActivity(intent);
             });
@@ -380,6 +383,14 @@ public class RentHouseDetailActivity extends AppCompatActivity implements OnMapR
                 String hostName     = dto.getHostName();
                 Double ratingAvg    = dto.getHostRatingAvg();
                 Integer ratingCount = dto.getHostRatingCount();
+
+                // 여기서 호스트 id 저장
+                Long dtoHostId = dto.getHostId();
+                if (dtoHostId != null) {
+                    hostUserId = dtoHostId;
+                } else {
+                    hostUserId = -1L;
+                }
 
                 Log.d("RentDetail",
                         "hostName=" + hostName +

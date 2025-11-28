@@ -8,6 +8,7 @@ import com.example.jjb20.dto.HostRegisterRequestDto;
 import com.example.jjb20.dto.HouseAmenitiesCreateRequestDto;
 import com.example.jjb20.dto.HouseDetailResponseDto;
 import com.example.jjb20.dto.HouseDto;
+import com.example.jjb20.dto.HouseReviewDTO;
 import com.example.jjb20.dto.HouseUpdateRequestDto;
 import com.example.jjb20.dto.HousesCreateRequestDto;
 import com.example.jjb20.dto.HousesResponseDto;
@@ -120,7 +121,42 @@ public interface ApiService {
 
     @GET("/api/hosts/{hostId}/profile")
     Call<HostProfileDto> getHostProfile(
-            @Header("Authorization") String bearerToken,
             @Path("hostId") long hostId
     );
+
+    @GET("api/reviews/houses/by-host")
+    Call<List<HouseReviewDTO>> getHostReviews(@Query("hostId") long hostId);
+
+
+    @GET("/api/reservations/my/current")
+    Call<List<ReservationDTO>> getCurrentReservations(@Query("userId") long userId);
+
+    @GET("/api/reservations/my/past")
+    Call<List<ReservationDTO>> getPastReservations(@Query("userId") long userId);
+
+    // 게스트 리뷰 생성
+    @POST("/api/reviews/guests")
+    Call<Object> createGuestReview(@Body ReviewRequestDto dto);
+
+    // 호스트의 대기 중인 예약 목록 (IN_PROGRESS)
+    @GET("/api/host/reservations/in-progress")
+    Call<List<ReservationDTO>> getInProgressReservationsForHost(@Header("Authorization") String bearerToken);
+
+    // 호스트의 거래 완료된 예약 목록 (TRADE_DONE)
+    @GET("/api/host/reservations/trade-done")
+    Call<List<ReservationDTO>> getTradeDoneReservationsForHost(@Header("Authorization") String bearerToken);
+
+    // 호스트의 지난 예약 목록 (COMPLETED, UNCOMPLETED)
+    @GET("/api/host/reservations/past")
+    Call<List<ReservationDTO>> getPastReservationsForHost(@Header("Authorization") String bearerToken);
+
+    // 예약 승인
+    @POST("/api/host/reservations/{id}/approve")
+    Call<Void> approveReservation(@Path("id") Long reservationId, @Header("Authorization") String bearerToken);
+
+    // 예약 거절
+    @POST("/api/host/reservations/{id}/reject")
+    Call<Void> rejectReservation(@Path("id") Long reservationId, @Header("Authorization") String bearerToken);
+
+
 }

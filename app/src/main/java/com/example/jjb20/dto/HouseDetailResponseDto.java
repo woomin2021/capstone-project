@@ -35,6 +35,10 @@ public class HouseDetailResponseDto {
     @SerializedName("hostName")
     private String hostName;
 
+    // 추가
+    @SerializedName("hostId")
+    private Long hostId;
+
     @SerializedName("createdAt")
     private String createdAt;
 
@@ -98,6 +102,10 @@ public class HouseDetailResponseDto {
     public String getStartDay() { return startDay; }
 
     public String getEndDay() { return endDay; }
+
+    // 게터 추가
+    public Long getHostId() { return hostId; }
+
 
 
 
