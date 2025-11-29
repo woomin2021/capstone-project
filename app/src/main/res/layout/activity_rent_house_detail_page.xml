@@ -473,6 +473,7 @@
 
         <!-- 요일 헤더 -->
         <LinearLayout
+            android:id="@+id/dayOfWeekHeader"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
