@@ -156,6 +156,13 @@ public class EditHouseActivity extends AppCompatActivity {
         toolbar.setNavigationOnClickListener(v -> onBackPressed());
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // 수정 완료 후 돌아왔을 때 집 정보를 다시 로드하여 화면 업데이트
+        loadHouseInformation();
+    }
+
     private void loadHouseInformation() {
         apiService.getHouseFullDetail(houseId).enqueue(new retrofit2.Callback<HouseDetailResponseDto>() {
             @Override
