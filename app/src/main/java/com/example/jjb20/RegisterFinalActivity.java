@@ -1067,36 +1067,62 @@ public class RegisterFinalActivity extends AppCompatActivity {
 
         Log.d(TAG, "Sending house creation request - address: " + address);
         Log.d(TAG, "Request DTO - addressLine1: " + houseRequest.getAddressLine1());
+        Log.d(TAG, "Amenity codes before API call: " + (amenityCodes != null ? amenityCodes.size() + " items" : "null"));
 
         Call<HousesResponseDto> houseCall = apiService.createHouse(bearerToken, houseRequest);
+        Log.d(TAG, "About to enqueue house creation request");
         houseCall.enqueue(new Callback<HousesResponseDto>() {
             @Override
             public void onResponse(Call<HousesResponseDto> call, Response<HousesResponseDto> response) {
+                Log.d(TAG, "House creation response callback called - code: " + response.code() + ", isSuccessful: " + response.isSuccessful());
+                
                 if (response.isSuccessful()) {
                     Long createdHouseId = null;
 
-                    // 순환 참조로 인한 파싱 오류 대비
-                    try {
-                        if (response.body() != null) {
-                            createdHouseId = response.body().getId();
+                    // 1) 응답 헤더에서 houseId 추출 시도
+                    String houseIdHeader = response.headers().get("X-House-Id");
+                    Log.d(TAG, "X-House-Id header: " + houseIdHeader);
+                    
+                    if (houseIdHeader != null && !houseIdHeader.isEmpty()) {
+                        try {
+                            createdHouseId = Long.parseLong(houseIdHeader);
+                            Log.d(TAG, "House ID from header: " + createdHouseId);
+                        } catch (NumberFormatException e) {
+                            Log.w(TAG, "Failed to parse houseId from header: " + houseIdHeader, e);
                         }
-                    } catch (Exception e) {
-                        Log.w(TAG, "Failed to parse response body due to circular reference", e);
-                        createdHouseId = -1L; // 임시
                     }
+
+                    // 2) 헤더에서 못 찾으면 응답 body에서 추출 시도
+                    if (createdHouseId == null) {
+                        Log.d(TAG, "Trying to get houseId from response body");
+                        try {
+                            if (response.body() != null) {
+                                createdHouseId = response.body().getId();
+                                Log.d(TAG, "House ID from body: " + createdHouseId);
+                            } else {
+                                Log.w(TAG, "Response body is null");
+                            }
+                        } catch (Exception e) {
+                            Log.w(TAG, "Failed to parse response body due to circular reference", e);
+                        }
+                    }
+
+                    Log.d(TAG, "Final createdHouseId: " + createdHouseId + ", amenityCodes: " + (amenityCodes != null ? amenityCodes.size() + " items" : "null"));
 
                     if (createdHouseId != null && createdHouseId != -1L) {
                         Log.d(TAG, "House created with id: " + createdHouseId);
                         PrefManager.put("houseId", createdHouseId);
 
                         if (amenityCodes != null && !amenityCodes.isEmpty()) {
+                            Log.d(TAG, "Calling saveAmenities with houseId: " + createdHouseId + ", codes: " + amenityCodes.size());
                             saveAmenities(bearerToken, createdHouseId, amenityCodes);
                         } else {
+                            Log.w(TAG, "No amenity codes to save, completing registration");
                             onRegistrationComplete();
                         }
                     } else {
                         // 파싱 문제지만 실제 등록은 성공했을 가능성
-                        Log.w(TAG, "Could not extract houseId due to circular reference, but registration likely succeeded");
+                        Log.w(TAG, "Could not extract houseId from header or body, but registration likely succeeded. createdHouseId: " + createdHouseId);
                         onRegistrationComplete();
                     }
                 } else {
@@ -1134,14 +1160,42 @@ public class RegisterFinalActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<HousesResponseDto> call, Throwable t) {
+                Log.e(TAG, "House creation onFailure called", t);
+                Log.e(TAG, "Throwable type: " + t.getClass().getName() + ", message: " + t.getMessage());
+                
                 // photos 때문의 MalformedJsonException인 경우 → 실제론 성공했을 수도 있음
                 if (t instanceof com.google.gson.stream.MalformedJsonException &&
                         t.getMessage() != null && t.getMessage().contains("photos")) {
                     Log.w(TAG, "JSON parsing error due to circular reference, but house might be created", t);
-                    Toast.makeText(RegisterFinalActivity.this,
-                            "집 등록이 완료되었을 수 있습니다. 목록에서 확인해주세요.",
-                            Toast.LENGTH_LONG).show();
-                    onRegistrationComplete();
+                    
+                    // 응답이 있는 경우 헤더에서 houseId 추출 시도
+                    Response<HousesResponseDto> response = null;
+                    try {
+                        // call.execute()는 동기 호출이므로 사용하지 않고, 
+                        // 대신 실패한 요청의 응답을 확인할 수 있는 방법이 없음
+                        // 따라서 PrefManager에 저장된 houseId를 사용하거나
+                        // 서버에서 Location 헤더를 확인해야 함
+                    } catch (Exception e) {
+                        Log.e(TAG, "Error trying to get response", e);
+                    }
+                    
+                    // 집 등록은 성공했을 가능성이 높으므로, 
+                    // 헤더에서 houseId를 추출할 수 없으면 PrefManager에서 가져오거나
+                    // 사용자에게 수동으로 확인하도록 안내
+                    Long houseIdFromPref = PrefManager.getLong("houseId", -1L);
+                    if (houseIdFromPref != null && houseIdFromPref > 0) {
+                        Log.d(TAG, "Using houseId from PrefManager: " + houseIdFromPref);
+                        if (amenityCodes != null && !amenityCodes.isEmpty()) {
+                            saveAmenities(bearerToken, houseIdFromPref, amenityCodes);
+                        } else {
+                            onRegistrationComplete();
+                        }
+                    } else {
+                        Toast.makeText(RegisterFinalActivity.this,
+                                "집 등록이 완료되었을 수 있습니다. 목록에서 확인해주세요.",
+                                Toast.LENGTH_LONG).show();
+                        onRegistrationComplete();
+                    }
                 } else {
                     registerButton.setEnabled(true);
                     Toast.makeText(RegisterFinalActivity.this, "네트워크 오류: " + t.getMessage(), Toast.LENGTH_SHORT).show();
@@ -1155,15 +1209,32 @@ public class RegisterFinalActivity extends AppCompatActivity {
      * 편의시설 저장 API 호출
      */
     private void saveAmenities(String bearerToken, Long houseId, List<String> amenityCodes) {
+        Log.d(TAG, "saveAmenities called - houseId: " + houseId + ", amenityCodes: " + amenityCodes);
+        
+        if (houseId == null || houseId <= 0) {
+            Log.e(TAG, "Invalid houseId: " + houseId);
+            Toast.makeText(RegisterFinalActivity.this, "집 ID가 유효하지 않습니다.", Toast.LENGTH_SHORT).show();
+            onRegistrationComplete();
+            return;
+        }
+        
+        if (amenityCodes == null || amenityCodes.isEmpty()) {
+            Log.w(TAG, "No amenity codes to save");
+            onRegistrationComplete();
+            return;
+        }
+        
         HouseAmenitiesCreateRequestDto amenitiesRequest = new HouseAmenitiesCreateRequestDto(
                 houseId,
                 amenityCodes
         );
 
+        Log.d(TAG, "Calling saveHouseAmenities API - houseId: " + houseId + ", codes count: " + amenityCodes.size());
         Call<Void> amenitiesCall = apiService.saveHouseAmenities(bearerToken, amenitiesRequest);
         amenitiesCall.enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
+                Log.d(TAG, "saveHouseAmenities response - code: " + response.code() + ", isSuccessful: " + response.isSuccessful());
                 if (response.isSuccessful()) {
                     Log.d(TAG, "Amenities saved successfully");
                     onRegistrationComplete();
@@ -1173,6 +1244,7 @@ public class RegisterFinalActivity extends AppCompatActivity {
                     if (response.errorBody() != null) {
                         try {
                             errorMessage = response.errorBody().string();
+                            Log.e(TAG, "Error response body: " + errorMessage);
                         } catch (Exception e) {
                             Log.e(TAG, "Error reading error body", e);
                         }
@@ -1185,6 +1257,7 @@ public class RegisterFinalActivity extends AppCompatActivity {
             @Override
             public void onFailure(Call<Void> call, Throwable t) {
                 registerButton.setEnabled(true);
+                Log.e(TAG, "saveHouseAmenities onFailure", t);
                 Toast.makeText(RegisterFinalActivity.this, "편의시설 저장 오류: " + t.getMessage(), Toast.LENGTH_SHORT).show();
                 Log.e(TAG, "Amenities save failed", t);
             }
