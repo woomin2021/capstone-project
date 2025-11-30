@@ -40,39 +40,38 @@ import retrofit2.http.Query;
 
 public interface ApiService {
 
-    //로그인 (Firebase ID 토큰을 서버로 전달)
-
+    // 로그인 (Firebase ID 토큰을 서버로 전달)
     @POST("api/auth/login")
     Call<UserResponseDto> login(@Body FirebaseLoginRequestDto body);
 
-    //회원가입(DB 등록)
-
+    // 회원가입(DB 등록)
     @POST("api/auth/register")
     Call<UserResponseDto> register(@Body RegisterRequestDto body);
 
-    // 보호된 API – Authorization 헤더 필요 함
-
+    // 보호된 API – Authorization 헤더 필요
     @GET("api/users")
     Call<List<User>> getUsers(@Header("Authorization") String bearerToken);
 
-    //유저 생성
+    // 유저 생성
     @POST("api/users")
     Call<User> addUser(
             @Header("Authorization") String bearerToken,
             @Body User user
     );
 
-    //유저 수정
+    // 유저 수정
     @PATCH("api/users/me")
-    Call<UserUpdateRequestDto> updateMe(@Body UserUpdateRequestDto updateRequestDto, @Header("Authorization") String bearerToken);
+    Call<UserUpdateRequestDto> updateMe(
+            @Body UserUpdateRequestDto updateRequestDto,
+            @Header("Authorization") String bearerToken
+    );
 
-    @GET("api/users/me/profile")
-    Call<UserProfileDto> getUserProfile();
-
+    // 🔹 마이페이지용 통합 프로필 (온도 + 게스트 평점)
     @GET("/api/users/me/profile")
     Call<UserProfileDto> getUserProfile(
             @Header("Authorization") String bearerToken
     );
+
     @GET("/api/profile/stats")
     Call<ProfileStatsResponseDto> getProfileStats(
             @Header("Authorization") String bearerToken
@@ -84,36 +83,36 @@ public interface ApiService {
     @GET("/api/hosts/me")
     Call<HostProfileDto> getMyHostProfile();
 
-    //  집 생성
+    // 집 생성
     @POST("api/houses")
-    Call<HousesResponseDto> createHouse(@Header("Authorization") String bearerToken,
-                                        @Body HousesCreateRequestDto requestDto);
+    Call<HousesResponseDto> createHouse(
+            @Header("Authorization") String bearerToken,
+            @Body HousesCreateRequestDto requestDto
+    );
 
-    //  집 편의시설 저장
+    // 집 편의시설 저장
     @POST("api/houses/amenities")
-    Call<Void> saveHouseAmenities(@Header("Authorization") String bearerToken,
-                                  @Body HouseAmenitiesCreateRequestDto requestDto);
-
-
+    Call<Void> saveHouseAmenities(
+            @Header("Authorization") String bearerToken,
+            @Body HouseAmenitiesCreateRequestDto requestDto
+    );
 
     // 하우스 목록
     @GET("api/houses")
     Call<List<HouseDto>> getHouses(@Header("Authorization") String bearerToken);
 
-    //내 집 불러 오기
+    // 내 집 불러오기
     @GET("/api/houses/my/{userId}")
     Call<List<HouseDto>> getMyHouses(@Path("userId") int userId);
 
-    //내 예약 불러 오기
+    // 내 예약 불러오기
     @GET("/api/reservations/my")
     Call<List<ReservationDTO>> getReservations(@Query("userId") long userId);
 
     @GET("/api/houses/summary")
-    Call<MyPageSummaryDto> getSummary(
-            @Query("userId") long userId
-    );
+    Call<MyPageSummaryDto> getSummary(@Query("userId") long userId);
 
-    // 2) full-detail 대신 detail 로 경로 수정
+    // 집 상세(풀 디테일)
     @GET("/api/houses/{id}/full-detail")
     Call<HouseDetailResponseDto> getHouseFullDetail(@Path("id") long id);
 
@@ -122,40 +121,38 @@ public interface ApiService {
 
     // 사진 삭제
     @DELETE("api/houses/photos/{photoId}")
-    Call<Void> deleteHousePhoto(@Header("Authorization") String bearerToken,
-                                @Path("photoId") long photoId);
+    Call<Void> deleteHousePhoto(
+            @Header("Authorization") String bearerToken,
+            @Path("photoId") long photoId
+    );
 
-    //리뷰 업로드
+    // 집 리뷰 업로드
     @POST("api/reviews/houses")
     Call<Object> createHouseReview(@Body ReviewRequestDto dto);
 
-    //예약생성
+    // 예약 생성
     @POST("/api/reservations")
     Call<ReservationDTO> createReservation(
             @Header("Authorization") String bearerToken,
             @Body ReservationCreateRequestDto req
     );
 
-    // 예약된 날짜 리스트 (yyyy-MM-dd 문자열 목록)
+    // 예약된 날짜 리스트
     @GET("/api/reservations/house/{houseId}/booked-dates")
     Call<List<String>> getHouseBookedDates(@Path("houseId") long houseId);
 
-    // 어메니티 포함 전체 상세
-    @GET("api/houses/{id}/full-detail")
-    Call<HouseDetailResponseDto> getHouseFullDetail(@Path("id") Long id);
-
-    //혜민 : 집 개수 불러오기
+    // 집 기본 정보 수정
     @PUT("api/houses/{id}")
-    Call<Void> updateHouseBasicInfo(@Path("id") long id, @Body HouseUpdateRequestDto requestDto);
+    Call<Void> updateHouseBasicInfo(
+            @Path("id") long id,
+            @Body HouseUpdateRequestDto requestDto
+    );
 
     @GET("/api/hosts/{hostId}/profile")
-    Call<HostProfileDto> getHostProfile(
-            @Path("hostId") long hostId
-    );
+    Call<HostProfileDto> getHostProfile(@Path("hostId") long hostId);
 
     @GET("api/reviews/houses/by-host")
     Call<List<HouseReviewDTO>> getHostReviews(@Query("hostId") long hostId);
-
 
     @GET("/api/reservations/my/current")
     Call<List<ReservationDTO>> getCurrentReservations(@Query("userId") long userId);
@@ -169,28 +166,40 @@ public interface ApiService {
 
     // 호스트의 대기 중인 예약 목록 (IN_PROGRESS)
     @GET("/api/host/reservations/in-progress")
-    Call<List<ReservationDTO>> getInProgressReservationsForHost(@Header("Authorization") String bearerToken);
+    Call<List<ReservationDTO>> getInProgressReservationsForHost(
+            @Header("Authorization") String bearerToken
+    );
 
     // 호스트의 거래 완료된 예약 목록 (TRADE_DONE)
     @GET("/api/host/reservations/trade-done")
-    Call<List<ReservationDTO>> getTradeDoneReservationsForHost(@Header("Authorization") String bearerToken);
+    Call<List<ReservationDTO>> getTradeDoneReservationsForHost(
+            @Header("Authorization") String bearerToken
+    );
 
     // 호스트의 지난 예약 목록 (COMPLETED, UNCOMPLETED)
     @GET("/api/host/reservations/past")
-    Call<List<ReservationDTO>> getPastReservationsForHost(@Header("Authorization") String bearerToken);
+    Call<List<ReservationDTO>> getPastReservationsForHost(
+            @Header("Authorization") String bearerToken
+    );
 
     // 예약 승인
     @POST("/api/host/reservations/{id}/approve")
-    Call<Void> approveReservation(@Path("id") Long reservationId, @Header("Authorization") String bearerToken);
+    Call<Void> approveReservation(
+            @Path("id") Long reservationId,
+            @Header("Authorization") String bearerToken
+    );
 
     // 예약 거절
     @POST("/api/host/reservations/{id}/reject")
-    Call<Void> rejectReservation(@Path("id") Long reservationId, @Header("Authorization") String bearerToken);
+    Call<Void> rejectReservation(
+            @Path("id") Long reservationId,
+            @Header("Authorization") String bearerToken
+    );
 
     // 집 삭제
     @DELETE("api/houses/{id}")
-    Call<Void> deleteHouse(@Header("Authorization") String bearerToken,
-                           @Path("id") long houseId);
-
-
+    Call<Void> deleteHouse(
+            @Header("Authorization") String bearerToken,
+            @Path("id") long houseId
+    );
 }
