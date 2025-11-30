@@ -187,5 +187,10 @@ public interface ApiService {
     @POST("/api/host/reservations/{id}/reject")
     Call<Void> rejectReservation(@Path("id") Long reservationId, @Header("Authorization") String bearerToken);
 
+    // 집 삭제
+    @DELETE("api/houses/{id}")
+    Call<Void> deleteHouse(@Header("Authorization") String bearerToken,
+                           @Path("id") long houseId);
+
 
 }

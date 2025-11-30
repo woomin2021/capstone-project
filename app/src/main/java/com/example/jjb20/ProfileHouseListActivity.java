@@ -1,12 +1,14 @@
 package com.example.jjb20;
 
 import android.annotation.SuppressLint;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -69,9 +71,22 @@ public class ProfileHouseListActivity extends AppCompatActivity {
                 intent.putExtra("houseCoverPhoto", item.coverPhotoUrl);
                 startActivity(intent);
             }
+
+            @Override
+            public void onDeleteClick(HouseDto item) {
+                // 삭제 확인 다이얼로그 표시
+                showDeleteConfirmDialog(item);
+            }
         });
         rvHouseList.setAdapter(adapter);
 
+        loadMyHouses();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // 수정/삭제 완료 후 돌아왔을 때 목록을 다시 로드하여 업데이트
         loadMyHouses();
     }
 
@@ -126,6 +141,62 @@ public class ProfileHouseListActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<List<HouseDto>> call, Throwable t) {
+                Toast.makeText(ProfileHouseListActivity.this,
+                        "네트워크 오류: " + t.getMessage(),
+                        Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    /**
+     * 삭제 확인 다이얼로그 표시
+     */
+    private void showDeleteConfirmDialog(HouseDto house) {
+        new AlertDialog.Builder(this)
+                .setMessage("정말 삭제하시겠습니까?")
+                .setPositiveButton("예", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        deleteHouse(house);
+                    }
+                })
+                .setNegativeButton("아니오", null)
+                .show();
+    }
+
+    /**
+     * 집 삭제 API 호출
+     */
+    private void deleteHouse(HouseDto house) {
+        String idToken = PrefManager.get("idToken", null);
+        if (idToken == null) {
+            Toast.makeText(this, "로그인이 필요합니다.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        String bearerToken = "Bearer " + idToken;
+        Log.d(TAG, "집 삭제 요청: houseId=" + house.id);
+
+        apiService.deleteHouse(bearerToken, house.id).enqueue(new Callback<Void>() {
+            @SuppressLint("NotifyDataSetChanged")
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                Log.d(TAG, "삭제 응답 코드: " + response.code());
+
+                if (response.isSuccessful()) {
+                    Toast.makeText(ProfileHouseListActivity.this, "집이 삭제되었습니다.", Toast.LENGTH_SHORT).show();
+                    // 목록 새로고침
+                    loadMyHouses();
+                } else {
+                    Toast.makeText(ProfileHouseListActivity.this,
+                            "삭제 실패: " + response.code(),
+                            Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                Log.e(TAG, "삭제 실패", t);
                 Toast.makeText(ProfileHouseListActivity.this,
                         "네트워크 오류: " + t.getMessage(),
                         Toast.LENGTH_SHORT).show();
