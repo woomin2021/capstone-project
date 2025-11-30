@@ -1,7 +1,9 @@
 package com.example.jjb20;
 
+import android.media.Image;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -12,10 +14,12 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.jjb20.adapter.ReviewAdapter;
 import com.example.jjb20.chat.ChatMsgFragment;
 import com.example.jjb20.dto.HostProfileDto;
 import com.example.jjb20.dto.HouseReviewDTO;
+import com.google.android.material.appbar.MaterialToolbar;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,6 +33,7 @@ public class HostReviewActivity extends AppCompatActivity {
     private AppCompatButton chatBtn;
     private TextView tempTextView, hostName, rating;   // 온도 표시용
     private TextView tvReviewCountTop, tvReviewCountSection;
+    private ImageView profileImageView;
 
     private long hostId;             // 이 화면에 들어온 호스트의 id
     private long myUserId;
@@ -45,11 +50,13 @@ public class HostReviewActivity extends AppCompatActivity {
 
         chatBtn = findViewById(R.id.chatBtn);
 
+
         tempTextView = findViewById(R.id.host_temperature);
         hostName     = findViewById(R.id.user_name);
         rating       = findViewById(R.id.rating);
         tvReviewCountTop = findViewById(R.id.review_count1);
         tvReviewCountSection = findViewById(R.id.review_count2);
+        profileImageView = findViewById(R.id.profile_img);
 
         hostId = getIntent().getLongExtra("hostId", -1L);
         myUserId = PrefManager.getInt("userId", -1);
@@ -68,6 +75,9 @@ public class HostReviewActivity extends AppCompatActivity {
         loadHostReviews();
 
         chatBtn.setOnClickListener(v -> openChatFragment());
+        // 툴바
+        MaterialToolbar toolbar = findViewById(R.id.toolbar);
+        if (toolbar != null) toolbar.setNavigationOnClickListener(v -> finish());
     }
 
     private void openChatFragment() {
@@ -124,6 +134,13 @@ public class HostReviewActivity extends AppCompatActivity {
                         if (response.isSuccessful() && response.body() != null) {
                             HostProfileDto body = response.body();
 
+                            // 프로필 이미지
+                            if (body.profileImageUrl != null && !body.profileImageUrl.isEmpty()) {
+                                Glide.with(HostReviewActivity.this)
+                                        .load(body.profileImageUrl)
+                                        .into(profileImageView);
+                            }
+
                             // 온도
                             String temp = String.format(
                                     java.util.Locale.getDefault(),
@@ -131,6 +148,10 @@ public class HostReviewActivity extends AppCompatActivity {
                                     body.temperature
                             );
                             tempTextView.setText(temp);
+
+                            // 온도에 따라 색상 변경
+                            int colorRes = getTemperatureColor(body.temperature);
+                            tempTextView.setTextColor(androidx.core.content.ContextCompat.getColor(HostReviewActivity.this, colorRes));
 
                             // 호스트 이름
                             if (hostName != null) {
@@ -198,6 +219,20 @@ public class HostReviewActivity extends AppCompatActivity {
                         if (rating != null) rating.setText("평점 없음");
                     }
                 });
+    }
+
+    private int getTemperatureColor(double temp) {
+        if (temp >= 80) {
+            return R.color.temp_very_high;
+        } else if (temp >= 70) {
+            return R.color.temp_high;
+        } else if (temp < 30) {
+            return R.color.temp_very_low;
+        } else if (temp < 40) {
+            return R.color.temp_low;
+        } else {
+            return R.color.temp_normal;
+        }
     }
 
 

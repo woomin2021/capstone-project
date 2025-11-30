@@ -1,13 +1,25 @@
 package com.example.jjb20.dto;
 
+import com.google.gson.annotations.SerializedName;
+
 public class HousesResponseDto {
+    @SerializedName("id")
     private Long id;
+    @SerializedName("title")
     private String title;
+    @SerializedName("description")
     private String description;
+    @SerializedName("addressLine1")
     private String addressLine1;
+    @SerializedName("city")
     private String city;
+    @SerializedName("country")
     private String country;
+    @SerializedName("pricePerNight")
     private Integer pricePerNight;
+    
+    // Gson은 기본적으로 알 수 없는 필드(photos, amenities, houseAmenities, host 등) 무시
+    // 순환 참조를 방지하기 위해 이 필드들은 DTO에 포함하지 않음.
 
     public Long getId() {
         return id;

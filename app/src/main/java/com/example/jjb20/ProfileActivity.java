@@ -47,6 +47,7 @@ public class ProfileActivity extends AppCompatActivity {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        PrefManager.init(this);
         setContentView(R.layout.activity_profile);
 
         apiService = RetrofitClient.getInstance().create(ApiService.class);
@@ -61,34 +62,8 @@ public class ProfileActivity extends AppCompatActivity {
         tvHouseCount = findViewById(R.id.tvHouseCount);
         tvReserveCount = findViewById(R.id.tvReserveCount);
 
-        int myUserId = PrefManager.getInt("userId", -1);
-        if (myUserId == -1) {
-            Toast.makeText(this, "로그인 정보가 없습니다.", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        apiService.getSummary(myUserId).enqueue(new Callback<MyPageSummaryDto>() {
-            @Override
-            public void onResponse(Call<MyPageSummaryDto> call, Response<MyPageSummaryDto> response) {
-                if (response.isSuccessful() && response.body() != null) {
-
-                    MyPageSummaryDto dto = response.body();
-
-                    String fullHouseCount = String.valueOf(dto.getHouseCount()) + "개";
-                    String fullReserveCount = String.valueOf(dto.getReservationCount()) + "개";
-                    tvHouseCount.setText(fullHouseCount);
-                    tvReserveCount.setText(fullReserveCount);
-
-                } else {
-                    Toast.makeText(ProfileActivity.this, "요약 정보 불러오기 실패", Toast.LENGTH_SHORT).show();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<MyPageSummaryDto> call, Throwable t) {
-                Toast.makeText(ProfileActivity.this, "서버 오류", Toast.LENGTH_SHORT).show();
-            }
-        });
+        // 집 개수와 예약 개수 로드
+        loadSummary();
 
 
         profile_image = findViewById(R.id.profile_image);
@@ -141,10 +116,45 @@ public class ProfileActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * 집 개수와 예약 개수 로드
+     */
+    private void loadSummary() {
+        int myUserId = PrefManager.getInt("userId", -1);
+        if (myUserId == -1) {
+            Toast.makeText(this, "로그인 정보가 없습니다.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        apiService.getSummary(myUserId).enqueue(new Callback<MyPageSummaryDto>() {
+            @Override
+            public void onResponse(Call<MyPageSummaryDto> call, Response<MyPageSummaryDto> response) {
+                if (response.isSuccessful() && response.body() != null) {
+
+                    MyPageSummaryDto dto = response.body();
+
+                    String fullHouseCount = String.valueOf(dto.getHouseCount()) + "개";
+                    String fullReserveCount = String.valueOf(dto.getReservationCount()) + "개";
+                    tvHouseCount.setText(fullHouseCount);
+                    tvReserveCount.setText(fullReserveCount);
+
+                } else {
+                    Toast.makeText(ProfileActivity.this, "요약 정보 불러오기 실패", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<MyPageSummaryDto> call, Throwable t) {
+                Toast.makeText(ProfileActivity.this, "서버 오류", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
 
+        // 프로필 이미지 새로고침
         String newImageUrl = PrefManager.get("profile_image");
 
         if (newImageUrl != null && !newImageUrl.isEmpty()) {
@@ -152,5 +162,8 @@ public class ProfileActivity extends AppCompatActivity {
                     .load(newImageUrl)
                     .into(profile_image);
         }
+
+        // 집 개수와 예약 개수 새로고침 (삭제 후 반영을 위해)
+        loadSummary();
     }
 }

@@ -34,4 +34,10 @@
 
     <color name="google_btn_bg">#F2F2F2</color>
 
+    <!-- 온도 -->
+    <color name="temp_very_high">#FF4500</color> <!-- 80 이상 -->
+    <color name="temp_high">#FFA07A</color> <!-- 70 이상 -->
+    <color name="temp_normal">#FF000000</color> <!-- 40 ~ 70 -->
+    <color name="temp_low">#87CEFA</color> <!-- 40 미만 -->
+    <color name="temp_very_low">#4169E1</color> <!-- 30 미만 -->
 </resources>

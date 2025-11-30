@@ -52,6 +52,10 @@ public class PaymentActivity extends AppCompatActivity {
         String address = in.getStringExtra(RentHouseDetailActivity.EXTRA_HOUSE_ADDR);
         String image   = in.getStringExtra(RentHouseDetailActivity.EXTRA_HOUSE_IMAGE);
 
+        // Firebase 로그인 후 저장해둔 idToken 꺼내기 (키 이름은 너희 프로젝트에 맞게)
+        String idToken = PrefManager.getString("idToken");   // 예: "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9..."
+        String bearerToken = "Bearer " + idToken;
+
         setTextIfExists("textDate",   date);
         setTextIfExists("textGuest",  guests);
         setTextIfExists("priceValue", price);
@@ -83,7 +87,7 @@ public class PaymentActivity extends AppCompatActivity {
 
             ApiService api = RetrofitClient.getInstance().create(ApiService.class);
 
-            api.createReservation(dto).enqueue(new Callback<ReservationDTO>() {
+            api.createReservation(bearerToken,dto).enqueue(new Callback<ReservationDTO>() {
                 @Override
                 public void onResponse(Call<ReservationDTO> call, Response<ReservationDTO> res) {
                     if (res.isSuccessful() && res.body() != null) {

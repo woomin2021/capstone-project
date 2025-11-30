@@ -156,6 +156,13 @@ public class EditHouseActivity extends AppCompatActivity {
         toolbar.setNavigationOnClickListener(v -> onBackPressed());
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // 수정 완료 후 돌아왔을 때 집 정보를 다시 로드하여 화면 업데이트
+        loadHouseInformation();
+    }
+
     private void loadHouseInformation() {
         apiService.getHouseFullDetail(houseId).enqueue(new retrofit2.Callback<HouseDetailResponseDto>() {
             @Override
@@ -168,7 +175,9 @@ public class EditHouseActivity extends AppCompatActivity {
 
                 houseTitle = detail.getTitle();
                 houseAddress = detail.getAddressLine1();
+                houseAddressDetail = detail.getAddressLine2();
                 houseDescription = detail.getDescription();
+                houseSummary = detail.getShortDescription();
                 housePrice = detail.getPricePerNight();
                 houseCoverPhoto = detail.getCoverPhotoUrl();
                 houseStartDay = detail.getStartDay();
@@ -186,7 +195,7 @@ public class EditHouseActivity extends AppCompatActivity {
 
     private void updateDisplayTexts() {
         setTextOrDash(tvCurrentTitle, houseTitle);
-        setTextOrDash(tvCurrentAddress, houseAddress);
+        setTextOrDash(tvCurrentAddress, buildAddressDisplay());
         setTextOrDash(tvCurrentDescription, houseDescription);
         tvCurrentPeriod.setText(formatPeriodText());
         tvCurrentPrice.setText(formatPriceText());
@@ -195,6 +204,16 @@ public class EditHouseActivity extends AppCompatActivity {
     private void setTextOrDash(TextView view, String value) {
         if (view == null) return;
         view.setText(!TextUtils.isEmpty(value) ? value : "-");
+    }
+
+    private String buildAddressDisplay() {
+        if (TextUtils.isEmpty(houseAddressDetail)) {
+            return houseAddress;
+        }
+        if (TextUtils.isEmpty(houseAddress)) {
+            return houseAddressDetail;
+        }
+        return houseAddress + " " + houseAddressDetail;
     }
 
     private String formatPeriodText() {

@@ -77,133 +77,224 @@
 
     </LinearLayout>
 
-    <!-- 집 목록, 예약 내역 -->
+    <!-- 게스트 리뷰 & 온도 정보 -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:layout_marginVertical="24dp">
-        <!-- 집 목록 -->
+        android:background="@drawable/profile_bg"
+        android:padding="16dp"
+        android:layout_marginTop="-16dp"
+        android:layout_marginBottom="24dp">
+
+        <!-- 매너온도 -->
         <LinearLayout
-            android:id="@+id/houseList"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/profile_bg"
             android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:paddingVertical="20dp"
-            android:paddingHorizontal="16dp"
-            android:layout_marginBottom="12dp">
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_option1"
-                android:layout_marginRight="8dp"/>
+            android:gravity="center_vertical">
 
             <TextView
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="집 목록"
-                android:textStyle="bold"
+                android:text="매너온도"
+                android:textSize="16sp"
                 android:fontFamily="@font/cafe24ssurroundotf"
-                android:textSize="16.5sp"
-                />
+                android:textStyle="bold"/>
+
             <TextView
-                android:id="@+id/tvHouseCount"
-                android:layout_width="wrap_content"
+                android:id="@+id/user_temperature"
+                android:layout_width="0dp"
+                android:layout_weight="1"
                 android:layout_height="wrap_content"
-                android:text="0개"
+                android:text="--.-°C"
+                android:textSize="16sp"
                 android:textStyle="bold"
-                android:fontFamily="@font/pretendardvariable"
-                android:textSize="18sp"/>
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/chevron_right"/>
-
+                android:gravity="end"
+                android:fontFamily="@font/cafe24ssurroundotf"
+                android:textColor="@color/mainColor1"/>
         </LinearLayout>
 
-        <!-- 예약 내역 -->
+        <!-- 게스트 평점 -->
         <LinearLayout
-            android:id="@+id/reservationList"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/profile_bg"
             android:orientation="horizontal"
             android:gravity="center_vertical"
-            android:paddingVertical="20dp"
-            android:paddingHorizontal="16dp"
-            android:layout_marginBottom="12dp">
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_option2"
-                android:layout_marginRight="8dp"/>
+            android:layout_marginTop="12dp">
 
             <TextView
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="예약 내역"
-                android:textStyle="bold"
+                android:text="게스트 평점"
+                android:textSize="16sp"
                 android:fontFamily="@font/cafe24ssurroundotf"
-                android:textSize="16.5sp" />
-            <TextView
-                android:id="@+id/tvReserveCount"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="0개"
-                android:textStyle="bold"
-                android:fontFamily="@font/pretendardvariable"
-                android:textSize="18sp" />
+                android:textStyle="bold"/>
 
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/chevron_right"/>
-        </LinearLayout>
-
-
-        <LinearLayout
-            android:id="@+id/reservationRequest"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/profile_bg"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:paddingVertical="20dp"
-            android:paddingHorizontal="16dp">
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_option2"
-                android:layout_marginRight="8dp"/>
-
-            <TextView
+            <LinearLayout
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="요청 내역"
-                android:textStyle="bold"
-                android:fontFamily="@font/cafe24ssurroundotf"
-                android:textSize="16.5sp" />
-            <TextView
-                android:id="@+id/tvReserveRequestCount"
-                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="0개"
-                android:textStyle="bold"
-                android:fontFamily="@font/pretendardvariable"
-                android:textSize="18sp" />
+                android:orientation="vertical"
+                android:gravity="end">
 
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/chevron_right"/>
+                <RatingBar
+                    android:id="@+id/guest_rating_bar"
+                    style="?android:attr/ratingBarStyleSmall"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:isIndicator="true"
+                    android:numStars="5"
+                    android:stepSize="0.1"
+                    android:rating="0"
+                    android:progressTint="@color/mainColor1"
+                    android:secondaryProgressTint="@color/mainColor1"
+                    android:progressBackgroundTint="@color/basic2"/>
+
+                <TextView
+                    android:id="@+id/guest_rating_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="평점 없음"
+                    android:textSize="12sp"
+                    android:fontFamily="@font/cafe24ssurroundotf"
+                    android:textColor="@color/basic3"/>
+            </LinearLayout>
         </LinearLayout>
     </LinearLayout>
+
+    <!-- 집 목록, 예약 내역 -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:layout_marginVertical="24dp">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <!-- 집 목록 -->
+            <LinearLayout
+                android:id="@+id/houseList"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/profile_bg"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:paddingVertical="20dp"
+                android:paddingHorizontal="16dp"
+                android:layout_marginBottom="12dp">
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_option1"
+                    android:layout_marginRight="8dp"/>
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="집 목록"
+                    android:textStyle="bold"
+                    android:fontFamily="@font/cafe24ssurroundotf"
+                    android:textSize="16.5sp"
+                    />
+                <TextView
+                    android:id="@+id/tvHouseCount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0개"
+                    android:textStyle="bold"
+                    android:fontFamily="@font/pretendardvariable"
+                    android:textSize="18sp"/>
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/chevron_right"/>
+
+            </LinearLayout>
+
+            <!-- 예약 내역 -->
+            <LinearLayout
+                android:id="@+id/reservationList"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/profile_bg"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:paddingVertical="20dp"
+                android:paddingHorizontal="16dp"
+                android:layout_marginBottom="12dp">
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_option2"
+                    android:layout_marginRight="8dp"/>
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="예약 내역"
+                    android:textStyle="bold"
+                    android:fontFamily="@font/cafe24ssurroundotf"
+                    android:textSize="16.5sp" />
+                <TextView
+                    android:id="@+id/tvReserveCount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0개"
+                    android:textStyle="bold"
+                    android:fontFamily="@font/pretendardvariable"
+                    android:textSize="18sp" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/chevron_right"/>
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:id="@+id/reservationRequest"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/profile_bg"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:paddingVertical="20dp"
+                android:paddingHorizontal="16dp">
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_option2"
+                    android:layout_marginRight="8dp"/>
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="요청 내역"
+                    android:textStyle="bold"
+                    android:fontFamily="@font/cafe24ssurroundotf"
+                    android:textSize="16.5sp" />
+                <TextView
+                    android:id="@+id/tvReserveRequestCount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0개"
+                    android:textStyle="bold"
+                    android:fontFamily="@font/pretendardvariable"
+                    android:textSize="18sp" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/chevron_right"/>
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/logoutbtn"

@@ -28,6 +28,7 @@ public class HouseListAdapter extends RecyclerView.Adapter<HouseListAdapter.Hous
     public interface OnItemClickListener {
         void onItemClick(HouseDto item);
         void onEditClick(HouseDto item);
+        void onDeleteClick(HouseDto item);
     }
 
     // ✔ 클릭 없는 기본 생성자
@@ -58,14 +59,17 @@ public class HouseListAdapter extends RecyclerView.Adapter<HouseListAdapter.Hous
         holder.txtTitle.setText(item.title);
         holder.txtAddress.setText(item.addressLine1);
         holder.txtPrice.setText(item.pricePerNight + " / 박");
+        Glide.with(context).load(item.coverPhotoUrl).into(holder.imgHouse);
 
 
         if (listener != null) {
             holder.itemView.setOnClickListener(v -> listener.onItemClick(item));
             holder.btnEdit.setOnClickListener(v -> listener.onEditClick(item));
+            holder.btnDelete.setOnClickListener(v -> listener.onDeleteClick(item));
         } else {
             holder.itemView.setOnClickListener(null);
             holder.btnEdit.setOnClickListener(null);
+            holder.btnDelete.setOnClickListener(null);
         }
     }
 
@@ -79,6 +83,7 @@ public class HouseListAdapter extends RecyclerView.Adapter<HouseListAdapter.Hous
         ImageView imgHouse;
         TextView txtTitle, txtAddress, txtPrice;
         Button btnEdit;
+        Button btnDelete;
 
         public HouseViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -88,6 +93,7 @@ public class HouseListAdapter extends RecyclerView.Adapter<HouseListAdapter.Hous
             txtAddress = itemView.findViewById(R.id.txtHouseAddress);
             txtPrice = itemView.findViewById(R.id.txtHousePrice);
             btnEdit = itemView.findViewById(R.id.btnEdit);
+            btnDelete = itemView.findViewById(R.id.btnDelete);
         }
     }
 }
