@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -20,6 +21,7 @@ import com.example.jjb20.dto.HouseDto;
 import com.example.jjb20.dto.HouseDetailResponseDto;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 
 // Google Map
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -62,6 +64,7 @@ public class RentHouseDetailActivity extends AppCompatActivity implements OnMapR
     public static final String EXTRA_HOUSE_NAME = "extra_house_name";
     public static final String EXTRA_HOUSE_ADDR = "extra_house_addr";
     public static final String EXTRA_HOUSE_IMAGE = "extra_house_image";
+    public static final String EXTRA_FROM_PROFILE = "extra_from_profile";
 
     private ViewPager2 viewPagerImages;
     private TextView tvTitle, tvLocation, tvPrice;
@@ -107,10 +110,16 @@ public class RentHouseDetailActivity extends AppCompatActivity implements OnMapR
     private LocalDate houseStartDay;
     private LocalDate houseEndDay;
 
+    // 프로필에서 진입했는지 여부
+    private boolean fromProfile = false;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_rent_house_detail_page);
+
+        // 프로필에서 진입했는지 확인
+        fromProfile = getIntent().getBooleanExtra(EXTRA_FROM_PROFILE, false);
 
         // Retrofit 준비
         apiService = RetrofitClient.getInstance().create(ApiService.class);
@@ -209,22 +218,74 @@ public class RentHouseDetailActivity extends AppCompatActivity implements OnMapR
 
         // 툴바
         MaterialToolbar toolbar = findViewById(R.id.toolbar);
-        if (toolbar != null) toolbar.setNavigationOnClickListener(v -> finish());
+        if (toolbar != null) {
+            toolbar.setNavigationOnClickListener(v -> finish());
+            // 프로필에서 진입 시 툴바 텍스트 변경
+            if (fromProfile) {
+                toolbar.setTitle("집 정보");
+            }
+        }
 
         // 세그먼트 그리고 다음 버튼
         View seg1 = findViewById(R.id.seg1);
         View seg2 = findViewById(R.id.seg2);
+        View progressRow = findViewById(R.id.progressRow);
         AppCompatButton btnNext = findViewById(R.id.btnNext);
+        
+        // 프로필에서 진입 시 진행표시 숨기기
+        if (fromProfile && progressRow != null) {
+            progressRow.setVisibility(View.GONE);
+        }
+        
         if (btnNext != null) btnNext.setEnabled(false);
 
-        // 캘린더
-        setupCalendar();
+        // 프로필에서 진입 시 캘린더, 인원 선택, 다음 버튼 숨기기
+        if (fromProfile) {
+            View textCalendarLabel = findViewById(R.id.textCalendarLabel);
+            View monthHeader = findViewById(R.id.monthHeader);
+            View calendarView = findViewById(R.id.calendarView);
+            View dayOfWeekHeader = findViewById(R.id.dayOfWeekHeader);
+            LinearLayout guestCountLayout = findViewById(R.id.guest_count_layout);
+            View divider5 = findViewById(R.id.divider5);
+            View selectedDateLayout = findViewById(R.id.selected_date_layout);
+            View textReviewLabel = findViewById(R.id.textReviewLabel);
+            
+            if (textCalendarLabel != null) textCalendarLabel.setVisibility(View.GONE);
+            if (monthHeader != null) monthHeader.setVisibility(View.GONE);
+            if (dayOfWeekHeader != null) dayOfWeekHeader.setVisibility(View.GONE);
+            if (calendarView != null) calendarView.setVisibility(View.GONE);
+            if (guestCountLayout != null) guestCountLayout.setVisibility(View.GONE);
+            if (btnNext != null) btnNext.setVisibility(View.GONE);
+            if (divider5 != null) divider5.setVisibility(View.GONE);
+            
+            // 프로필에서 진입 시 기간 표시 박스 위치를 textReviewLabel 아래로 조정
+            if (selectedDateLayout != null && textReviewLabel != null) {
+                androidx.constraintlayout.widget.ConstraintLayout.LayoutParams params = 
+                    (androidx.constraintlayout.widget.ConstraintLayout.LayoutParams) selectedDateLayout.getLayoutParams();
+                params.topToBottom = textReviewLabel.getId();
+                params.topToTop = -1;
+                selectedDateLayout.setLayoutParams(params);
+            }
+            
+            // 프로필에서 진입 시 힌트를 '임대 기간'으로 변경
+            if (selectedDateEt != null) {
+                selectedDateEt.setHint("임대 기간");
+            }
+            TextInputLayout selectedDateLayoutView = findViewById(R.id.selected_date_layout);
+            if (selectedDateLayoutView != null) {
+                selectedDateLayoutView.setHint("임대 기간");
+                selectedDateLayoutView.setHintEnabled(true);
+            }
+        } else {
+            // 캘린더
+            setupCalendar();
 
-        // 인원
-        tvGuestCount  = findViewById(R.id.tvGuestCount);
-        btnGuestPlus  = findViewById(R.id.btnGuestPlus);
-        btnGuestMinus = findViewById(R.id.btnGuestMinus);
-        updateGuestUi();
+            // 인원
+            tvGuestCount  = findViewById(R.id.tvGuestCount);
+            btnGuestPlus  = findViewById(R.id.btnGuestPlus);
+            btnGuestMinus = findViewById(R.id.btnGuestMinus);
+            updateGuestUi();
+        }
 
         if (btnGuestPlus != null) {
             btnGuestPlus.setOnClickListener(v -> {
@@ -334,8 +395,8 @@ public class RentHouseDetailActivity extends AppCompatActivity implements OnMapR
                     }
                 }
 
-                // 달력 다시 그리기
-                if (calendarView != null) {
+                // 달력 다시 그리기 (프로필에서 진입한 경우가 아니고 캘린더가 초기화된 경우만)
+                if (!fromProfile && calendarView != null && calendarView.getVisibility() == View.VISIBLE) {
                     calendarView.notifyCalendarChanged();
                 }
             }
@@ -425,8 +486,20 @@ public class RentHouseDetailActivity extends AppCompatActivity implements OnMapR
                 Log.d("RentDetail", "houseStartDay = " + houseStartDay
                         + ", houseEndDay = " + houseEndDay);
 
-// 달력 새로 그리기
-                if (calendarView != null) {
+                // 프로필에서 진입 시 기간 표시 박스에 DB 임대 기간 표시
+                if (fromProfile && selectedDateEt != null) {
+                    if (houseStartDay != null && houseEndDay != null) {
+                        String periodText = houseStartDay.format(dayFmt) + " - " + houseEndDay.format(dayFmt);
+                        selectedDateEt.setText(periodText);
+                    } else if (houseStartDay != null) {
+                        selectedDateEt.setText(houseStartDay.format(dayFmt) + " - ");
+                    } else {
+                        selectedDateEt.setText("임대 기간 정보 없음");
+                    }
+                }
+
+// 달력 새로 그리기 (프로필에서 진입한 경우가 아니고 캘린더가 초기화된 경우만)
+                if (!fromProfile && calendarView != null && calendarView.getVisibility() == View.VISIBLE) {
                     calendarView.notifyCalendarChanged();
                 }
 

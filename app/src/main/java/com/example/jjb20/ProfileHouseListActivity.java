@@ -49,6 +49,7 @@ public class ProfileHouseListActivity extends AppCompatActivity {
                 // 집 정보 상세 화면으로 이동
                 Intent intent = new Intent(ProfileHouseListActivity.this, RentHouseDetailActivity.class);
                 intent.putExtra(RentHouseDetailActivity.EXTRA_HOUSE, item);
+                intent.putExtra(RentHouseDetailActivity.EXTRA_FROM_PROFILE, true);
                 startActivity(intent);
             }
 
