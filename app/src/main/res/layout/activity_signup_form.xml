@@ -362,31 +362,32 @@
                         app:strokeColor="#EEEEEE"
                         app:strokeWidth="1dp">
 
-                        <LinearLayout
+                        <!-- 카드뷰 전체를 이미지로 채움 -->
+                        <FrameLayout
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:gravity="center"
-                            android:orientation="vertical">
+                            android:layout_height="match_parent">
 
-                            <!-- 나중에 선택된 사진을 이 ImageView에 넣을 수 있게 하면 될듯 -->
                             <ImageView
                                 android:id="@+id/imgProfilePhoto"
-                                android:layout_width="40dp"
-                                android:layout_height="40dp"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:scaleType="centerCrop"
                                 android:src="@drawable/ic_camera_alt"
-                                app:tint="#757575" />
+                                android:padding="20dp"
+                                />
 
                             <TextView
                                 android:id="@+id/tvProfilePhotoHint"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_marginTop="4dp"
+                                android:layout_gravity="center"
+                                android:paddingTop="68dp"
                                 android:text="사진 추가"
                                 android:textColor="#757575"
                                 android:textSize="12sp" />
-                        </LinearLayout>
-                    </com.google.android.material.card.MaterialCardView>
+                        </FrameLayout>
 
+                    </com.google.android.material.card.MaterialCardView>
                 </LinearLayout>
             </HorizontalScrollView>
 

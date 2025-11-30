@@ -5,9 +5,11 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.text.method.PasswordTransformationMethod;
+import android.view.View;
 import android.widget.CheckBox;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -18,6 +20,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.appcompat.app.AlertDialog;
 
+import com.bumptech.glide.Glide;
 import com.example.jjb20.dto.RegisterRequestDto;
 import com.example.jjb20.dto.UserResponseDto;
 import com.google.android.material.button.MaterialButton;
@@ -53,6 +56,7 @@ public class SignupFormActivity extends AppCompatActivity {
     private ImageView imgProfilePhoto;
     private Uri selectedImageUri;
     private StorageReference storageReference;
+    private TextView tvProfilePhotoHint;
 
     private FirebaseAuth auth;
     private ApiService api;
@@ -81,6 +85,7 @@ public class SignupFormActivity extends AppCompatActivity {
         etEmail     = findViewById(R.id.etEmail);
         etPassword  = findViewById(R.id.etPassword);
         cbConsent   = findViewById(R.id.cbConsent);
+        tvProfilePhotoHint = findViewById(R.id.tvProfilePhotoHint);
 
 
         btnNext = findViewById(R.id.btnNext);
@@ -101,8 +106,11 @@ public class SignupFormActivity extends AppCompatActivity {
                 uri -> {
                     if (uri != null) {
                         selectedImageUri = uri;
-                        imgProfilePhoto.clearColorFilter();
-                        imgProfilePhoto.setImageURI(uri);
+                        // 카드뷰 전체에 사진 채우기
+                        tvProfilePhotoHint.setVisibility(View.GONE);
+                        imgProfilePhoto.setPadding(0,0,0,0); // 아이콘 padding 제거
+                        imgProfilePhoto.setColorFilter(null); // tint 제거
+                        Glide.with(this).load(uri).into(imgProfilePhoto);
                         uploadImageToFirebase();
                     } else {
                         Toast.makeText(this, "이미지가 선택되지 않았습니다.", Toast.LENGTH_SHORT).show();
