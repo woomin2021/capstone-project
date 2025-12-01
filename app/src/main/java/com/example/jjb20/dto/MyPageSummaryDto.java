@@ -2,28 +2,28 @@ package com.example.jjb20.dto;
 
 
 public class MyPageSummaryDto {
-    public long houseCount;
-    public long reservationCount;
+    public Long houseCount;
+    public Long reservationCount;
 
     // 호스트가 받은 예약 요청 개수
-    private long receivedRequestCount;
+    private Long receivedRequestCount;
 
-    public long getHouseCount() {
+    public Long getHouseCount() {
         return houseCount;
     }
 
-    public void setHouseCount(long houseCount) {
+    public void setHouseCount(Long houseCount) {
         this.houseCount = houseCount;
     }
 
-    public long getReservationCount() {
+    public Long getReservationCount() {
         return reservationCount;
     }
-    public long getReceivedRequestCount() {
+    public Long getReceivedRequestCount() {
         return receivedRequestCount;
     }
 
-    public void setReservationCount(long reservationCount) {
+    public void setReservationCount(Long reservationCount) {
         this.reservationCount = reservationCount;
     }
 }
