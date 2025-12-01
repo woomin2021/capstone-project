@@ -48,7 +48,7 @@ import retrofit2.Retrofit;
 public class SignupFormActivity extends AppCompatActivity {
 
     private ImageButton btnBack;
-    private TextInputEditText etFirstName, etLastName, etBirth, etEmail, etPassword;
+    private TextInputEditText etFirstName, etLastName, etBirth, etEmail, etPassword, etPhone;
     private CheckBox cbConsent;
     private MaterialButton btnNext;
 
@@ -63,7 +63,7 @@ public class SignupFormActivity extends AppCompatActivity {
 
     private ActivityResultLauncher<PickVisualMediaRequest> pickMedia;
 
-    private String phoneFromPrev;  // 이전 단계에서 받은 전화번호
+//    private String phoneFromPrev;  // 이전 단계에서 받은 전화번호 미쳤지 이거 누구야 ㅅㅂ
     private boolean verificationMailSent = false;
 
     private String fullName;
@@ -85,14 +85,13 @@ public class SignupFormActivity extends AppCompatActivity {
         etEmail     = findViewById(R.id.etEmail);
         etPassword  = findViewById(R.id.etPassword);
         cbConsent   = findViewById(R.id.cbConsent);
+        etPhone = findViewById(R.id.etPhone);
         tvProfilePhotoHint = findViewById(R.id.tvProfilePhotoHint);
 
 
         btnNext = findViewById(R.id.btnNext);
         imgProfilePhoto = findViewById(R.id.imgProfilePhoto);
         btnAddPhoto     = findViewById(R.id.cardProfilePhoto);
-
-        phoneFromPrev = getIntent().getStringExtra("phone");
 
         btnBack.setOnClickListener(v -> finish());
 
@@ -135,22 +134,27 @@ public class SignupFormActivity extends AppCompatActivity {
         String birth     = safeText(etBirth);
         String email     = safeText(etEmail);
         String password  = safeText(etPassword);
+        String phone = safeText(etPhone);
         String imageUrl  = PrefManager.get("profile_image_url");
 
         if (TextUtils.isEmpty(firstName) || TextUtils.isEmpty(lastName)) {
-            Toast.makeText(this, "이름과 성을 모두 입력하세요.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "이름과 성을 모두 입력해주세요.", Toast.LENGTH_SHORT).show();
             return;
         }
         if (TextUtils.isEmpty(birth) || birth.length() != 6) {
-            Toast.makeText(this, "생년월일 6자리를 입력하세요.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "생년월일 6자리를 입력해주세요.", Toast.LENGTH_SHORT).show();
             return;
         }
         if (TextUtils.isEmpty(email)) {
-            Toast.makeText(this, "이메일을 입력하세요.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "이메일을 입력해주세요.", Toast.LENGTH_SHORT).show();
             return;
         }
         if (TextUtils.isEmpty(password) || password.length() < 6) {
             Toast.makeText(this, "비밀번호는 6자 이상이어야 합니다.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if (TextUtils.isEmpty(phone)) {
+            Toast.makeText(this, "전화번호를 입력해주세요", Toast.LENGTH_SHORT).show();
             return;
         }
         if (!cbConsent.isChecked()) {
@@ -161,7 +165,6 @@ public class SignupFormActivity extends AppCompatActivity {
 
         // 서버 요청 때 사용할 값 저장
         fullName = lastName + firstName;
-        phone = phoneFromPrev;
 
         btnNext.setEnabled(false);
 
