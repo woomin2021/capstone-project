@@ -127,6 +127,7 @@ public class SignupFormActivity extends AppCompatActivity {
     // -------------------------
     // 1단계: 계정 생성 + 인증 메일 발송
     // -------------------------
+    //TODO. user 테이블 생년월일 추가
     private void startSignupAndSendEmail() {
 
         String firstName = safeText(etFirstName);
