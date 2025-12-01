@@ -239,7 +239,7 @@ public class LoginActivity extends AppCompatActivity {
         // 버튼 클릭 → 구글 로그인 시작
         btnGoogleLogin.setOnClickListener(v -> {
             Log.d(TAG, "구글 로그인 버튼 클릭");
-            Toast.makeText(this, "구글 로그인 시도", Toast.LENGTH_SHORT).show();
+//            Toast.makeText(this, "구글 로그인 시도", Toast.LENGTH_SHORT).show();
 
             btnGoogleLogin.setEnabled(false);
             Intent signInIntent = googleSignInClient.getSignInIntent();
