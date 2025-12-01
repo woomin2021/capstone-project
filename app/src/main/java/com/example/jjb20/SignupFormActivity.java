@@ -85,7 +85,7 @@ public class SignupFormActivity extends AppCompatActivity {
         etEmail     = findViewById(R.id.etEmail);
         etPassword  = findViewById(R.id.etPassword);
         cbConsent   = findViewById(R.id.cbConsent);
-        etPhone = findViewById(R.id.etPhone);
+        etPhone = findViewById(R.id.etphone);
         tvProfilePhotoHint = findViewById(R.id.tvProfilePhotoHint);
 
 
