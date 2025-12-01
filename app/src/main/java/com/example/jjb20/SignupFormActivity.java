@@ -67,7 +67,7 @@ public class SignupFormActivity extends AppCompatActivity {
     private boolean verificationMailSent = false;
 
     private String fullName;
-    private String phone;
+    private String fullphone;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -165,6 +165,7 @@ public class SignupFormActivity extends AppCompatActivity {
 
         // 서버 요청 때 사용할 값 저장
         fullName = lastName + firstName;
+        fullphone = phone;
 
         btnNext.setEnabled(false);
 
@@ -244,7 +245,7 @@ public class SignupFormActivity extends AppCompatActivity {
                                 RegisterRequestDto dto = new RegisterRequestDto(
                                         idToken,
                                         fullName,
-                                        phone
+                                        fullphone
                                 );
                                 dto.profileImageUrl = PrefManager.get("profile_image_url");
 
