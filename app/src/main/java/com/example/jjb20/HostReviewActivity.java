@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import de.hdodenhof.circleimageview.CircleImageView;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -33,7 +34,7 @@ public class HostReviewActivity extends AppCompatActivity {
     private AppCompatButton chatBtn;
     private TextView tempTextView, hostName, rating;   // 온도 표시용
     private TextView tvReviewCountTop, tvReviewCountSection;
-    private ImageView profileImageView;
+    CircleImageView profileImageView;
 
     private long hostId;             // 이 화면에 들어온 호스트의 id
     private long myUserId;
@@ -239,6 +240,9 @@ public class HostReviewActivity extends AppCompatActivity {
     private void loadHostReviews() {
         if (hostId <= 0) return;
 
+        reviewList.clear();
+        adapter.notifyDataSetChanged();
+
         ApiService api = RetrofitClient.getInstance().create(ApiService.class);
         api.getHostReviews(hostId)
                 .enqueue(new Callback<List<HouseReviewDTO>>() {
@@ -246,7 +250,6 @@ public class HostReviewActivity extends AppCompatActivity {
                     public void onResponse(Call<List<HouseReviewDTO>> call,
                                            Response<List<HouseReviewDTO>> response) {
                         if (response.isSuccessful() && response.body() != null) {
-                            reviewList.clear();
                             reviewList.addAll(response.body());
                             adapter.notifyDataSetChanged();
                         }
