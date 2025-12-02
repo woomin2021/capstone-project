@@ -118,6 +118,9 @@
                     android:rating="4"
                     android:stepSize="1"
                     android:isIndicator="false"
+                    android:progressTint="@color/mainColor1"
+                    android:secondaryProgressTint="@color/mainColor1"
+                    android:progressBackgroundTint="@color/basic2"
 
                     app:layout_constraintStart_toStartOf="@id/txtHouseName"
                     app:layout_constraintTop_toBottomOf="@id/txtDate"/>
