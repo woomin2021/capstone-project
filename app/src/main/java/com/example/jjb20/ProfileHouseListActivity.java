@@ -1,10 +1,10 @@
 package com.example.jjb20;
 
 import android.annotation.SuppressLint;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -156,16 +156,24 @@ public class ProfileHouseListActivity extends AppCompatActivity {
      * 삭제 확인 다이얼로그 표시
      */
     private void showDeleteConfirmDialog(HouseDto house) {
-        new AlertDialog.Builder(this)
-                .setMessage("정말 삭제하시겠습니까?")
-                .setPositiveButton("예", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        deleteHouse(house);
-                    }
-                })
-                .setNegativeButton("아니오", null)
-                .show();
+        View view = getLayoutInflater().inflate(R.layout.dialog_delete_house, null);
+        
+        AlertDialog dialog = new AlertDialog.Builder(this)
+                .setView(view)
+                .create();
+
+        // 취소 버튼
+        view.findViewById(R.id.btnCancel).setOnClickListener(v -> {
+            dialog.dismiss();
+        });
+
+        // 삭제 버튼
+        view.findViewById(R.id.btnConfirm).setOnClickListener(v -> {
+            deleteHouse(house);
+            dialog.dismiss();
+        });
+
+        dialog.show();
     }
 
     /**
