@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -29,7 +30,7 @@ public class ProfileReservationListActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private ReservationListAdapter adapter;
     private ArrayList<ReservationDTO> reservationList = new ArrayList<>();
-    private ImageButton btnBack;
+    private ImageView btnBack;
 
     private ApiService api;
 
@@ -46,6 +47,7 @@ public class ProfileReservationListActivity extends AppCompatActivity {
 
         api = RetrofitClient.getInstance().create(ApiService.class);
 
+        btnBack = findViewById(R.id.btnBack);
         btnBack.setOnClickListener(v -> {
             finish();
         });
