@@ -1,6 +1,7 @@
 package com.example.jjb20;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -12,8 +13,12 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
+import com.example.jjb20.dto.HouseDetailResponseDto;
+import com.example.jjb20.dto.HouseDto;
 import com.example.jjb20.dto.ReservationDTO;
 import com.example.jjb20.dto.ReviewRequestDto;
+
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -24,11 +29,16 @@ public class HouseReviewActivity extends AppCompatActivity {
     private RatingBar ratingBar;
     private EditText edtComment;
     private Button btnSubmit;
+    private ImageView houseImg;
+    private ImageView btnBack;
+    private String coverphotourl;
+    private String houseName;
 
     private ApiService apiService;
 
     private long reservationId;
     private long userId;
+    private long houseId;
 
     private ReservationDTO reservation;
     private static final String TAG = "HouseReviewActivity";
@@ -46,7 +56,30 @@ public class HouseReviewActivity extends AppCompatActivity {
         reservationId = getIntent().getLongExtra("reservationId", -1);
         userId = PrefManager.getInt("userId", -1);
 
+
         reservation = (ReservationDTO) getIntent().getSerializableExtra("reservation");
+        houseId = reservation.houseId;
+
+        apiService.getHouseFullDetail(houseId).enqueue(new Callback<HouseDetailResponseDto>() {
+            @Override
+            public void onResponse(Call<HouseDetailResponseDto> call, Response<HouseDetailResponseDto> response) {
+                HouseDetailResponseDto dto = response.body();
+                coverphotourl = dto.getCoverPhotoUrl();
+                houseName = dto.getTitle();
+
+                Glide.with(HouseReviewActivity.this).load(coverphotourl).into(houseImg);
+                TextView txtTitle = findViewById(R.id.txtHouseName);
+                txtTitle.setText(houseName);  // 실제로는 houseName을 받아야 더 좋다
+
+                Log.d("HouseReviewActivity", coverphotourl);
+                Log.d("HouseReviewActivity", houseName);
+            }
+
+            @Override
+            public void onFailure(Call<HouseDetailResponseDto> call, Throwable t) {
+
+            }
+        });
 
         if (reservation == null) {
             Toast.makeText(this, "예약 정보를 불러올 수 없습니다.", Toast.LENGTH_SHORT).show();
@@ -54,11 +87,15 @@ public class HouseReviewActivity extends AppCompatActivity {
             return;
         }
 
-        TextView txtTitle = findViewById(R.id.txtHouseName);
-        TextView txtDate = findViewById(R.id.txtDate);
-        ImageView img = findViewById(R.id.imgHouse);
+        btnBack.setOnClickListener(v -> {
+            finish();
+        });
 
-        txtTitle.setText("집 ID: " + reservation.houseId);  // 실제로는 houseName을 받아야 더 좋다
+
+        TextView txtDate = findViewById(R.id.txtDate);
+        houseImg = findViewById(R.id.imgHouse);
+
+
         txtDate.setText(reservation.checkinDate + " ~ " + reservation.checkoutDate);
 
         btnSubmit.setOnClickListener(v -> sendReview());

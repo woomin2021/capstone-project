@@ -3,6 +3,7 @@ package com.example.jjb20;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -28,6 +29,7 @@ public class ProfileReservationListActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private ReservationListAdapter adapter;
     private ArrayList<ReservationDTO> reservationList = new ArrayList<>();
+    private ImageButton btnBack;
 
     private ApiService api;
 
@@ -43,6 +45,10 @@ public class ProfileReservationListActivity extends AppCompatActivity {
         setContentView(R.layout.activity_profile_house_reservation);
 
         api = RetrofitClient.getInstance().create(ApiService.class);
+
+        btnBack.setOnClickListener(v -> {
+            finish();
+        });
 
         // RecyclerView
         recyclerView = findViewById(R.id.reservationListRecyclerView);
