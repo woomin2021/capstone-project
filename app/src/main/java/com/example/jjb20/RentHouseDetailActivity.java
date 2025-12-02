@@ -207,7 +207,7 @@ public class RentHouseDetailActivity extends AppCompatActivity implements OnMapR
             if (tvDescValue != null)  tvDescValue.setText(house.description);
 
             if (tvShortLabel != null) tvShortLabel.setText("한 줄 소개");
-            if (tvShortValue != null) tvShortValue.setText(house.description);
+            if (tvShortValue != null) tvShortValue.setText(house.summary != null ? house.summary : "");
 
             if (tvMapLabel != null)   tvMapLabel.setText("숙소 위치");
 
@@ -536,6 +536,12 @@ public class RentHouseDetailActivity extends AppCompatActivity implements OnMapR
                 }
                 Log.d("RentDetail", "after set imageUrls size = " + imageUrls.size());
                 imageAdapter.notifyDataSetChanged();
+
+                // 한줄설명 업데이트
+                TextView tvShortValue = findViewById(R.id.textShortDescValue);
+                if (tvShortValue != null && dto.getShortDescription() != null) {
+                    tvShortValue.setText(dto.getShortDescription());
+                }
 
                 TextView tvAmenitiesLabel = findViewById(R.id.textAmenitiesLabel);
                 TextView tvAmenitiesValue = findViewById(R.id.textAmenitiesValue);
