@@ -453,17 +453,27 @@ public class RegisterFinalActivity extends AppCompatActivity {
         imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
 
         if (item.getUploadUri() != null) {
-            imageView.setImageURI(item.getUploadUri());
+            Glide.with(this)
+                    .load(item.getUploadUri())
+                    .override(800, 800)
+                    .centerCrop()
+                    .placeholder(android.R.color.transparent)
+                    .error(android.R.color.transparent)
+                    .into(imageView);
+
         } else if (!TextUtils.isEmpty(item.getRemoteUrl())) {
             Glide.with(this)
                     .load(item.getRemoteUrl())
+                    .override(800, 800)
+                    .centerCrop()
                     .placeholder(android.R.color.transparent)
                     .error(android.R.color.transparent)
-                    .centerCrop()
                     .into(imageView);
+
         } else {
             imageView.setImageResource(android.R.color.transparent);
         }
+
 
         imageView.setAlpha(item.isUploaded() ? 1f : 0.5f);
         container.addView(imageView);

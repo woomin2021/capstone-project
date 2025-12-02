@@ -240,6 +240,9 @@ public class HostReviewActivity extends AppCompatActivity {
     private void loadHostReviews() {
         if (hostId <= 0) return;
 
+        reviewList.clear();
+        adapter.notifyDataSetChanged();
+
         ApiService api = RetrofitClient.getInstance().create(ApiService.class);
         api.getHostReviews(hostId)
                 .enqueue(new Callback<List<HouseReviewDTO>>() {
@@ -247,7 +250,6 @@ public class HostReviewActivity extends AppCompatActivity {
                     public void onResponse(Call<List<HouseReviewDTO>> call,
                                            Response<List<HouseReviewDTO>> response) {
                         if (response.isSuccessful() && response.body() != null) {
-                            reviewList.clear();
                             reviewList.addAll(response.body());
                             adapter.notifyDataSetChanged();
                         }

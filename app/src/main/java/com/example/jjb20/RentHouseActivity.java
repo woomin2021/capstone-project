@@ -38,7 +38,8 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
-
+import android.view.KeyEvent;
+import android.view.inputmethod.EditorInfo;
 public class RentHouseActivity extends AppCompatActivity {
 
     private RecyclerView recyclerRecommended;
@@ -83,20 +84,23 @@ public class RentHouseActivity extends AppCompatActivity {
         ImageView profileIcon = findViewById(R.id.btnProfile);
         Button btnRegisterHouse = findViewById(R.id.btnRegisterHouse);
         searchButton.setOnClickListener(v -> {
-            String keyword = searchEditText.getText().toString().trim();
+            performSearch();
+        });
 
-            if (keyword.isEmpty()) {
-                // 검색어 없을 때 전체 숙소 출력
-                hotAdapter.updateData(allHouses);
-                return;
+
+        searchEditText.setOnEditorActionListener((v, actionId, event) -> {
+            boolean isImeSearch = actionId == EditorInfo.IME_ACTION_SEARCH
+                    || actionId == EditorInfo.IME_ACTION_DONE;
+
+            boolean isEnterKey = event != null
+                    && event.getKeyCode() == KeyEvent.KEYCODE_ENTER
+                    && event.getAction() == KeyEvent.ACTION_DOWN;
+
+            if (isImeSearch || isEnterKey) {
+                performSearch();
+                return true;   // 이벤트 소비 (키보드에서 더 이상 처리 안 함)
             }
-
-
-
-
-            // 검색 필터 실행
-            List<HouseDto> filtered = filterHouses(keyword);
-            hotAdapter.updateData(filtered);
+            return false;
         });
 
         // 프로필 버튼
@@ -172,6 +176,22 @@ public class RentHouseActivity extends AppCompatActivity {
             Log.d("RentHouse", "nearby size=" + nearby.size());
             hotAdapter.updateData(nearby);
         });
+
+    }
+
+    private void performSearch() {
+        String keyword = ((EditText) findViewById(R.id.searchEditText))
+                .getText().toString().trim();
+
+        if (keyword.isEmpty()) {
+            // 검색어 없을 때 전체 숙소 출력
+            hotAdapter.updateData(allHouses);
+            return;
+        }
+
+        // 검색 필터 실행
+        List<HouseDto> filtered = filterHouses(keyword);
+        hotAdapter.updateData(filtered);
     }
 
     private void loadHouses() {
