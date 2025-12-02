@@ -506,17 +506,7 @@ public class RegisterFinalActivity extends AppCompatActivity {
             deleteButton.setColorFilter(0xFFFFFFFF); // 흰색
 
             deleteButton.setOnClickListener(v -> {
-                new AlertDialog.Builder(RegisterFinalActivity.this)
-                        .setTitle("사진 삭제")
-                        .setMessage("사진을 삭제하시겠습니까?\n(완료 버튼을 눌러야 최종 반영됩니다)")
-                        .setPositiveButton("삭제", (dialog, which) -> {
-                            // 여기서 '화면/로컬'에서만 삭제 + pendingDeletePhotoIds에 추가
-                            deletePhoto(item);
-                        })
-                        .setNegativeButton("취소", (dialog, which) -> {
-                            dialog.dismiss();
-                        })
-                        .show();
+                showDeletePhotoDialog(item);
             });
 
             container.addView(deleteButton);
@@ -625,6 +615,31 @@ public class RegisterFinalActivity extends AppCompatActivity {
         if (uploadProgressDialog != null && uploadProgressDialog.isShowing()) {
             uploadProgressDialog.dismiss();
         }
+    }
+
+    /**
+     * 사진 삭제 확인 다이얼로그 표시
+     */
+    private void showDeletePhotoDialog(PhotoItem item) {
+        View view = getLayoutInflater().inflate(R.layout.dialog_delete_photo, null);
+        
+        AlertDialog dialog = new AlertDialog.Builder(this)
+                .setView(view)
+                .create();
+
+        // 취소 버튼
+        view.findViewById(R.id.btnCancel).setOnClickListener(v -> {
+            dialog.dismiss();
+        });
+
+        // 삭제 버튼
+        view.findViewById(R.id.btnConfirm).setOnClickListener(v -> {
+            // 여기서 '화면/로컬'에서만 삭제 + pendingDeletePhotoIds에 추가
+            deletePhoto(item);
+            dialog.dismiss();
+        });
+
+        dialog.show();
     }
 
     /**
