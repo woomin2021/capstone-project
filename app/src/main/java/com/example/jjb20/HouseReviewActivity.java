@@ -30,6 +30,7 @@ public class HouseReviewActivity extends AppCompatActivity {
     private EditText edtComment;
     private Button btnSubmit;
     private ImageView houseImg;
+    private ImageView btnBack;
     private String coverphotourl;
     private String houseName;
 
@@ -85,6 +86,10 @@ public class HouseReviewActivity extends AppCompatActivity {
             finish();
             return;
         }
+
+        btnBack.setOnClickListener(v -> {
+            finish();
+        });
 
 
         TextView txtDate = findViewById(R.id.txtDate);
