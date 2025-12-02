@@ -46,6 +46,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
+import androidx.appcompat.app.AlertDialog;
 
 public class RegisterFinalActivity extends AppCompatActivity {
 
@@ -88,6 +89,9 @@ public class RegisterFinalActivity extends AppCompatActivity {
     private boolean isUploadingPhotos = false;
     private boolean userModifiedPhotos = false;
 
+
+    // 기존 사진 중, 완료 버튼을 누르면 실제 서버에서 삭제할 ID 목록
+    private final List<Long> pendingDeletePhotoIds = new ArrayList<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -118,11 +122,9 @@ public class RegisterFinalActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        // 수정 모드일 때 현재 사진 상태 저장
-        if (isEditMode) {
-            saveEditPhotos();
-        }
+        // 수정 모드에서는 임시 편집 상태를 저장하지 않는다 (뒤로가면 모두 취소)
     }
+
 
     @Override
     protected void onDestroy() {
@@ -235,7 +237,7 @@ public class RegisterFinalActivity extends AppCompatActivity {
                     }
                     refreshPhotoPreviews();
                     enqueueUploads(newlyAdded);
-                    saveEditPhotos(); // 수정 모드일 때 사진 상태 저장
+
                 }
         );
     }
@@ -247,13 +249,8 @@ public class RegisterFinalActivity extends AppCompatActivity {
      */
     private void loadInitialPhotos() {
         if (isEditMode) {
-            // 수정 모드: 저장된 사진 상태가 있으면 복원, 없으면 서버에서 로드
-            if (restoreEditPhotos()) {
-                userModifiedPhotos = true; // 복원된 경우 수정된 것으로 표시
-                refreshPhotoPreviews();
-            } else {
-                loadPhotosFromServer();
-            }
+            // 수정 모드: 항상 서버에서 현재 상태를 불러옴 (이전 편집 내용은 유지하지 않음)
+            loadPhotosFromServer();
         } else {
             // 등록 모드일 때는 이전 사진 초기화
             photoItems.clear();
@@ -508,7 +505,19 @@ public class RegisterFinalActivity extends AppCompatActivity {
             deleteButton.setScaleType(ImageView.ScaleType.FIT_CENTER);
             deleteButton.setColorFilter(0xFFFFFFFF); // 흰색
 
-            deleteButton.setOnClickListener(v -> deletePhoto(item));
+            deleteButton.setOnClickListener(v -> {
+                new AlertDialog.Builder(RegisterFinalActivity.this)
+                        .setTitle("사진 삭제")
+                        .setMessage("사진을 삭제하시겠습니까?\n(완료 버튼을 눌러야 최종 반영됩니다)")
+                        .setPositiveButton("삭제", (dialog, which) -> {
+                            // 여기서 '화면/로컬'에서만 삭제 + pendingDeletePhotoIds에 추가
+                            deletePhoto(item);
+                        })
+                        .setNegativeButton("취소", (dialog, which) -> {
+                            dialog.dismiss();
+                        })
+                        .show();
+            });
 
             container.addView(deleteButton);
         }
@@ -599,7 +608,7 @@ public class RegisterFinalActivity extends AppCompatActivity {
                     Toast.makeText(this, "업로드 실패: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                     persistPhotoUrlsToPrefs();
                     refreshPhotoPreviews();
-                    saveEditPhotos(); // 수정 모드일 때 사진 상태 저장
+
                     uploadNextPhoto();
                 });
     }
@@ -630,58 +639,23 @@ public class RegisterFinalActivity extends AppCompatActivity {
             }
         }
 
-        if (uploadedPhotoCount <= 1) {
+        if (item.isUploaded() && uploadedPhotoCount <= 1) {
             Toast.makeText(this, "최소 1장 이상의 사진이 필요합니다.", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        // photoId가 없으면 아직 서버에 없는 새 사진 → 로컬에서만 삭제
-        if (item.getPhotoId() == null) {
-            int index = photoItems.indexOf(item);
-            if (index != -1) {
-                photoItems.remove(index);
-                userModifiedPhotos = true;
-                refreshPhotoPreviews();
-                saveEditPhotos();
+        // 서버에 이미 있는 사진이면 → 삭제 예정 목록에 ID만 기록
+        if (item.getPhotoId() != null) {
+            if (!pendingDeletePhotoIds.contains(item.getPhotoId())) {
+                pendingDeletePhotoIds.add(item.getPhotoId());
             }
-            return;
         }
 
-        // 서버에 삭제 요청
-        String idToken = PrefManager.get("idToken");
-        if (idToken == null || idToken.isEmpty()) {
-            Toast.makeText(this, "로그인이 필요합니다.", Toast.LENGTH_SHORT).show();
-            return;
-        }
+        // 화면/로컬 리스트에서만 제거
+        photoItems.remove(item);
+        userModifiedPhotos = true;
+        refreshPhotoPreviews();
 
-        String bearerToken = "Bearer " + idToken;
-        Long photoId = item.getPhotoId();
-
-        apiService.deleteHousePhoto(bearerToken, photoId).enqueue(new Callback<Void>() {
-            @Override
-            public void onResponse(Call<Void> call, Response<Void> response) {
-                if (response.isSuccessful()) {
-                    int index = photoItems.indexOf(item);
-                    if (index != -1) {
-                        photoItems.remove(index);
-                        userModifiedPhotos = true;
-                        refreshPhotoPreviews();
-                        saveEditPhotos();
-                        Toast.makeText(RegisterFinalActivity.this, "사진이 삭제되었습니다.", Toast.LENGTH_SHORT).show();
-                    }
-                } else {
-                    Toast.makeText(RegisterFinalActivity.this,
-                            "사진 삭제에 실패했습니다. (" + response.code() + ")", Toast.LENGTH_SHORT).show();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<Void> call, Throwable t) {
-                Toast.makeText(RegisterFinalActivity.this,
-                        "네트워크 오류: " + t.getMessage(), Toast.LENGTH_SHORT).show();
-                Log.e(TAG, "Photo deletion failed", t);
-            }
-        });
     }
 
     /**
@@ -862,6 +836,28 @@ public class RegisterFinalActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
                 if (response.isSuccessful()) {
+                    if (wantsPhotoUpdate && !pendingDeletePhotoIds.isEmpty()) {
+                        String idToken = PrefManager.get("idToken");
+                        if (!TextUtils.isEmpty(idToken)) {
+                            String bearerToken = "Bearer " + idToken;
+
+                            for (Long photoId : pendingDeletePhotoIds) {
+                                apiService.deleteHousePhoto(bearerToken, photoId)
+                                        .enqueue(new Callback<Void>() {
+                                            @Override
+                                            public void onResponse(Call<Void> call, Response<Void> response) {
+                                                // 필요하면 로그만
+                                                Log.d(TAG, "photo deleted: " + photoId + ", code=" + response.code());
+                                            }
+
+                                            @Override
+                                            public void onFailure(Call<Void> call, Throwable t) {
+                                                Log.e(TAG, "photo delete failed: " + photoId, t);
+                                            }
+                                        });
+                            }
+                        }
+                    }
                     clearEditPhotos(); // 수정 완료 시 저장된 사진 상태 삭제
                     Toast.makeText(RegisterFinalActivity.this, "정보가 수정되었습니다.", Toast.LENGTH_SHORT).show();
                     finish();
