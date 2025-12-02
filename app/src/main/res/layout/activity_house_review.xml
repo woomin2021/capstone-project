@@ -75,7 +75,9 @@
                     android:layout_height="80dp"
                     android:scaleType="centerCrop"
                     android:src="@drawable/sample1"
-                    android:background="@drawable/profile_image"
+                    android:clipToOutline="true"
+                    android:outlineProvider="background"
+                    android:background="@drawable/rounded_image_bg"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"/>
 
@@ -118,7 +120,9 @@
                     android:rating="4"
                     android:stepSize="1"
                     android:isIndicator="false"
-
+                    android:progressTint="@color/mainColor1"
+                    android:secondaryProgressTint="@color/mainColor1"
+                    android:progressBackgroundTint="@color/basic2"
                     app:layout_constraintStart_toStartOf="@id/txtHouseName"
                     app:layout_constraintTop_toBottomOf="@id/txtDate"/>
 
