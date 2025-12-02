@@ -19,9 +19,12 @@ import com.example.jjb20.dto.HouseDto;
 import java.util.ArrayList;
 import java.util.List;
 
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+
+import java.io.IOException;
 
 public class ProfileHouseListActivity extends AppCompatActivity {
 
@@ -189,9 +192,28 @@ public class ProfileHouseListActivity extends AppCompatActivity {
                     // 목록 새로고침
                     loadMyHouses();
                 } else {
-                    Toast.makeText(ProfileHouseListActivity.this,
-                            "삭제 실패: " + response.code(),
-                            Toast.LENGTH_SHORT).show();
+                    // 에러 메시지 읽기
+                    String errorMessage = "삭제 실패";
+                    ResponseBody errorBody = response.errorBody();
+                    if (errorBody != null) {
+                        try {
+                            errorMessage = errorBody.string();
+                            // JSON 형식의 에러 메시지에서 실제 메시지 추출
+                            if (errorMessage.contains("\"message\"")) {
+                                int messageStart = errorMessage.indexOf("\"message\"") + 10;
+                                int messageEnd = errorMessage.indexOf("\"", messageStart);
+                                if (messageEnd > messageStart) {
+                                    errorMessage = errorMessage.substring(messageStart, messageEnd);
+                                }
+                            }
+                        } catch (IOException e) {
+                            Log.e(TAG, "에러 메시지 읽기 실패", e);
+                            errorMessage = "삭제 실패: " + response.code();
+                        }
+                    } else {
+                        errorMessage = "삭제 실패: " + response.code();
+                    }
+                    Toast.makeText(ProfileHouseListActivity.this, errorMessage, Toast.LENGTH_SHORT).show();
                 }
             }
 
