@@ -51,7 +51,7 @@ import androidx.appcompat.app.AlertDialog;
 public class RegisterFinalActivity extends AppCompatActivity {
 
     private static final String TAG = "RegisterFinal";
-    private static final int MAX_PHOTO_COUNT = 5;
+    private static final int MAX_PHOTO_COUNT = 10;
 
     // 등록 모드용 (새 집 등록)
     private static final String PREF_KEY_PHOTOS = "house_image_urls";
@@ -219,7 +219,7 @@ public class RegisterFinalActivity extends AppCompatActivity {
                     }
                     int available = MAX_PHOTO_COUNT - photoItems.size();
                     if (available <= 0) {
-                        Toast.makeText(this, "이미지는 최대 5장까지 등록할 수 있습니다.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, "이미지는 최대 10장까지 등록할 수 있습니다.", Toast.LENGTH_SHORT).show();
                         return;
                     }
                     List<PhotoItem> newlyAdded = new ArrayList<>();
@@ -467,18 +467,27 @@ public class RegisterFinalActivity extends AppCompatActivity {
         imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
 
         if (item.getUploadUri() != null) {
-            imageView.setImageURI(item.getUploadUri());
+            Glide.with(this)
+                    .load(item.getUploadUri())
+                    .override(800, 800)
+                    .centerCrop()
+                    .placeholder(android.R.color.transparent)
+                    .error(android.R.color.transparent)
+                    .into(imageView);
+
         } else if (!TextUtils.isEmpty(item.getRemoteUrl())) {
             Glide.with(this)
                     .load(item.getRemoteUrl())
+                    .override(800, 800)
+                    .centerCrop()
                     .placeholder(android.R.color.transparent)
                     .error(android.R.color.transparent)
-                    .centerCrop()
                     .into(imageView);
+
         } else {
             imageView.setImageResource(android.R.color.transparent);
-            imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
         }
+
 
         imageView.setAlpha(item.isUploaded() ? 1f : 0.5f);
         container.addView(imageView);
