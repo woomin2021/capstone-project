@@ -46,26 +46,28 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
+import androidx.appcompat.app.AlertDialog;
 
 public class RegisterFinalActivity extends AppCompatActivity {
 
     private static final String TAG = "RegisterFinal";
-    private static final int MAX_PHOTO_COUNT = 10;
+    private static final int MAX_PHOTO_COUNT = 5;
 
     // 등록 모드용 (새 집 등록)
     private static final String PREF_KEY_PHOTOS = "house_image_urls";
 
-    // 수정 모드용 (houseId별 사진 상태 저장)
+    // 수정 모드용 (houseId별로 사진 상태 저장)
     private static final String PREF_KEY_EDIT_PHOTOS_PREFIX = "house_edit_photos_";
     private static final String PREF_KEY_EDIT_PHOTO_IDS_PREFIX = "house_edit_photo_ids_";
 
     private MaterialToolbar toolbar;
-    private ProgressBar progressBarStep;
+    private ProgressBar progressBarStep;    // 단계 표시용 ProgressBar
 
     private TextView subtitleText;
     private MaterialButton registerButton;
     private MaterialCardView addPhotoButton;
     private LinearLayout photoContainer;
+
     private TextInputEditText priceEditText;
     private TextView photoCounterText;
 
@@ -80,20 +82,25 @@ public class RegisterFinalActivity extends AppCompatActivity {
     private ApiService apiService;
     private ActivityResultLauncher<PickVisualMediaRequest> pickMedia;
 
-    // 여러 장 사진 관리
+    // 여러 장 사진 관리용
     private final List<PhotoItem> photoItems = new ArrayList<>();
     private final Queue<PhotoItem> uploadQueue = new ArrayDeque<>();
     private ProgressDialog uploadProgressDialog;
     private boolean isUploadingPhotos = false;
     private boolean userModifiedPhotos = false;
 
+
+    // 기존 사진 중, 완료 버튼을 누르면 실제 서버에서 삭제할 ID 목록
+    private final List<Long> pendingDeletePhotoIds = new ArrayList<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         PrefManager.init(getApplicationContext());
         setContentView(R.layout.activity_register_final);
 
-        if (!readIntentData()) return;
+        if (!readIntentData()) {
+            return;
+        }
 
         Retrofit retrofit = RetrofitClient.getInstance();
         apiService = retrofit.create(ApiService.class);
@@ -115,10 +122,9 @@ public class RegisterFinalActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        if (isEditMode) {
-            saveEditPhotos();
-        }
+        // 수정 모드에서는 임시 편집 상태를 저장하지 않는다 (뒤로가면 모두 취소)
     }
+
 
     @Override
     protected void onDestroy() {
@@ -127,14 +133,14 @@ public class RegisterFinalActivity extends AppCompatActivity {
     }
 
     /**
-     * Intent로부터 수정 여부 / 대상 / houseId / 기존 값들을 읽음
+     * Intent로부터 수정 여부 / 대상 / houseId / 기존 값들을 읽어온다.
      */
     private boolean readIntentData() {
         String mode = getIntent().getStringExtra("mode");
         editTarget = getIntent().getStringExtra("target");
         isEditMode = "edit".equalsIgnoreCase(mode);
 
-        // target: price / photos / null(둘 다)
+        // target == price / photos / null(둘 다)
         wantsPriceUpdate = TextUtils.isEmpty(editTarget) || "price".equalsIgnoreCase(editTarget);
         wantsPhotoUpdate = TextUtils.isEmpty(editTarget) || "photos".equalsIgnoreCase(editTarget);
 
@@ -148,10 +154,13 @@ public class RegisterFinalActivity extends AppCompatActivity {
             }
             if (getIntent().hasExtra("currentPrice")) {
                 int price = getIntent().getIntExtra("currentPrice", -1);
-                if (price >= 0) currentPrice = price;
+                if (price >= 0) {
+                    currentPrice = price;
+                }
             }
             currentImageUrl = getIntent().getStringExtra("currentImageUrl");
         }
+
         return true;
     }
 
@@ -167,6 +176,7 @@ public class RegisterFinalActivity extends AppCompatActivity {
         priceEditText = findViewById(R.id.price_edit_text);
         photoCounterText = findViewById(R.id.photoCounterText);
 
+        // 단계 ProgressBar (레이아웃에 progressBarStep가 있을 때만 사용)
         progressBarStep = findViewById(R.id.progressBarStep);
         if (progressBarStep != null) {
             progressBarStep.setMax(6);
@@ -207,13 +217,11 @@ public class RegisterFinalActivity extends AppCompatActivity {
                         Toast.makeText(this, "이미지가 선택되지 않았습니다.", Toast.LENGTH_SHORT).show();
                         return;
                     }
-
                     int available = MAX_PHOTO_COUNT - photoItems.size();
                     if (available <= 0) {
-                        Toast.makeText(this, "이미지는 최대 10장까지 등록할 수 있습니다.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, "이미지는 최대 5장까지 등록할 수 있습니다.", Toast.LENGTH_SHORT).show();
                         return;
                     }
-
                     List<PhotoItem> newlyAdded = new ArrayList<>();
                     for (int i = 0; i < uris.size() && i < available; i++) {
                         Uri uri = uris.get(i);
@@ -221,36 +229,30 @@ public class RegisterFinalActivity extends AppCompatActivity {
                         photoItems.add(item);
                         newlyAdded.add(item);
                     }
-
                     if (uris.size() > available) {
-                        Toast.makeText(this, "최대 10장까지만 추가됩니다.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, "최대 5장까지만 추가됩니다.", Toast.LENGTH_SHORT).show();
                     }
-
                     if (!newlyAdded.isEmpty()) {
                         userModifiedPhotos = true;
                     }
-
                     refreshPhotoPreviews();
                     enqueueUploads(newlyAdded);
-                    saveEditPhotos(); // 수정 모드일 때 사진 상태 저장
+
                 }
         );
     }
 
     /**
-     * 처음 진입 시 사진 초기 로딩
+     * 처음 들어왔을 때 사진 초기 로딩
+     * - 수정 모드: 저장된 상태 복원 -> 없으면 서버에서 로드
+     * - 등록 모드: 이전 등록 잔여 데이터 초기화
      */
     private void loadInitialPhotos() {
         if (isEditMode) {
-            // 저장된 편집 상태가 있으면 복원, 없으면 서버에서 로드
-            if (restoreEditPhotos()) {
-                userModifiedPhotos = true;
-                refreshPhotoPreviews();
-            } else {
-                loadPhotosFromServer();
-            }
+            // 수정 모드: 항상 서버에서 현재 상태를 불러옴 (이전 편집 내용은 유지하지 않음)
+            loadPhotosFromServer();
         } else {
-            // 등록 모드: 이전 사진 데이터 초기화
+            // 등록 모드일 때는 이전 사진 초기화
             photoItems.clear();
             PrefManager.remove(PREF_KEY_PHOTOS);
             refreshPhotoPreviews();
@@ -258,15 +260,18 @@ public class RegisterFinalActivity extends AppCompatActivity {
     }
 
     /**
-     * 수정 모드에서 현재 사진 상태 저장
+     * 수정 모드에서 현재 사진 상태를 SharedPreferences에 저장
      */
     private void saveEditPhotos() {
-        if (!isEditMode || houseId == -1L) return;
+        if (!isEditMode || houseId == -1L) {
+            return;
+        }
 
         List<String> photoUrls = new ArrayList<>();
         List<String> photoIds = new ArrayList<>();
 
         for (PhotoItem item : photoItems) {
+            // 업로드 완료된 사진만 저장 (localUri는 직렬화 불가)
             if (!TextUtils.isEmpty(item.getRemoteUrl())) {
                 photoUrls.add(item.getRemoteUrl());
                 photoIds.add(item.getPhotoId() != null ? String.valueOf(item.getPhotoId()) : "");
@@ -286,7 +291,9 @@ public class RegisterFinalActivity extends AppCompatActivity {
      * 수정 모드에서 저장된 사진 상태 복원
      */
     private boolean restoreEditPhotos() {
-        if (!isEditMode || houseId == -1L) return false;
+        if (!isEditMode || houseId == -1L) {
+            return false;
+        }
 
         String photosKey = PREF_KEY_EDIT_PHOTOS_PREFIX + houseId;
         String idsKey = PREF_KEY_EDIT_PHOTO_IDS_PREFIX + houseId;
@@ -304,8 +311,9 @@ public class RegisterFinalActivity extends AppCompatActivity {
         photoItems.clear();
         for (int i = 0; i < photoUrls.size(); i++) {
             String url = photoUrls.get(i);
-            if (TextUtils.isEmpty(url)) continue;
-
+            if (TextUtils.isEmpty(url)) {
+                continue;
+            }
             String photoIdStr = (photoIds != null && i < photoIds.size()) ? photoIds.get(i) : "";
             Long photoId = null;
             if (!TextUtils.isEmpty(photoIdStr)) {
@@ -322,21 +330,21 @@ public class RegisterFinalActivity extends AppCompatActivity {
     }
 
     /**
-     * 수정 완료 시 저장된 사진 편집 상태 삭제
+     * 수정 모드에서 저장된 사진 상태 삭제 (수정 완료 시)
      */
     private void clearEditPhotos() {
-        if (houseId == -1L) return;
-
+        if (houseId == -1L) {
+            return;
+        }
         String photosKey = PREF_KEY_EDIT_PHOTOS_PREFIX + houseId;
         String idsKey = PREF_KEY_EDIT_PHOTO_IDS_PREFIX + houseId;
         PrefManager.remove(photosKey);
         PrefManager.remove(idsKey);
-
         Log.d(TAG, "Cleared edit photos for houseId: " + houseId);
     }
 
     /**
-     * 서버에서 기존 집 사진 목록 로드
+     * 서버에서 기존 집 사진 목록을 가져와서 photoItems에 채운다.
      */
     private void loadPhotosFromServer() {
         if (houseId == -1L) {
@@ -350,17 +358,18 @@ public class RegisterFinalActivity extends AppCompatActivity {
         apiService.getHousePhotos(houseId).enqueue(new Callback<List<HousePhotoDto>>() {
             @Override
             public void onResponse(Call<List<HousePhotoDto>> call, Response<List<HousePhotoDto>> response) {
-                if (userModifiedPhotos) return;
-
+                if (userModifiedPhotos) {
+                    return;
+                }
                 if (response.isSuccessful() && response.body() != null) {
                     photoItems.clear();
                     List<HousePhotoDto> photos = response.body();
-
                     Collections.sort(photos, Comparator.comparing(
                             dto -> dto.getSortOrder() != null ? dto.getSortOrder() : Integer.MAX_VALUE));
-
                     for (HousePhotoDto dto : photos) {
-                        if (photoItems.size() >= MAX_PHOTO_COUNT) break;
+                        if (photoItems.size() >= MAX_PHOTO_COUNT) {
+                            break;
+                        }
                         addPhotoFromUrl(dto.getPhotoUrl(), dto.getId());
                     }
                 } else if (!TextUtils.isEmpty(currentImageUrl)) {
@@ -372,8 +381,9 @@ public class RegisterFinalActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<List<HousePhotoDto>> call, Throwable t) {
-                if (userModifiedPhotos) return;
-
+                if (userModifiedPhotos) {
+                    return;
+                }
                 if (!TextUtils.isEmpty(currentImageUrl)) {
                     photoItems.clear();
                     addPhotoFromUrl(currentImageUrl);
@@ -388,26 +398,27 @@ public class RegisterFinalActivity extends AppCompatActivity {
     }
 
     private void addPhotoFromUrl(String url, Long photoId) {
-        if (TextUtils.isEmpty(url) || photoItems.size() >= MAX_PHOTO_COUNT) return;
+        if (TextUtils.isEmpty(url) || photoItems.size() >= MAX_PHOTO_COUNT) {
+            return;
+        }
         photoItems.add(new PhotoItem(url, photoId));
     }
 
     /**
-     * 사진 미리보기 UI 갱신
+     * LinearLayout(photoContainer)에 사진 카드들을 다시 그려준다.
      */
     private void refreshPhotoPreviews() {
-        if (photoContainer == null) return;
-
+        if (photoContainer == null) {
+            return;
+        }
         int childCount = photoContainer.getChildCount();
-        // 0번 인덱스는 "사진 추가" 카드라고 가정 → 그 뒤로 제거
+        // 0번 인덱스는 "사진 추가" 카드라고 가정 → 그 뒤로만 제거
         for (int i = childCount - 1; i >= 1; i--) {
             photoContainer.removeViewAt(i);
         }
-
         for (PhotoItem item : photoItems) {
             photoContainer.addView(createPhotoCard(item));
         }
-
         updatePhotoCounter();
         updateAddPhotoButtonState();
     }
@@ -420,12 +431,14 @@ public class RegisterFinalActivity extends AppCompatActivity {
     }
 
     private void updateAddPhotoButtonState() {
-        if (addPhotoButton == null) return;
+        if (addPhotoButton == null) {
+            return;
+        }
         addPhotoButton.setVisibility(hasRoomForMorePhotos() ? View.VISIBLE : View.GONE);
     }
 
     /**
-     * 사진 카드 뷰 생성
+     * 한 장의 사진에 대한 카드 뷰 생성
      */
     private MaterialCardView createPhotoCard(PhotoItem item) {
         MaterialCardView card = new MaterialCardView(this);
@@ -439,6 +452,7 @@ public class RegisterFinalActivity extends AppCompatActivity {
         card.setRadius(dpToPx(8));
         card.setCardBackgroundColor(0xFFF5F5F5);
 
+        // RelativeLayout으로 이미지와 삭제 버튼을 겹침
         android.widget.RelativeLayout container = new android.widget.RelativeLayout(this);
         container.setLayoutParams(new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
@@ -453,32 +467,23 @@ public class RegisterFinalActivity extends AppCompatActivity {
         imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
 
         if (item.getUploadUri() != null) {
-            Glide.with(this)
-                    .load(item.getUploadUri())
-                    .override(800, 800)
-                    .centerCrop()
-                    .placeholder(android.R.color.transparent)
-                    .error(android.R.color.transparent)
-                    .into(imageView);
-
+            imageView.setImageURI(item.getUploadUri());
         } else if (!TextUtils.isEmpty(item.getRemoteUrl())) {
             Glide.with(this)
                     .load(item.getRemoteUrl())
-                    .override(800, 800)
-                    .centerCrop()
                     .placeholder(android.R.color.transparent)
                     .error(android.R.color.transparent)
+                    .centerCrop()
                     .into(imageView);
-
         } else {
             imageView.setImageResource(android.R.color.transparent);
+            imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
         }
-
 
         imageView.setAlpha(item.isUploaded() ? 1f : 0.5f);
         container.addView(imageView);
 
-        // 수정 모드 + 업로드된 사진일 때만 삭제 버튼 표시
+        // 수정 모드이고 사진이 업로드된 경우에만 삭제 버튼 표시
         if (isEditMode && wantsPhotoUpdate && item.isUploaded()) {
             ImageView deleteButton = new ImageView(this);
             android.widget.RelativeLayout.LayoutParams deleteParams =
@@ -488,18 +493,21 @@ public class RegisterFinalActivity extends AppCompatActivity {
             deleteParams.setMargins(0, dpToPx(4), dpToPx(4), 0);
             deleteButton.setLayoutParams(deleteParams);
 
-            android.graphics.drawable.GradientDrawable background =
-                    new android.graphics.drawable.GradientDrawable();
+            // 원형 배경
+            android.graphics.drawable.GradientDrawable background = new android.graphics.drawable.GradientDrawable();
             background.setShape(android.graphics.drawable.GradientDrawable.OVAL);
             background.setColor(0xE6000000); // 반투명 검정
             deleteButton.setBackground(background);
 
+            // X 아이콘
             deleteButton.setImageResource(R.drawable.ic_close_24);
             deleteButton.setPadding(dpToPx(6), dpToPx(6), dpToPx(6), dpToPx(6));
             deleteButton.setScaleType(ImageView.ScaleType.FIT_CENTER);
-            deleteButton.setColorFilter(0xFFFFFFFF);
+            deleteButton.setColorFilter(0xFFFFFFFF); // 흰색
 
-            deleteButton.setOnClickListener(v -> deletePhoto(item));
+            deleteButton.setOnClickListener(v -> {
+                showDeletePhotoDialog(item);
+            });
 
             container.addView(deleteButton);
         }
@@ -516,8 +524,9 @@ public class RegisterFinalActivity extends AppCompatActivity {
      * 새로 선택된 사진들을 업로드 큐에 넣고 업로드 시작
      */
     private void enqueueUploads(List<PhotoItem> newItems) {
-        if (newItems == null || newItems.isEmpty()) return;
-
+        if (newItems == null || newItems.isEmpty()) {
+            return;
+        }
         for (PhotoItem item : newItems) {
             if (item.getUploadUri() != null) {
                 uploadQueue.offer(item);
@@ -541,7 +550,7 @@ public class RegisterFinalActivity extends AppCompatActivity {
     }
 
     /**
-     * Firebase Storage 업로드 로직
+     * 실제 Firebase Storage 업로드 로직
      */
     private void uploadPhotoItem(PhotoItem item) {
         Uri localUri = item.getUploadUri();
@@ -552,12 +561,18 @@ public class RegisterFinalActivity extends AppCompatActivity {
 
         ProgressDialog dialog = getUploadProgressDialog();
         dialog.setMessage("사진을 업로드하고 있습니다...");
-        if (!dialog.isShowing()) dialog.show();
+        if (!dialog.isShowing()) {
+            dialog.show();
+        }
 
         String userId = PrefManager.get("uid", "guest");
         String houseTitle = PrefManager.get("house_title", "no_title");
-        if (TextUtils.isEmpty(userId)) userId = "guest";
-        if (TextUtils.isEmpty(houseTitle)) houseTitle = "temporary";
+        if (TextUtils.isEmpty(userId)) {
+            userId = "guest";
+        }
+        if (TextUtils.isEmpty(houseTitle)) {
+            houseTitle = "temporary";
+        }
 
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss", Locale.KOREA);
         String fileName = userId + "_" + houseTitle + "_" + sdf.format(new Date());
@@ -575,7 +590,7 @@ public class RegisterFinalActivity extends AppCompatActivity {
                     item.setRemoteUrl(downloadUri.toString());
                     persistPhotoUrlsToPrefs();
                     refreshPhotoPreviews();
-                    saveEditPhotos();
+                    saveEditPhotos(); // 수정 모드일 때 사진 상태 저장
                     uploadNextPhoto();
                 })
                 .addOnFailureListener(e -> {
@@ -583,7 +598,7 @@ public class RegisterFinalActivity extends AppCompatActivity {
                     Toast.makeText(this, "업로드 실패: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                     persistPhotoUrlsToPrefs();
                     refreshPhotoPreviews();
-                    saveEditPhotos();
+
                     uploadNextPhoto();
                 });
     }
@@ -603,74 +618,68 @@ public class RegisterFinalActivity extends AppCompatActivity {
     }
 
     /**
-     * 사진 삭제
+     * 사진 삭제 확인 다이얼로그 표시
+     */
+    private void showDeletePhotoDialog(PhotoItem item) {
+        View view = getLayoutInflater().inflate(R.layout.dialog_delete_photo, null);
+        
+        AlertDialog dialog = new AlertDialog.Builder(this)
+                .setView(view)
+                .create();
+
+        // 취소 버튼
+        view.findViewById(R.id.btnCancel).setOnClickListener(v -> {
+            dialog.dismiss();
+        });
+
+        // 삭제 버튼
+        view.findViewById(R.id.btnConfirm).setOnClickListener(v -> {
+            // 여기서 '화면/로컬'에서만 삭제 + pendingDeletePhotoIds에 추가
+            deletePhoto(item);
+            dialog.dismiss();
+        });
+
+        dialog.show();
+    }
+
+    /**
+     * 사진 삭제 (새로 추가된 사진이면 로컬만, 기존 사진이면 서버에 삭제 요청)
      */
     private void deletePhoto(PhotoItem item) {
-        // 최소 1장 유지
+        // 최소 1장 이상 유지
         int uploadedPhotoCount = 0;
         for (PhotoItem photo : photoItems) {
-            if (photo.isUploaded()) uploadedPhotoCount++;
+            if (photo.isUploaded()) {
+                uploadedPhotoCount++;
+            }
         }
 
-        if (uploadedPhotoCount <= 1) {
+        if (item.isUploaded() && uploadedPhotoCount <= 1) {
             Toast.makeText(this, "최소 1장 이상의 사진이 필요합니다.", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        // 아직 서버에 없는 새 사진이면 로컬에서만 삭제
-        if (item.getPhotoId() == null) {
-            int index = photoItems.indexOf(item);
-            if (index != -1) {
-                photoItems.remove(index);
-                userModifiedPhotos = true;
-                refreshPhotoPreviews();
-                saveEditPhotos();
+        // 서버에 이미 있는 사진이면 → 삭제 예정 목록에 ID만 기록
+        if (item.getPhotoId() != null) {
+            if (!pendingDeletePhotoIds.contains(item.getPhotoId())) {
+                pendingDeletePhotoIds.add(item.getPhotoId());
             }
-            return;
         }
 
-        // 서버에 삭제 요청
-        String idToken = PrefManager.get("idToken");
-        if (idToken == null || idToken.isEmpty()) {
-            Toast.makeText(this, "로그인이 필요합니다.", Toast.LENGTH_SHORT).show();
-            return;
-        }
+        // 화면/로컬 리스트에서만 제거
+        photoItems.remove(item);
+        userModifiedPhotos = true;
+        refreshPhotoPreviews();
 
-        String bearerToken = "Bearer " + idToken;
-        Long photoId = item.getPhotoId();
-
-        apiService.deleteHousePhoto(bearerToken, photoId).enqueue(new Callback<Void>() {
-            @Override
-            public void onResponse(Call<Void> call, Response<Void> response) {
-                if (response.isSuccessful()) {
-                    int index = photoItems.indexOf(item);
-                    if (index != -1) {
-                        photoItems.remove(index);
-                        userModifiedPhotos = true;
-                        refreshPhotoPreviews();
-                        saveEditPhotos();
-                        Toast.makeText(RegisterFinalActivity.this, "사진이 삭제되었습니다.", Toast.LENGTH_SHORT).show();
-                    }
-                } else {
-                    Toast.makeText(RegisterFinalActivity.this,
-                            "사진 삭제에 실패했습니다. (" + response.code() + ")", Toast.LENGTH_SHORT).show();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<Void> call, Throwable t) {
-                Toast.makeText(RegisterFinalActivity.this,
-                        "네트워크 오류: " + t.getMessage(), Toast.LENGTH_SHORT).show();
-                Log.e(TAG, "Photo deletion failed", t);
-            }
-        });
     }
 
     /**
-     * 등록 모드에서만 Pref에 사진 URL 리스트 저장
+     * 등록 모드에서만 Pref에 사진 URL 리스트 저장 (수정 모드는 edit 전용 키 사용)
      */
     private void persistPhotoUrlsToPrefs() {
-        if (isEditMode) return;
+        if (isEditMode) {
+            return;
+        }
         PrefManager.putStringList(PREF_KEY_PHOTOS, collectUploadedPhotoUrls());
     }
 
@@ -694,10 +703,13 @@ public class RegisterFinalActivity extends AppCompatActivity {
     }
 
     private boolean hasPendingUploads() {
-        if (isUploadingPhotos || !uploadQueue.isEmpty()) return true;
-
+        if (isUploadingPhotos || !uploadQueue.isEmpty()) {
+            return true;
+        }
         for (PhotoItem item : photoItems) {
-            if (!item.isUploaded()) return true;
+            if (!item.isUploaded()) {
+                return true;
+            }
         }
         return false;
     }
@@ -713,7 +725,7 @@ public class RegisterFinalActivity extends AppCompatActivity {
     private static class PhotoItem {
         private final Uri localUri;
         private String remoteUrl;
-        private Long photoId;
+        private Long photoId;  // 서버에서 로드한 사진의 ID (삭제 시 사용)
 
         PhotoItem(Uri localUri) {
             this.localUri = localUri;
@@ -783,7 +795,8 @@ public class RegisterFinalActivity extends AppCompatActivity {
     }
 
     /**
-     * 수정 모드에서 '완료' 클릭 시
+     * 수정 모드에서 '완료' 버튼 눌렀을 때
+     * - 가격만 수정 / 사진만 수정 / 둘 다 수정 케이스 처리
      */
     private void submitEdit() {
         if (houseId == -1L) {
@@ -838,7 +851,29 @@ public class RegisterFinalActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
                 if (response.isSuccessful()) {
-                    clearEditPhotos();
+                    if (wantsPhotoUpdate && !pendingDeletePhotoIds.isEmpty()) {
+                        String idToken = PrefManager.get("idToken");
+                        if (!TextUtils.isEmpty(idToken)) {
+                            String bearerToken = "Bearer " + idToken;
+
+                            for (Long photoId : pendingDeletePhotoIds) {
+                                apiService.deleteHousePhoto(bearerToken, photoId)
+                                        .enqueue(new Callback<Void>() {
+                                            @Override
+                                            public void onResponse(Call<Void> call, Response<Void> response) {
+                                                // 필요하면 로그만
+                                                Log.d(TAG, "photo deleted: " + photoId + ", code=" + response.code());
+                                            }
+
+                                            @Override
+                                            public void onFailure(Call<Void> call, Throwable t) {
+                                                Log.e(TAG, "photo delete failed: " + photoId, t);
+                                            }
+                                        });
+                            }
+                        }
+                    }
+                    clearEditPhotos(); // 수정 완료 시 저장된 사진 상태 삭제
                     Toast.makeText(RegisterFinalActivity.this, "정보가 수정되었습니다.", Toast.LENGTH_SHORT).show();
                     finish();
                 } else {
@@ -863,7 +898,9 @@ public class RegisterFinalActivity extends AppCompatActivity {
     }
 
     private Double parseDoubleOrNull(String value) {
-        if (TextUtils.isEmpty(value)) return null;
+        if (TextUtils.isEmpty(value)) {
+            return null;
+        }
         try {
             return Double.parseDouble(value);
         } catch (NumberFormatException e) {
@@ -873,7 +910,7 @@ public class RegisterFinalActivity extends AppCompatActivity {
     }
 
     /**
-     * 뒤로가기 처리
+     * 뒤로가기 / 취소 처리
      */
     private void handleBackPressed() {
         if (isEditMode) {
@@ -889,7 +926,7 @@ public class RegisterFinalActivity extends AppCompatActivity {
     }
 
     /**
-     * 갤러리 열기
+     * 갤러리 열어서 사진 선택
      */
     private void openGallery() {
         if (pickMedia != null) {
@@ -902,7 +939,7 @@ public class RegisterFinalActivity extends AppCompatActivity {
     }
 
     /**
-     * 등록 모드에서 '등록하기' 클릭 시
+     * 등록 모드에서 '등록하기' 버튼 클릭 시
      */
     private void performRegistration() {
         // 1. 가격
@@ -943,6 +980,7 @@ public class RegisterFinalActivity extends AppCompatActivity {
         Double latitude = parseDoubleOrNull(latitudeStr);
         Double longitude = parseDoubleOrNull(longitudeStr);
 
+        // 디버깅 로그
         Log.d(TAG, "Registration data - title: " + title);
         Log.d(TAG, "Registration data - description: " + description);
         Log.d(TAG, "Registration data - address: " + address);
@@ -1016,7 +1054,7 @@ public class RegisterFinalActivity extends AppCompatActivity {
         List<String> photoUrls = collectUploadedPhotoUrls();
         String imageUrl = photoUrls.isEmpty() ? "" : photoUrls.get(0);
 
-        // 7. 집 생성 요청 DTO 구성
+        // 7. 집 생성 요청 DTO 구성 (shortDescription / addressLine1/2 / lat/lng 포함)
         HousesCreateRequestDto houseRequest = new HousesCreateRequestDto(
                 title,
                 description,
@@ -1035,73 +1073,46 @@ public class RegisterFinalActivity extends AppCompatActivity {
                 latitude,
                 longitude
         );
+        // 사진 리스트 설정
         houseRequest.setPhotos(buildPhotoRequests(photoUrls));
 
         Log.d(TAG, "Sending house creation request - address: " + address);
         Log.d(TAG, "Request DTO - addressLine1: " + houseRequest.getAddressLine1());
-        Log.d(TAG, "Amenity codes before API call: " + (amenityCodes != null ? amenityCodes.size() + " items" : "null"));
 
         Call<HousesResponseDto> houseCall = apiService.createHouse(bearerToken, houseRequest);
-        Log.d(TAG, "About to enqueue house creation request");
-
         houseCall.enqueue(new Callback<HousesResponseDto>() {
             @Override
             public void onResponse(Call<HousesResponseDto> call, Response<HousesResponseDto> response) {
-                Log.d(TAG, "House creation response - code: " + response.code() + ", isSuccessful: " + response.isSuccessful());
-
                 if (response.isSuccessful()) {
                     Long createdHouseId = null;
 
-                    // 1) 응답 헤더에서 houseId 추출 시도
-                    String houseIdHeader = response.headers().get("X-House-Id");
-                    Log.d(TAG, "X-House-Id header: " + houseIdHeader);
-
-                    if (houseIdHeader != null && !houseIdHeader.isEmpty()) {
-                        try {
-                            createdHouseId = Long.parseLong(houseIdHeader);
-                            Log.d(TAG, "House ID from header: " + createdHouseId);
-                        } catch (NumberFormatException e) {
-                            Log.w(TAG, "Failed to parse houseId from header: " + houseIdHeader, e);
+                    // 순환 참조로 인한 파싱 오류 대비
+                    try {
+                        if (response.body() != null) {
+                            createdHouseId = response.body().getId();
                         }
+                    } catch (Exception e) {
+                        Log.w(TAG, "Failed to parse response body due to circular reference", e);
+                        createdHouseId = -1L; // 임시
                     }
-
-                    // 2) 헤더에서 못 찾으면 body에서 추출 시도
-                    if (createdHouseId == null) {
-                        Log.d(TAG, "Trying to get houseId from response body");
-                        try {
-                            if (response.body() != null) {
-                                createdHouseId = response.body().getId();
-                                Log.d(TAG, "House ID from body: " + createdHouseId);
-                            } else {
-                                Log.w(TAG, "Response body is null");
-                            }
-                        } catch (Exception e) {
-                            Log.w(TAG, "Failed to parse response body due to circular reference", e);
-                        }
-                    }
-
-                    Log.d(TAG, "Final createdHouseId: " + createdHouseId + ", amenityCodes: " + (amenityCodes != null ? amenityCodes.size() + " items" : "null"));
 
                     if (createdHouseId != null && createdHouseId != -1L) {
                         Log.d(TAG, "House created with id: " + createdHouseId);
                         PrefManager.put("houseId", createdHouseId);
 
                         if (amenityCodes != null && !amenityCodes.isEmpty()) {
-                            Log.d(TAG, "Calling saveAmenities with houseId: " + createdHouseId + ", codes: " + amenityCodes.size());
                             saveAmenities(bearerToken, createdHouseId, amenityCodes);
                         } else {
-                            Log.w(TAG, "No amenity codes to save, completing registration");
                             onRegistrationComplete();
                         }
                     } else {
                         // 파싱 문제지만 실제 등록은 성공했을 가능성
-                        Log.w(TAG, "Could not extract houseId from header or body, but registration likely succeeded. createdHouseId: " + createdHouseId);
+                        Log.w(TAG, "Could not extract houseId due to circular reference, but registration likely succeeded");
                         onRegistrationComplete();
                     }
                 } else {
                     registerButton.setEnabled(true);
                     String errorMessage = "집 등록 실패: " + response.code();
-
                     if (response.errorBody() != null) {
                         try {
                             String errorBody = response.errorBody().string();
@@ -1127,7 +1138,6 @@ public class RegisterFinalActivity extends AppCompatActivity {
                             Log.e(TAG, "Error reading error body", e);
                         }
                     }
-
                     Toast.makeText(RegisterFinalActivity.this, errorMessage, Toast.LENGTH_LONG).show();
                     Log.e(TAG, "House creation failed: " + response.code() + " - " + errorMessage);
                 }
@@ -1135,29 +1145,14 @@ public class RegisterFinalActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<HousesResponseDto> call, Throwable t) {
-                Log.e(TAG, "House creation onFailure", t);
-                Log.e(TAG, "Throwable type: " + t.getClass().getName() + ", message: " + t.getMessage());
-
-                // photos 때문에 MalformedJsonException인 경우 → 실제로는 성공했을 수도 있음
+                // photos 때문의 MalformedJsonException인 경우 → 실제론 성공했을 수도 있음
                 if (t instanceof com.google.gson.stream.MalformedJsonException &&
                         t.getMessage() != null && t.getMessage().contains("photos")) {
-
                     Log.w(TAG, "JSON parsing error due to circular reference, but house might be created", t);
-
-                    Long houseIdFromPref = PrefManager.getLong("houseId", -1L);
-                    if (houseIdFromPref != null && houseIdFromPref > 0) {
-                        Log.d(TAG, "Using houseId from PrefManager: " + houseIdFromPref);
-                        if (amenityCodes != null && !amenityCodes.isEmpty()) {
-                            saveAmenities(bearerToken, houseIdFromPref, amenityCodes);
-                        } else {
-                            onRegistrationComplete();
-                        }
-                    } else {
-                        Toast.makeText(RegisterFinalActivity.this,
-                                "집 등록이 완료되었을 수 있습니다. 목록에서 확인해주세요.",
-                                Toast.LENGTH_LONG).show();
-                        onRegistrationComplete();
-                    }
+                    Toast.makeText(RegisterFinalActivity.this,
+                            "집 등록이 완료되었을 수 있습니다. 목록에서 확인해주세요.",
+                            Toast.LENGTH_LONG).show();
+                    onRegistrationComplete();
                 } else {
                     registerButton.setEnabled(true);
                     Toast.makeText(RegisterFinalActivity.this, "네트워크 오류: " + t.getMessage(), Toast.LENGTH_SHORT).show();
@@ -1171,33 +1166,15 @@ public class RegisterFinalActivity extends AppCompatActivity {
      * 편의시설 저장 API 호출
      */
     private void saveAmenities(String bearerToken, Long houseId, List<String> amenityCodes) {
-        Log.d(TAG, "saveAmenities called - houseId: " + houseId + ", amenityCodes: " + amenityCodes);
-
-        if (houseId == null || houseId <= 0) {
-            Log.e(TAG, "Invalid houseId: " + houseId);
-            Toast.makeText(this, "집 ID가 유효하지 않습니다.", Toast.LENGTH_SHORT).show();
-            onRegistrationComplete();
-            return;
-        }
-
-        if (amenityCodes == null || amenityCodes.isEmpty()) {
-            Log.w(TAG, "No amenity codes to save");
-            onRegistrationComplete();
-            return;
-        }
-
         HouseAmenitiesCreateRequestDto amenitiesRequest = new HouseAmenitiesCreateRequestDto(
                 houseId,
                 amenityCodes
         );
 
-        Log.d(TAG, "Calling saveHouseAmenities API - houseId: " + houseId + ", codes count: " + amenityCodes.size());
-
         Call<Void> amenitiesCall = apiService.saveHouseAmenities(bearerToken, amenitiesRequest);
         amenitiesCall.enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
-                Log.d(TAG, "saveHouseAmenities response - code: " + response.code() + ", isSuccessful: " + response.isSuccessful());
                 if (response.isSuccessful()) {
                     Log.d(TAG, "Amenities saved successfully");
                     onRegistrationComplete();
@@ -1207,7 +1184,6 @@ public class RegisterFinalActivity extends AppCompatActivity {
                     if (response.errorBody() != null) {
                         try {
                             errorMessage = response.errorBody().string();
-                            Log.e(TAG, "Error response body: " + errorMessage);
                         } catch (Exception e) {
                             Log.e(TAG, "Error reading error body", e);
                         }
@@ -1220,8 +1196,8 @@ public class RegisterFinalActivity extends AppCompatActivity {
             @Override
             public void onFailure(Call<Void> call, Throwable t) {
                 registerButton.setEnabled(true);
-                Log.e(TAG, "saveHouseAmenities onFailure", t);
                 Toast.makeText(RegisterFinalActivity.this, "편의시설 저장 오류: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                Log.e(TAG, "Amenities save failed", t);
             }
         });
     }
@@ -1231,6 +1207,7 @@ public class RegisterFinalActivity extends AppCompatActivity {
      */
     private void onRegistrationComplete() {
         PrefManager.clearHouseRegistrationData();
+
         Toast.makeText(this, "등록이 완료되었습니다!", Toast.LENGTH_SHORT).show();
 
         Intent intent = new Intent(RegisterFinalActivity.this, MainActivity.class);
