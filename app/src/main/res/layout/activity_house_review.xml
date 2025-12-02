@@ -75,7 +75,9 @@
                     android:layout_height="80dp"
                     android:scaleType="centerCrop"
                     android:src="@drawable/sample1"
-                    android:background="@drawable/profile_image"
+                    android:clipToOutline="true"
+                    android:outlineProvider="background"
+                    android:background="@drawable/rounded_image_bg"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"/>
 
